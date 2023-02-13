@@ -24,3 +24,8 @@ if (array.length !== 0){
 verifica(list1)
 verifica(list2)
 </code>
+
+## CLASES
+    ![image](https://user-images.githubusercontent.com/109872028/218539025-4ac17ac4-c234-4439-846c-d878c96a1439.png)
+![image](https://user-images.githubusercontent.com/109872028/218540061-8cfc433a-d3ee-4828-8351-60fdd3512021.png)
+![image](https://user-images.githubusercontent.com/109872028/218541176-2921dcaf-05a1-4d62-b2c9-5876ac3536cc.png)
