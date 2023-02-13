@@ -4,17 +4,15 @@
 <code>
 const list1 = ['LKD001','LOT854','ASE963','POR478']
 const list2 = []
-
 // recibir un array
 // verificar que no este vació o indicar por consola 
 // mostrar uno a uno los elementos
 // finaliza el proceso devolviendo la longitud de la lista
-
-/**
- * If the array is not empty, then print each element of the array and the length of the array.
- * Otherwise, print that the array is empty.
- * @param array - the array to be checked
- */
+//
+    // If the array is not empty, then print each element of the array and the length of the array.
+// Otherwise, print that the array is empty.
+// @param array - the array to be checked
+//
 function verifica (array){
 if (array.length !== 0){
     for (let i=0; i<array.length; i++){
@@ -23,7 +21,6 @@ if (array.length !== 0){
     console.log(`tamaño del array es ${array.length}`)
 } else console.log('El array esta vacío')
 }
-
 verifica(list1)
 verifica(list2)
 </code>
