@@ -1,3 +1,6 @@
+// ENTREGABLE 01 RONNIE ALVAREZ CASTRO  CODERHOUSE PROGRAMA FULLSTACK CURSO BACKEND 17/02/2023
+//
+//
 // Realizar una clase “ProductManager” que gestione un conjunto de productos.
 class productManager {
   constructor() {
