@@ -24,9 +24,11 @@ class productManager {
       thumbnail: thumbnail,
       code: code,
       stock: stock,
-      id: this.products.length + 1,
+      id: this.#getMaxId()+1,
       // Al agregarlo, debe crearse con un id autoincrementable
     };
+
+    
     // Validar que no se repita el campo “code” y que todos los campos sean obligatorios
     const requerido = Object.values(productObj).includes(null || undefined);
     if (requerido) {
@@ -40,6 +42,13 @@ class productManager {
         console.log(`El producto con código ${code} ha sido agregado.`);
       }
     }
+  }
+  #getMaxId(){
+    let maxId=0
+    this.products.map((evento)=>{
+      if(evento.id>maxId) maxId=evento.id;
+    })
+    return maxId;
   }
   getProducts() {
     // Debe contar con un método “getProducts” el cual debe devolver el arreglo con todos los productos creados hasta ese momento
@@ -61,6 +70,8 @@ prod1.addProduct("levis", "camisa", 40, "otro thum", "asd654", 15);
 prod1.addProduct("lee", "short", 15, "cual", "asd123", 5);
 prod1.addProduct("lee", "short", 15, "cual", "asd123");
 prod1.addProduct("cortefiel", "abrigo", 140, "otro thum", "rew952", 6);
+prod1.addProduct("corte de Hierro", "abrigo", 140, "otro", "rew953", 6);
 
 console.log(prod1.getProducts());
 console.log(prod1.getProductById(2));
+
