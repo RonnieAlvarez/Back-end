@@ -1,15 +1,18 @@
-//ENTREGABLE 02 RONNIE ALVAREZ CASTRO  CODERHOUSE PROGRAMA FULLSTACK CURSO BACKEND 
+/********************************************************************************* */
 //
+//ENTREGABLE 02 RONNIE ALVAREZ CASTRO  CODERHOUSE PROGRAMA FULLSTACK CURSO BACKEND
+//
+/********************************************************************************* */
 //
 const fs = require("fs");
-
+/***************************************************************************** */
 class ProductManager {
   constructor(path) {
     this.path = path;
     this.products = [];
     this.save(this.products);
   }
-
+  /***************************************************************************** */
   // Metodo writeEmpty(path)
   writeEmpty() {
     //Este metodo escribe un archivo en blanco
@@ -20,6 +23,7 @@ class ProductManager {
       console.log(`File ${path} was created without data`);
     }
   }
+  /***************************************************************************** */
   // Metodo getProducts()
   getProducts() {
     //Debe tener un método getProducts, el cual debe leer el archivo de productos y
@@ -28,12 +32,13 @@ class ProductManager {
     this.products = JSON.parse(data);
     return this.products;
   }
-
+  /***************************************************************************** */
   // Metodo Save(array)
   async save(array) {
     // Este metodo escribe el array en el archivo
     fs.writeFileSync(this.path, JSON.stringify(array));
   }
+  /***************************************************************************** */
   //Metodo UpdateProductById(id)
   async UpdateProductById(
     idi,
@@ -68,6 +73,7 @@ class ProductManager {
       console.log("Product doesnt exist");
     }
   }
+  /***************************************************************************** */
   // Metodo getProductById(id)
   getProductById(id) {
     //Debe tener un método getProductById, el cual debe recibir un id,
@@ -75,6 +81,7 @@ class ProductManager {
     // y devolverlo en formato objeto
     return this.products.find((p) => p.id === id) ?? "Product not found";
   }
+  /***************************************************************************** */
   // Metodo deleteById(Number)
   async deleteById(id) {
     //Debe tener un método deleteProduct, el cual debe recibir un id y debe
@@ -85,6 +92,7 @@ class ProductManager {
     console.log(`The element with id: ${id} was removed !`);
     return this.products;
   }
+  /***************************************************************************** */
   //Metodo deleteAll()
   async deleteAll() {
     try {
@@ -97,10 +105,12 @@ class ProductManager {
       );
     }
   }
+  /***************************************************************************** */
   //Metodo addProduct(title, description, price, thumbnail, code, stock)
   async addProduct(title, description, price, thumbnail, code, stock) {
-    //Debe tener un método addProduct el cual debe recibir un objeto con el formato previamente especificado,
-    //asignarle un id autoincrementable y guardarlo en el arreglo (recuerda siempre guardarlo como un array en el archivo).
+    //Debe tener un método addProduct el cual debe recibir un objeto con el formato previamente
+    //especificado, asignarle un id autoincrementable y guardarlo en el arreglo (recuerda siempre
+    // guardarlo como un array en el archivo).
     let productObj = {
       title: title,
       description: description,
@@ -126,6 +136,7 @@ class ProductManager {
       }
     }
   }
+  /***************************************************************************** */
   //Metodo Privado getMaxId()
   #getMaxId() {
     //Devuelve el Maximo valor del ID
@@ -135,10 +146,19 @@ class ProductManager {
     });
     return maxId;
   }
+  /***************************************************************************** */
 }
+/***************************************************************************** */
+/*          FINAL DE LA CLASE Product Manager                                  */
+/***************************************************************************** */
+/***************************************************************************** */
 
+// INICIO DE LAS PRUEBAS
+/***************************************************************************** */
 console.clear();
-console.log( "************************** INICIO PRUEBAS ******************************");
+console.log(
+  "************************** INICIO PRUEBAS ******************************"
+);
 //Se creará una instancia de la clase “ProductManager”
 let prod1 = new ProductManager("./archivo.txt");
 //Se llamará “getProducts” recién creada la instancia, debe devolver un arreglo vacío []
@@ -175,14 +195,20 @@ prod1.addProduct(
   "abc125",
   25
 );
+
 //Se llamará el método “getProducts” nuevamente, esta vez debe aparecer el producto recién agregado
-console.clear()
 console.log(prod1.getProducts());
-console.log("************************** PRODUCTOS AGREGADOS *************************");
-//Se llamará al método “getProductById” y se corroborará que devuelva el producto con el id especificado, en caso de no existir, debe arrojar un error.
+console.log(
+  "************************** PRODUCTOS AGREGADOS *************************"
+);
+
+//Se llamará al método “getProductById” y se corroborará que devuelva el producto con el id
+//especificado, en caso de no existir, debe arrojar un error.
 console.log(prod1.getProductById(1));
 console.log(prod1.getProductById(4));
-//Se llamará al método “updateProduct” y se intentará cambiar un campo de algún producto, se evaluará que no se elimine el id y que sí se haya hecho la actualización.
+
+//Se llamará al método “updateProduct” y se intentará cambiar un campo de algún producto, se evaluará
+// que no se elimine el id y que sí se haya hecho la actualización.
 prod1.UpdateProductById(
   2,
   "Pedro Colindrin",
@@ -192,12 +218,18 @@ prod1.UpdateProductById(
   "qwe987",
   25
 );
+
 console.log(prod1.getProductById(1));
 console.log(prod1.getProducts());
-//Se llamará al método “deleteProduct”, se evaluará que realmente se elimine el producto o que arroje un error en caso de no existir.
+//Se llamará al método “deleteProduct”, se evaluará que realmente se elimine el producto
+// o que arroje un error en caso de no existir.
+
 prod1.deleteById(3);
 console.log(prod1.getProducts());
 // Aqui estoy eliminando todos los registros para comprobar el metodo deleteAll()
+
 prod1.deleteAll();
 console.log(prod1.getProducts());
 console.log("************************** FINAL *************************");
+
+//    ************   FIN DEL DOCUMENTO    *****************
