@@ -17,5 +17,8 @@
   "bugs": {
     "url": "https://github.com/RonnieAlvarez/Back-end/issues"
   },
-  "homepage": "https://github.com/RonnieAlvarez/Back-end#readme"
+  "homepage": "https://github.com/RonnieAlvarez/Back-end#readme",
+  "dependencies": {
+    "express": "^4.18.2"
+  }
 }
