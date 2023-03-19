@@ -1,23 +1,21 @@
 /********************************************************************************* */
 //
-//  ENTREGABLE 03 RONNIE ALVAREZ CASTRO  CODERHOUSE PROGRAMA FULLSTACK CURSO BACKEND
+//  RONNIE ALVAREZ CASTRO  CODERHOUSE PROGRAMA FULLSTACK CURSO BACKEND
 //
 /********************************************************************************* */
-//
-//  Se deberá utilizar la clase ProductManager que actualmente utilizamos
-//  con persistencia de archivos
 //
 //
 import fs from "fs";
 /***************************************************************************** */
+/* This is the class constructor. */
 export default class prodManager {
   constructor(path) {
     this.path = path;
     this.products = [];
   }
   /***************************************************************************** */
-  //inicializa el archivo con un array vacio y si no existe lo crea con 10 objetos
-  //de prueba
+  //
+  /* Reading the file and if it does not exist, it creates it with 10 elements. */
   init = async () => {
     try {
       let data = await fs.promises.readFile(this.path, "utf-8");
@@ -33,7 +31,7 @@ export default class prodManager {
           status: true,
           stock: 25,
           category: "shoes",
-          thumbnail:  ["sin imagen"],
+          thumbnail: ["sin imagen"],
         },
         {
           id: 2,
@@ -44,7 +42,7 @@ export default class prodManager {
           status: true,
           stock: 25,
           category: "shoes",
-          thumbnail:  ["sin imagen"],
+          thumbnail: ["sin imagen"],
         },
         {
           id: 3,
@@ -55,7 +53,7 @@ export default class prodManager {
           status: true,
           stock: 25,
           category: "shoes",
-          thumbnail:  ["sin imagen"],
+          thumbnail: ["sin imagen"],
         },
         {
           id: 4,
@@ -66,7 +64,7 @@ export default class prodManager {
           status: true,
           stock: 25,
           category: "shoes",
-          thumbnail:  ["sin imagen"],
+          thumbnail: ["sin imagen"],
         },
         {
           id: 5,
@@ -77,7 +75,7 @@ export default class prodManager {
           status: true,
           stock: 25,
           category: "shoes",
-          thumbnail:  ["sin imagen"],
+          thumbnail: ["sin imagen"],
         },
         {
           id: 6,
@@ -88,7 +86,7 @@ export default class prodManager {
           status: true,
           stock: 25,
           category: "shoes",
-          thumbnail:  ["sin imagen"],
+          thumbnail: ["sin imagen"],
         },
         {
           id: 7,
@@ -133,22 +131,23 @@ export default class prodManager {
           stock: 25,
           category: "shoes",
           thumbnail: ["sin imagen"],
-        }
+        },
       ];
       this.save(this.products);
     }
   };
   /***************************************************************************** */
-  // devuelve todos los elementos del array
+  //
+  /* This method is returning all the products from the array. */
   getAll = async () => {
     let data = await fs.promises.readFile(this.path, "utf-8");
     this.products = JSON.parse(data);
     return this.products;
   };
   /***************************************************************************** */
-  // Metodo writeEmpty(path)
+  //
+  /* This method is creating a file without data. */
   writeEmpty = async () => {
-    //Este metodo escribe un archivo en blanco
     this.products = [];
     try {
       await this.save(this.products);
@@ -157,29 +156,26 @@ export default class prodManager {
     }
   };
   /***************************************************************************** */
-  // Metodo getProducts()
+  //
+  /* This method is returning all the products from the array. */
   getProducts = async () => {
-    //Debe tener un método getProducts, el cual debe leer el archivo de productos y
-    //devolver todos los productos en formato de arreglo.
     const data = await fs.promises.readFile(this.path, "utf-8");
     this.products = await JSON.parse(data);
     return this.products;
   };
   /***************************************************************************** */
-  // Metodo getProducts()
+  //
+  /* This method is returning a limited number of products from the array. */
   getProductsLimit = async (limit) => {
-    //Debe tener un método getProducts, el cual debe leer el archivo de productos y
-    //devolver todos los productos en formato de arreglo.
     const data = await fs.promises.readFile(this.path, "utf-8");
     this.products = await JSON.parse(data);
     const dataLimit = this.products.slice(0, limit);
     return dataLimit;
   };
-
   /***************************************************************************** */
-  // Metodo Save(array)
+  //
+  /* Saving the data to a file. */
   save = async (array) => {
-    // Este metodo escribe el array en el archivo
     try {
       await fs.promises.writeFile(this.path, JSON.stringify(array));
     } catch (error) {
@@ -187,15 +183,21 @@ export default class prodManager {
     }
   };
   /***************************************************************************** */
-  //Metodo UpdateProductById(id)
+  //
+  /* Updating the product with the id that is passed in the newObj. */
   UpdateProductById = async (newObj) => {
-  try {
-      let pid=newObj.id
+    try {
+      let pid = newObj.id;
       this.products = await this.getProducts();
       const existeProducto = this.products.findIndex((p) => p.id === pid);
       if (existeProducto >= 0) {
-        this.products[existeProducto] = {...this.products[existeProducto],...newObj}
-        console.log(`The product with the id ${pid} already exist and was Updated.`        );
+        this.products[existeProducto] = {
+          ...this.products[existeProducto],
+          ...newObj,
+        };
+        console.log(
+          `The product with the id ${pid} already exist and was Updated.`
+        );
         await this.save(this.products);
       } else {
         console.log("Product doesnt exist");
@@ -207,18 +209,19 @@ export default class prodManager {
     }
   };
   /***************************************************************************** */
-  // Metodo getProductById(id)
+  //
+  /* Return an element from the array. */
   getProductById = async (id) => {
     try {
       this.products = await this.getProducts();
       return this.products.find((p) => p.id === id) ?? "Product not found";
     } catch {
       return "Product not found";
-      
     }
   };
   /***************************************************************************** */
-  // Metodo deleteById(Number)
+  //
+  /* Deleting an element from the array. */
   deleteById = async (id) => {
     try {
       this.products = await this.getProducts();
@@ -231,7 +234,8 @@ export default class prodManager {
     }
   };
   /***************************************************************************** */
-  //Metodo deleteAll()
+  //
+  /* Deleting all the data in the file. */
   deleteAll = async () => {
     try {
       setTimeout(async () => {
@@ -246,7 +250,8 @@ export default class prodManager {
     }
   };
   /***************************************************************************** */
-  //Metodo addProduct(title, description, price, thumbnail, code, stock)
+  //
+  /* Adding a product to the products array. */
   addProduct = async (
     title,
     description,
@@ -267,9 +272,9 @@ export default class prodManager {
         status: status,
         stock: stock,
         category: category,
-        thumbnail: thumbnail
+        thumbnail: thumbnail,
       };
-      console.log(productObj)
+      console.log(productObj);
       const requerido = Object.values(productObj).includes(null || undefined);
       if (requerido) {
         console.log("All fields are Requied... Please Check!");
@@ -290,18 +295,16 @@ export default class prodManager {
     }
   };
   /***************************************************************************** */
-  //Metodo Privado getMaxId()
+  //
+  /* Getting the max id from the products array. */
   #getMaxId() {
-    //Devuelve el Maximo valor del ID
     let maxId = 0;
     this.products.map((evento) => {
       if (evento.id > maxId) maxId = evento.id;
     });
     return maxId;
   }
-  /***************************************************************************** */
 }
 /***************************************************************************** */
 /*          FINAL DE LA CLASE Product Manager                                  */
-/***************************************************************************** */
 /***************************************************************************** */

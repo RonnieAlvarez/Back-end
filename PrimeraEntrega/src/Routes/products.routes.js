@@ -27,13 +27,11 @@ router.get("/", async (req, res) => {
       res.send(dataLimit);
     }
   } catch{
-    res.status(500).send(err.message);
-  }
+    res.status(500).send(("Internal Server Error"));  }
   });
+//
 /********************************************************************************* */
-// -------------------------------------------------------------------------------
-// 
-/* A function that is called when the user makes a GET request to the /products/:pid route. */
+///* A function that is called when the user makes a GET request to the /products/:pid route. */
 router.get("/:pid", async function (req, res) {
   try {
     const pid = Number(req.params.pid);
@@ -46,19 +44,17 @@ router.get("/:pid", async function (req, res) {
       res.status(404).send("Product not found");
       return;
     }
-
     res.send(prodObj);
   } catch{
-    res.status(500).send(err.message);
-  }
+    res.status(500).send(("Internal Server Error"));  }
   });
 
+//
 /********************************************************************************* */
-// --------------------------------------------------------------------------------
-
+//
+/* A function that is called when the user makes a POST request to the /products route. */
   router.post('/',async (req,res)=>{
     try{
-
       const { title,
         description,
         code,
@@ -67,7 +63,6 @@ router.get("/:pid", async function (req, res) {
         stock,
         category,
         thumbnail} = req.body
-        
         products.addProduct(
           title,
           description,
@@ -80,10 +75,13 @@ router.get("/:pid", async function (req, res) {
           )
           res.send({status:"Success",msg:"Product Added"})
         }catch{
-          res.status(500).send(err.message);
+          res.status(500).send(("Internal Server Error"));
         }
 })
-
+//
+/********************************************************************************* */
+//
+/* A function that is called when the user makes a PUT request to the /products/:pid route. */
 router.put('/:pid', async (req,res)=>{
   try{
     const id= parseInt(req.params.pid)
@@ -91,19 +89,21 @@ router.put('/:pid', async (req,res)=>{
     products.UpdateProductById(newObj)
     res.send({status:"Success",msg:"Product Updated"})
   }catch{
-    res.status(500).send(err.message);
+    res.status(500).send(("Internal Server Error"));
   }
 })
-
+//
+/********************************************************************************* */
+//
+/* Deleting the product by id. */
 router.delete('/:pid', async (req,res)=>{
   try{
     const id= parseInt(req.params.pid)
     products.deleteById(id)
     res.send({status:"Success",msg:"Product Deleted"})
   }catch{
-    res.status(500).send(err.message);
+    res.status(500).send(("Internal Server Error"));
   }
-
 })
 
 export default router
