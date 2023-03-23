@@ -1,4 +1,4 @@
-<form action="/" method="post" id="form-products" class="w-3/6 py-28 h-100 mt-20 mx-auto flex flex-col items-center bg-red-200">
+{{!-- <form action="/" method="post" id="form-products" class="w-3/6 py-28 h-100 mt-20 mx-auto flex flex-col items-center bg-red-200">
     <label class="uppercase font-bold" for="title">Product title</label>
     <input class="w-1/3 h-8 border-black m-5 border-2 border-black" type="text" name="title" id="title" />
     <label class="uppercase font-bold" for="price">Product price</label>
@@ -6,10 +6,23 @@
     <label class="uppercase font-bold" for="description">Product Description</label>
     <input class="w-1/3 h-8 border-black m-5 border-2 border-black" type="text" name="description" />
     <input class="p-2 bg-black text-white font-bold uppercase mt-4" type="submit" value="Ingresar Producto" />
-</form> 
+</form>  --}}
 
 
 {{#if productsa}}
+    <div class=" m-auto bg-dark">
+        {{#each productsa}}
+            <div class=" py-10 mt-2 mx-auto flex items-center bg-info">
+                <h2 class="font-bold uppercase mx-5">ID: {{id}}</h2>
+                <h2 class="font-bold uppercase mx-5">Name: {{title}}</h2>
+                <h3 class="font-bold uppercase mx-5">Price: {{price}}</h3>
+                <h4 class="font-bold uppercase mx-5">Description: {{description}}</h4>
+            </div>
+        {{/each}}
+    </div>
+{{/if}}
+
+{{!-- {{#if productsa}}
     <div class="w-6/6 m-auto bg-red-300">
         {{#each productsa}}
             <div class="w-5/6 py-10 mt-2 mx-auto flex items-center bg-amber-100">
@@ -20,7 +33,6 @@
             </div>
         {{/each}}
     </div>
-{{/if}}
-
+{{/if}} --}}
 
 

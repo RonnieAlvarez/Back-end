@@ -10,12 +10,34 @@ const productList = new prodManager(path);
 
 router.get("/", async (req, res) => {
   try{
-
     productList.init();
     products = await  productList.getAll()
-    return res.render("productsForm",  {productsa: products} );
+    return res.render("home",  {productsa: products} );
   } catch{
     res.status(500).send(("Internal Server Error"));  
+  }
+});
+
+
+router.get("/realTimeProducts", async (req, res) => {
+  try{
+    productList.init();
+    products = await  productList.getAll()
+    return res.render("realTimeProducts",  {productsa: products} );
+  } catch{
+    res.status(500).send(("Internal Server Error"));  
+  }
+});
+
+router.post("/", (req, res) => {
+  console.log("Se ingreso producto");
+  let product = req.body;
+  if (product.title != "" && product.price != "" && product.description != "" && product.code != "" && product.stock != "" && product.category != "") {
+    product = { ...product, id: products.length + 1 };
+    products = [...products, product];
+    res.render("form", { products: products });
+  } else {
+    res.render("form", { products: products });
   }
 });
 
@@ -24,7 +46,7 @@ router.get("/er", async (req, res) => {
   try{
       this.products= await  productList.getAll()
       //res.render('form',{products:this.products})
-      res.render("productsForm", { products: this.products });
+      res.render("home", { products: this.products });
   } catch{
     res.status(500).send(("Internal Server Error"));  }
   });

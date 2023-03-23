@@ -1,0 +1,39 @@
+ <form action="/" method="post" id="form-products" class="py-8 h-100 mt-10 mx-auto flex flex-col items-center bg-info">
+    <label  for="title">Product title</label>
+    <input class="  border-black mt-1 border-2 border-black" type="text" name="title" id="title" />
+    <label  for="price">Product price</label>
+    <input class="  border-black  border-2 border-black" type="text" name="price" />
+    <label  for="description">Product Description</label>
+    <input class="  border-black  border-2 border-black" type="text" name="description" />
+    <input class="p-1 btn btn-secondary btn-sm my-1" type="submit" value="Ingresar Producto" />
+</form>  
+
+
+{{#if productsa}}
+    <div class=" m-auto bg-dark">
+        {{#each productsa}}
+            <div class=" py-10 mt-2 mx-auto flex items-center bg-info">
+                <h2 class="font-bold uppercase mx-5">ID: {{id}}</h2>
+                <h2 class="font-bold uppercase mx-5">Name: {{title}}</h2>
+                <h3 class="font-bold uppercase mx-5">Price: {{price}}</h3>
+                <h4 class="font-bold uppercase mx-5">Description: {{description}}</h4>
+            </div>
+        {{/each}}
+    </div>
+{{/if}}
+
+{{!-- {{#if productsa}}
+    <div class="w-6/6 m-auto bg-red-300">
+        {{#each productsa}}
+            <div class="w-5/6 py-10 mt-2 mx-auto flex items-center bg-amber-100">
+                <h2 class="font-bold uppercase mx-5">ID: {{id}}</h2>
+                <h2 class="font-bold uppercase mx-5">Name: {{title}}</h2>
+                <h3 class="font-bold uppercase mx-5">Price: {{price}}</h3>
+                <h4 class="font-bold uppercase mx-5">Description: {{description}}</h4>
+            </div>
+        {{/each}}
+    </div>
+{{/if}} --}}
+
+<script src="/socket.io/socket.io.js"></script>
+<script src="/js/socket.js"></script>
