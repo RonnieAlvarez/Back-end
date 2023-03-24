@@ -1,3 +1,6 @@
+//
+/********************************************************************************* */
+//
 import { Router } from "express"
 import prodManager from "../Classes/Contenedor.js";
 
@@ -5,9 +8,10 @@ let products = [];
 const router = Router()
 const path="scr/public/products.json"
 const productList = new prodManager(path);
-//productList.writeEmpty()
 
-
+//
+/********************************************************************************* */
+/* A function that is called when the user makes a GET request to the / route. */
 router.get("/", async (req, res) => {
   try{
     productList.init();
@@ -17,42 +21,48 @@ router.get("/", async (req, res) => {
     res.status(500).send(("Internal Server Error"));  
   }
 });
-
-
-router.get("/realTimeProducts", async (req, res) => {
+//
+/********************************************************************************* */
+/* A function that is called when the user makes a POST request to the /realTimeProducts route. */
+router.post("/realTimeProducts", async (req, res) => {
   try{
-    productList.init();
-    products = await  productList.getAll()
-    return res.render("realTimeProducts",  {productsa: products} );
-  } catch{
-    res.status(500).send(("Internal Server Error"));  
-  }
-});
-
-router.post("/", (req, res) => {
-  console.log("Se ingreso producto");
+  products = await  productList.getAll()
+  console.log("Product added");
   let product = req.body;
-  if (product.title != "" && product.price != "" && product.description != "" && product.code != "" && product.stock != "" && product.category != "") {
-    product = { ...product, id: products.length + 1 };
-    products = [...products, product];
-    res.render("form", { products: products });
-  } else {
-    res.render("form", { products: products });
-  }
-});
-
-
-router.get("/er", async (req, res) => {
-  try{
-      this.products= await  productList.getAll()
-      //res.render('form',{products:this.products})
-      res.render("home", { products: this.products });
-  } catch{
-    res.status(500).send(("Internal Server Error"));  }
+  productList.addProduct(
+      product.title,
+      product.description,
+      product.code,
+      product.price,
+      product.status=true,
+      product.stock,
+      product.category,
+      product.thumbnail ? product.thumbnail :  ["Without thumbnail"]
+      )
+      return res.render("realTimeProducts",  {productsa: products} );
+    } catch{
+      res.status(500).send(("Internal Server Error"));  }
+    });
+//
+/********************************************************************************* */
+/* Deleting the product by id. */
+    router.get("/realTimeProducts", async (req, res) => {
+      try{
+      products = await  productList.getAll()
+      const id= parseInt(req.query.id)
+      console.log(`producto a borrar ${id} `);
+      products = await productList.deleteById(id)
+    } catch{
+      res.status(500).send(("Internal Server Error"));  
+    } finally {
+      return res.render("realTimeProducts",  {productsa: products} );
+    }
   });
+
 //
 /********************************************************************************* */
 ///* A function that is called when the user makes a GET request to the /products/:pid route. */
+
 router.get("/:pid", async function (req, res) {
   try {
     const pid = Number(req.params.pid);

@@ -1,39 +1,46 @@
- <form action="/" method="post" id="form-products" class="py-8 h-100 mt-10 mx-auto flex flex-col items-center bg-info">
-    <label  for="title">Product title</label>
-    <input class="  border-black mt-1 border-2 border-black" type="text" name="title" id="title" />
-    <label  for="price">Product price</label>
-    <input class="  border-black  border-2 border-black" type="text" name="price" />
-    <label  for="description">Product Description</label>
-    <input class="  border-black  border-2 border-black" type="text" name="description" />
-    <input class="p-1 btn btn-secondary btn-sm my-1" type="submit" value="Ingresar Producto" />
-</form>  
+<div class="container">
+    <div>
+        <form action="/realTimeProducts" method="post" id="form-products"
+            class="p-2 m-1 h-100 mt-10 mx-auto  items-center bg-info d-flex justify-content-center align-items-center">
+           <div >
+            <input class="gap-1 border-botton  border-2 " placeholder="Title" type="text" name="title" id="title" />
+            <input class="gap-1 border-botton  border-2 " placeholder="Price" type="text" name="price" />
+            <input class="gap-1 border-botton  border-2 " placeholder="Description" type="text" name="description" />
+            <input class="gap-1 border-botton  border-2 " placeholder="Category" type="text" name="category" />
+            <input class="gap-1 border-botton  border-2 " placeholder="Stock" type="text" name="stock" />
+            <input class="gap-1 border-botton  border-2 " placeholder="Code" type="text" name="code" /><br>
+            </div>
+            <div>
+            <input class="p-1 btn btn-secondary btn-sm my-1" type="submit" value="Add Product" />
+            <input class="p-1 btn btn-danger btn-sm" type="reset" value="Reset form">
+            </div>
+        </form>
+    </div>
 
+<div class="text-center align-middle ">
+    <form id="delete-form" method="GET" action="/realTimeProducts"
+        class="p-2 h-100 mt-10 mx-auto items-center bg-info">
+        <input class="me-3 border-botton  border-black mt-1 border-2" type="text" name="id" placeholder="Id to delete" />
+        <input class="p-1 btn btn-secondary btn-sm my-1" type="submit" value="Delete Product" />
+    </form>
+</div>
 
-{{#if productsa}}
+    {{#if productsa}}
     <div class=" m-auto bg-dark">
         {{#each productsa}}
-            <div class=" py-10 mt-2 mx-auto flex items-center bg-info">
-                <h2 class="font-bold uppercase mx-5">ID: {{id}}</h2>
-                <h2 class="font-bold uppercase mx-5">Name: {{title}}</h2>
-                <h3 class="font-bold uppercase mx-5">Price: {{price}}</h3>
-                <h4 class="font-bold uppercase mx-5">Description: {{description}}</h4>
-            </div>
+        <div class=" py-10 mt-2 mx-auto flex items-center bg-info">
+            <h6 class="mx-5">ID: {{id}}</h6>
+            <h6 class="mx-5">Name: {{title}}</h6>
+            <h6 class="mx-5">Price: {{price}}</h6>
+            <h6 class="mx-5">Description: {{description}}</h6>
+            <h6 class="mx-5">Status: {{status}}</h6>
+            <h6 class="mx-5">Stock: {{stock}}</h6>
+            <h6 class="mx-5">Code: {{code}}</h6>
+        </div>
         {{/each}}
     </div>
-{{/if}}
+    {{/if}}
 
-{{!-- {{#if productsa}}
-    <div class="w-6/6 m-auto bg-red-300">
-        {{#each productsa}}
-            <div class="w-5/6 py-10 mt-2 mx-auto flex items-center bg-amber-100">
-                <h2 class="font-bold uppercase mx-5">ID: {{id}}</h2>
-                <h2 class="font-bold uppercase mx-5">Name: {{title}}</h2>
-                <h3 class="font-bold uppercase mx-5">Price: {{price}}</h3>
-                <h4 class="font-bold uppercase mx-5">Description: {{description}}</h4>
-            </div>
-        {{/each}}
-    </div>
-{{/if}} --}}
-
-<script src="/socket.io/socket.io.js"></script>
-<script src="/js/socket.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="/js/socket.js"></script>
+</div>
