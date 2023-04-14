@@ -1,0 +1,46 @@
+<div class="container">
+  <div>
+    <form action="/realTimeProducts" method="post" id="form-products"
+      class="p-2 m-1 h-100 mt-10 mx-auto  items-center bg-info d-flex justify-content-center align-items-center rounded">
+      <div>
+        <input class="gap-1 border-botton  border-2 " placeholder="Title" type="text" name="Title" id="title" />
+        <input class="gap-1 border-botton  border-2 " placeholder="Price" type="number" name="Price" />
+        <input class="gap-1 border-botton  border-2 " placeholder="Description" type="text" name="Description" />
+        <input class="gap-1 border-botton  border-2 " placeholder="Category" type="text" name="Category" />
+        <input class="gap-1 border-botton  border-2 " placeholder="Stock" type="text" name="Stock" />
+        <input class="gap-1 border-botton  border-2 " placeholder="Code" type="text" name="Code" /><br>
+      </div>
+      <div>
+        <input class="p-1 btn btn-secondary btn-sm my-1" type="submit" value="Add Product" />
+        <input class="p-1 btn btn-danger btn-sm" type="reset" value="Reset form">
+      </div>
+    </form>
+  </div>
+
+  <div class="text-center align-middle ">
+     <form id="delete-form" method="GET"
+      action="/realTimeProducts/delete" class="p-2 h-100 mt-10 mx-auto items-center bg-info">
+      <input class="me-3 border-botton border-black mt-1 border-2 rounded" type="text" name="pid" placeholder="Id to delete" />
+      <input class="btn btn-secondary btn-sm my-1" type="submit" value="Delete Product" />
+    </form>
+  </div>
+
+    {{#if productsa}}
+  <div class=" m-auto bg-dark">
+    {{#each productsa}}
+    <div class=" py-10 mt-2 mx-auto flex items-center bg-info">
+      <h6 class="mx-5">ID: {{lookup this "id"}}</h6>
+      <h6 class="mx-5">Name: {{lookup this "Title"}}</h6>
+      <h6 class="mx-5">Price: {{lookup this "Price"}}</h6>
+      <h6 class="mx-5">Description: {{lookup this "Description"}}</h6>
+      <h6 class="mx-5">Status: {{lookup this "Status"}}</h6>
+      <h6 class="mx-5">Stock: {{lookup this "Stock"}}</h6>
+      <h6 class="mx-5">Code: {{lookup this "Code"}}</h6>
+    </div>
+    {{/each}}
+  </div>
+  {{/if}}
+
+
+
+</div>
