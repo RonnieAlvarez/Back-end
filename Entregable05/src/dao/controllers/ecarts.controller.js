@@ -7,22 +7,22 @@ export async function getRealCarts(req, res) {
   try {
     let carts = await CartService.getAllCarts();
     let aId=0
-    let aPid=0
+    let apid=0
     let aQua=0
     let acarts=[]
     carts.forEach((event) => {
       aId=event.id
       if (event.products.length>0){
         const {
-          _doc: { products: [{ _doc: { Pid, Quantity } }] },
+          _doc: { products: [{ _doc: { pid, Quantity } }] },
         } = event 
-        aPid=Pid ? Pid:0
+        apid=pid ? pid:0
         aQua=Quantity ? Quantity:0
       }else{
-        aPid=0
+        apid=0
         aQua=0
       }
-        acarts.push({id:aId,Pid:aPid,Quantity:aQua})
+        acarts.push({id:aId,pid:apid,Quantity:aQua})
       }); 
 
     return res.render("realTimeCarts", { cartsa: acarts });
@@ -39,22 +39,22 @@ export async function createRealCart(req, res) {
     let carts = await CartService.createCart(body);
     carts = await CartService.getAllCarts();
     let aId=0
-    let aPid=0
+    let apid=0
     let aQua=0
     let acarts=[]
     carts.forEach((event) => {
         aId=event.id
         if (event.products.length>0){
           const {
-            _doc: { products: [{ _doc: { Pid, Quantity } }] },
+            _doc: { products: [{ _doc: { pid, Quantity } }] },
           } = event 
-          aPid=Pid ? Pid:0
+          apid=pid ? pid:0
           aQua=Quantity ? Quantity:0
         }else{
-          aPid=0
+          apid=0
           aQua=0
         }
-        acarts.push({id:aId,Pid:aPid,Quantity:aQua})
+        acarts.push({id:aId,pid:apid,Quantity:aQua})
       }); 
 
     res.status(201).render("realTimeCarts", { cartsa: acarts });
@@ -71,22 +71,22 @@ export async function deleteRealCart(req, res) {
     await CartService.deleteRealCart(id);
     let carts = await CartService.getAllCarts();
     let aId=0
-    let aPid=0
+    let apid=0
     let aQua=0
     let acarts=[]
     carts.forEach((event) => {
         aId=event.id
         if (event.products.length>0){
           const {
-            _doc: { products: [{ _doc: { Pid, Quantity } }] },
+            _doc: { products: [{ _doc: { pid, Quantity } }] },
           } = event 
-          aPid=Pid ? Pid:0
+          apid=pid ? pid:0
           aQua=Quantity ? Quantity:0
         }else{
-          aPid=0
+          apid=0
           aQua=0
         }
-        acarts.push({id:aId,Pid:aPid,Quantity:aQua})
+        acarts.push({id:aId,pid:apid,Quantity:aQua})
       }); 
 
     res.status(201).render("realTimeCarts", { cartsa: acarts });
@@ -102,30 +102,55 @@ export async function deleteRealCart(req, res) {
 export async function saveProductToCart(req,res) {
   try {
     const { body } = req;
-    const id = parseInt(body.id);
-    let carts = await CartModel.findOne({id:id}).populate('products')
-     carts = await CartModel.find({}).populate('products')
-    CartModel.update
-    //carts.save()
-    carts = await CartModel.find({})
-//    let carts = await CartService.getAllCarts();
+    let id = parseInt(body.id);
+    let pid = parseInt(body.pid);
+    let Quantity = parseInt(body.Quantity);
+    //const { pid, Quantity } = body;
+    //pid=parseInt(pid);
+    //Quantity=parseInt(Quantity);
+if (!id){
+  const Carts = await CartService.getAllCarts();
+  let maxId=0
+  Carts.forEach((event) => {
+      if (event.id > maxId) maxId = event.id;
+    });  
+   id = maxId + 1;
+}
+let cart = await CartModel.findOne({id:id}).populate('products')
+if (!cart){
+let newCart = await CartModel.create({
+  id: id,
+  products: {pid: pid,Quantity: Quantity}
+  });
+}else{
+  let newCart = await CartModel.updateOne({
+    id: id,
+    products: {pid: pid,Quantity: Quantity}
+    });
+}
+
+     
+    //CartModel.update
+    //carts.save
+  //  let carts = await CartModel.find({}).populate('products')
+    let carts = await CartService.getAllCarts();
     let aId=0
-    let aPid=0
+    let apid=0
     let aQua=0
     let acarts=[]
     carts.forEach((event) => {
         aId=event.id
         if (event.products.length>0){
           const {
-            _doc: { products: [{ _doc: { Pid, Quantity } }] },
+            _doc: { products: [{ _doc: { pid, Quantity } }] },
           } = event 
-          aPid=Pid ? Pid:0
+          apid=pid ? pid:0
           aQua=Quantity ? Quantity:0
         }else{
-          aPid=0
+          apid=0
           aQua=0
         }
-        acarts.push({id:aId,Pid:aPid,Quantity:aQua})
+        acarts.push({id:aId,pid:apid,Quantity:aQua})
       }); 
     res.status(201).render("realTimeCarts", { cartsa: acarts });
     } catch (error) {

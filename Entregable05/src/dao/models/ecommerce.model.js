@@ -63,6 +63,9 @@ const CartSchema = new mongoose.Schema({
         Quantity: {
             type: Number
         },
+        pid:{
+          type: Number 
+        }
       }
     ], default: []
     }, 
