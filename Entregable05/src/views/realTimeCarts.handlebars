@@ -31,17 +31,39 @@
     </form>
   </div>
 
-    {{#if cartsa}}
+    {{!-- {{#if cartsa}}
   <div class=" m-auto bg-dark">
-    {{#each cartsa}}
-    <div class=" py-10 mt-2 mx-auto flex items-center bg-info">
-      <h6 class="mx-5">Cart ID: {{id}}</h6>
-      <h6 class="mx-5">Product id: {{lookup this "pid"}}</h6>
-      <h6 class="mx-5">Product Quantity: {{lookup this "Quantity"}}</h6>
-    </div>
-    {{/each}}
+  {{#each cartsa}}
+  <div class="py-10 mt-2 mx-auto flex items-center bg-info">
+    <h6 class="mx-5">Cart ID: {{id}}</h6>
+    <ul>
+      {{#each cartsa}}
+        <li class="flex items-center">Product Id: {{lookup this "pid"}} and Quantity: {{lookup this "Quantity"}}</li>
+      {{/each}}
+    </ul>
   </div>
-  {{/if}}
+{{/each}}
+
+  </div>
+  {{/if}} --}}
 
 
 </div>
+
+<h1>Lista de carritos de compra</h1>
+
+{{#each carts}}
+  <h2>ID: {{lookup this "id"}}</h2>
+  <ul>
+    {{#each _doc.products}}
+      <li>
+        <p>Producto ID: {{lookup this "pid"}}</p>
+        <p>Cantidad: {{lookup this "Quantity"}}</p>
+      </li>
+    {{/each}}
+  </ul>
+{{/each}}
+
+
+
+
