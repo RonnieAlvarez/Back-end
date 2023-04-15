@@ -31,13 +31,13 @@
     </form>
   </div>
 
-    {{!-- {{#if cartsa}}
+    {{#if carts}}
   <div class=" m-auto bg-dark">
-  {{#each cartsa}}
+  {{#each carts}}
   <div class="py-10 mt-2 mx-auto flex items-center bg-info">
-    <h6 class="mx-5">Cart ID: {{id}}</h6>
+    <h6 class="mx-5">Cart ID: {{lookup this "id"}}</h6>
     <ul>
-      {{#each cartsa}}
+      {{#each _doc.products}}
         <li class="flex items-center">Product Id: {{lookup this "pid"}} and Quantity: {{lookup this "Quantity"}}</li>
       {{/each}}
     </ul>
@@ -45,12 +45,12 @@
 {{/each}}
 
   </div>
-  {{/if}} --}}
+  {{/if}}
 
 
 </div>
 
-<h1>Lista de carritos de compra</h1>
+{{!-- <h1>Lista de carritos de compra</h1>
 
 {{#each carts}}
   <h2>ID: {{lookup this "id"}}</h2>
@@ -62,7 +62,7 @@
       </li>
     {{/each}}
   </ul>
-{{/each}}
+{{/each}} --}}
 
 
 

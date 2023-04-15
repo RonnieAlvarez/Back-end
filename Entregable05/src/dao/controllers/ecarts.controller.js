@@ -25,7 +25,7 @@ export async function getRealCarts(req, res) {
     //     acarts.push({id:aId,pid:apid,Quantity:aQua})
     //   }); 
 const carts = await CartModel.find()
-    return res.render("realTimeCarts", { carts: carts });
+    return res.status(201).render("realTimeCarts", { carts: carts });
   } catch (error) {
     res.status(400).json({
       error: error.message,
@@ -36,28 +36,28 @@ const carts = await CartModel.find()
 export async function createRealCart(req, res) {
   try {
     const { body } = req;
-    let carts = await CartService.createCart(body);
-    carts = await CartService.getAllCarts();
-    let aId=0
-    let apid=0
-    let aQua=0
-    let acarts=[]
-    carts.forEach((event) => {
-        aId=event.id
-        if (event.products.length>0){
-          const {
-            _doc: { products: [{ _doc: { pid, Quantity } }] },
-          } = event 
-          apid=pid ? pid:0
-          aQua=Quantity ? Quantity:0
-        }else{
-          apid=0
-          aQua=0
-        }
-        acarts.push({id:aId,pid:apid,Quantity:aQua})
-      }); 
-
-    res.status(201).render("realTimeCarts", { cartsa: acarts });
+    await CartService.createCart(body);
+    // carts = await CartService.getAllCarts();
+    // let aId=0
+    // let apid=0
+    // let aQua=0
+    // let acarts=[]
+    // carts.forEach((event) => {
+    //     aId=event.id
+    //     if (event.products.length>0){
+    //       const {
+    //         _doc: { products: [{ _doc: { pid, Quantity } }] },
+    //       } = event 
+    //       apid=pid ? pid:0
+    //       aQua=Quantity ? Quantity:0
+    //     }else{
+    //       apid=0
+    //       aQua=0
+    //     }
+    //     acarts.push({id:aId,pid:apid,Quantity:aQua})
+    //   }); 
+    const carts = await CartModel.find()
+    return res.status(201).render("realTimeCarts", { carts: carts });
   } catch (error) {
     res.status(400).json({
       error: error.message,
@@ -69,27 +69,30 @@ export async function deleteRealCart(req, res) {
   try {
     const id = parseInt(req.query.cid);
     await CartService.deleteRealCart(id);
-    let carts = await CartService.getAllCarts();
-    let aId=0
-    let apid=0
-    let aQua=0
-    let acarts=[]
-    carts.forEach((event) => {
-        aId=event.id
-        if (event.products.length>0){
-          const {
-            _doc: { products: [{ _doc: { pid, Quantity } }] },
-          } = event 
-          apid=pid ? pid:0
-          aQua=Quantity ? Quantity:0
-        }else{
-          apid=0
-          aQua=0
-        }
-        acarts.push({id:aId,pid:apid,Quantity:aQua})
-      }); 
 
-    res.status(201).render("realTimeCarts", { cartsa: acarts });
+    // let carts = await CartService.getAllCarts();
+    // let aId=0
+    // let apid=0
+    // let aQua=0
+    // let acarts=[]
+    // carts.forEach((event) => {
+    //     aId=event.id
+    //     if (event.products.length>0){
+    //       const {
+    //         _doc: { products: [{ _doc: { pid, Quantity } }] },
+    //       } = event 
+    //       apid=pid ? pid:0
+    //       aQua=Quantity ? Quantity:0
+    //     }else{
+    //       apid=0
+    //       aQua=0
+    //     }
+    //     acarts.push({id:aId,pid:apid,Quantity:aQua})
+    //   }); 
+
+  //  res.status(201).render("realTimeCarts", { cartsa: acarts });
+    const carts = await CartModel.find()
+    return res.status(201).render("realTimeCarts", { carts: carts });
   } catch (error) {
     res.status(400).json({
       error: error.message,
@@ -143,26 +146,28 @@ const options = { new: true };
 let updatedCart = await CartModel.findOneAndUpdate(filter, update, options);
 }
 
-    let carts = await CartService.getAllCarts();
-    let aId=0
-    let apid=0
-    let aQua=0
-    let acarts=[]
-    carts.forEach((event) => {
-        aId=event.id
-        if (event.products.length>0){
-          const {
-            _doc: { products: [{ _doc: { pid, Quantity } }] },
-          } = event 
-          apid=pid ? pid:0
-          aQua=Quantity ? Quantity:0
-        }else{
-          apid=0
-          aQua=0
-        }
-        acarts.push({id:aId,pid:apid,Quantity:aQua})
-      }); 
-    res.status(201).render("realTimeCarts", { cartsa: acarts });
+    // let carts = await CartService.getAllCarts();
+    // let aId=0
+    // let apid=0
+    // let aQua=0
+    // let acarts=[]
+    // carts.forEach((event) => {
+    //     aId=event.id
+    //     if (event.products.length>0){
+    //       const {
+    //         _doc: { products: [{ _doc: { pid, Quantity } }] },
+    //       } = event 
+    //       apid=pid ? pid:0
+    //       aQua=Quantity ? Quantity:0
+    //     }else{
+    //       apid=0
+    //       aQua=0
+    //     }
+    //     acarts.push({id:aId,pid:apid,Quantity:aQua})
+    //   }); 
+    // res.status(201).render("realTimeCarts", { cartsa: acarts });
+    const carts = await CartModel.find()
+    return res.status(201).render("realTimeCarts", { carts: carts });
     } catch (error) {
       res.status(400).json({
         error: error.message,
