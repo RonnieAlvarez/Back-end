@@ -1,5 +1,5 @@
 import * as ProductService from "../services/eproducts.service.js";
-import { STATUS } from "../../config/constants.js";
+import { STATUS } from "../../../config/constants.js";
 
 export async function getProduct(req, res) {
   try {

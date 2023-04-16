@@ -1,5 +1,4 @@
 import { ProductModel } from "../models/ecommerce.model.js";
-//import { ProductModel } from "../models/eproducts.model.js";
 
 export async function getProduct(pid) {
   try {

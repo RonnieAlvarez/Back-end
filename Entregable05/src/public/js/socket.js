@@ -13,9 +13,9 @@ socket.on("Welcome", (arg) => {
 });
 
 
-let user = ""
+let user = null
 
-if (!user==="") {
+if (!user) {
   Swal.fire({
     title: "Log In",
     input: "text",
