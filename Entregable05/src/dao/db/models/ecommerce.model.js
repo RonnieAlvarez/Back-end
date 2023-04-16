@@ -51,7 +51,6 @@ const ProductSchema = new mongoose.Schema(
   }
 );
 
-
 /* This code is defining a Mongoose schema for a shopping cart. It includes fields such as id,
 products, and timestamp. The products field is an array of objects, each containing a product ID
 (referenced from the Product model), a quantity, and a unique ID for the product in the cart. The
@@ -82,8 +81,13 @@ const CartSchema = new mongoose.Schema({
   timestamp: { type: String }
 });
 
+/* This code is defining a Mongoose schema for a chat message. It includes fields such as userEmail,
+message, and date. The userEmail and message fields are required and have a data type of string. The
+date field has a data type of string and a default value of the current date and time. It also
+includes a custom validation function for the date field, which can be used to validate the date
+format or range. */
 const ChatSchema = new mongoose.Schema({
-  user: { type: String, required: true },
+  userEmail: { type: String, required: true },
   message: { type: String, required: true },
   date: { 
     type: String,
@@ -106,6 +110,6 @@ ProductSchema.plugin(mongooseDelete, { deletedAt: true });
 const ProductModel = mongoose.model("Product", ProductSchema);
 
 ChatSchema.plugin(mongooseDelete, { deletedAt: true });
-const ChatModel = mongoose.model("Chat", ChatSchema);
+const ChatModel = mongoose.model("Messages", ChatSchema);
 
 export  { ProductModel, CartModel, ChatModel};

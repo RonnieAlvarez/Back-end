@@ -1,5 +1,5 @@
 import { ProductModel } from "../models/ecommerce.model.js";
-
+//**************************************** */
 export async function getProduct(pid) {
   try {
     const Products = await ProductModel.find({
@@ -13,7 +13,7 @@ export async function getProduct(pid) {
     throw new Error(error.message);
   }
 }
-
+//**************************************** */
 export async function getProducts() {
   try {
     const Products = await ProductModel.find({ deletedAt: { $exists: false } });

@@ -13,22 +13,22 @@ socket.on("Welcome", (arg) => {
 });
 
 
-let user = null
+let userEmail = null
 
-if (!user) {
+if (!userEmail) {
   Swal.fire({
     title: "Log In",
     input: "text",
-    text: "User Name",
+    text: "User eMail",
     allowOutsideClick: false,
     color: '#716add',
     inputValidator: (value) => {
-      return !value && "You have to write your name";
+      return !value && "You have to write your eMail";
     },
   }).then((newUser) => {
-    user = newUser.value;
-    ename.innerText = user;
-    socket.emit("newUser", user);
+    userEmail = newUser.value;
+    ename.innerText = userEmail;
+    socket.emit("newUser", userEmail);
   });
 }
 
@@ -37,27 +37,27 @@ submit.addEventListener("click", (e) => {
   const messageText = message.value.trim();
   message.value = "";
   console.log("Client: ", messageText);
-  socket.emit("message", { user, message: messageText, date: new Date().toLocaleTimeString() });
-  socket.emit("user",{user})
+  socket.emit("message", { userEmail, message: messageText, date: new Date().toLocaleTimeString() });
+  socket.emit("user",{userEmail})
 });
 
 socket.on("message", (data) => {
   console.log("Message received: ", data);
   newMessages.push(data);
-  imprimirMessages(newMessages);
+  printMessages(newMessages);
 });
 
-function imprimirMessages(newMessages) {
+function printMessages(newMessages) {
   let _newMessages = "";
   for (const message of newMessages) {
-    _newMessages += `${message.user}: ${message.message} - ${message.date}\n`;
+    _newMessages += `${message.userEmail}: ${message.message} - ${message.date}\n`;
   }
   messages.innerText = _newMessages;
 }
 
-socket.on("newUser", (nombre) => {
+socket.on("newUser", (_name) => {
   Swal.fire({
-    text: `New user ${nombre} conected!`,
+    text: `New user ${_name} conected!`,
     toast: true,
     position: "top-right",
   });

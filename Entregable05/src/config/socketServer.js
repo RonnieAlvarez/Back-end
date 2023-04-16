@@ -19,21 +19,21 @@ export function createSocketServer(server) {
       messages.push(data);
       socketServer.emit("message", data);
 
-      const chat = new ChatModel({
-        user: data.user,
+      const Messages = new ChatModel({
+        userEmail: data.userEmail,
         message: data.message,
         date: data.date,
       });
       try {
-        const newChat = await chat.save();
+        const newChat = await Messages.save();
         console.log("New chat saved to database:", newChat);
       } catch (err) {
         console.error(err);
       }
     });
 
-    socket.on("newUser", (nombre) => {
-      socket.broadcast.emit("newUser", nombre);
+    socket.on("newUser", (_name) => {
+      socket.broadcast.emit("newUser", _name);
     });
   });
 }

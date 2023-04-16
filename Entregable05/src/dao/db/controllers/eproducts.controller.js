@@ -1,6 +1,10 @@
 import * as ProductService from "../services/eproducts.service.js";
 import { STATUS } from "../../../config/constants.js";
 
+/**
+ * This is an asynchronous function that retrieves a product based on a given ID and returns a JSON
+ * response with the product and a status.
+ */
 export async function getProduct(req, res) {
   try {
     const { pid } = req.params;
@@ -16,6 +20,10 @@ export async function getProduct(req, res) {
     });
   }
 }
+
+/**
+ * This function retrieves products from a ProductService and renders them on a webpage.
+ */
 export async function getProducts(req, res) {
   try {
     const products = await ProductService.getProducts();
@@ -28,6 +36,9 @@ export async function getProducts(req, res) {
   }
 }
 
+/**
+ * This function retrieves all products from a ProductService and renders them in a real-time view.
+ */
 export async function getRealProducts(req, res) {
   try {
     const products = await ProductService.getAllProducts();
@@ -39,6 +50,10 @@ export async function getRealProducts(req, res) {
     });
   }
 }
+
+/**
+ * This function creates a new product and renders a page with all products.
+ */
 export async function createRealProduct(req, res) {
   try {
     const { body } = req;
@@ -52,6 +67,11 @@ export async function createRealProduct(req, res) {
     });
   }
 }
+
+/**
+ * This function deletes a real product using its ID and then renders a page with all the remaining
+ * products.
+ */
 export async function deleteRealProduct(req, res) {
   try {
     const id = parseInt(req.query.pid);
@@ -67,7 +87,11 @@ export async function deleteRealProduct(req, res) {
 }
 
 //****************************************** */
-//****************************************** */
+
+/**
+ * This is an asynchronous function that creates a product and returns a JSON response with the product
+ * and a success status code, or an error message and a fail status code.
+ */
 export async function createProduct(req, res) {
   try {
     const { body } = req;
@@ -84,6 +108,10 @@ export async function createProduct(req, res) {
   }
 }
 
+/**
+ * This is an asynchronous function that updates a product and returns a JSON response with the updated
+ * product and a status code.
+ */
 export async function updateProduct(req, res) {
   try {
     const { pid } = req.params;
@@ -100,6 +128,11 @@ export async function updateProduct(req, res) {
     });
   }
 }
+
+/**
+ * This is an asynchronous function that deletes a product and returns a success message or an error
+ * message with a corresponding status code.
+ */
 export async function deleteProduct(req, res) {
   try {
     const { pid } = req.params;

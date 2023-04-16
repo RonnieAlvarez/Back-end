@@ -9,7 +9,7 @@
     "start": "nodemon --inspect src/app.js"
   },
   "keywords": [],
-  "author": "",
+  "author": "Ronnie Alvarez Castro",
   "license": "ISC",
   "dependencies": {
     "dotenv": "^16.0.3",
