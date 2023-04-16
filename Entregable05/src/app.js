@@ -2,6 +2,10 @@
 //
 //  RONNIE ALVAREZ CASTRO  CODERHOUSE PROGRAMA FULLSTACK CURSO BACKEND
 //
+//  PROGRAMA QUE UTILIZA PARA EL TEST DE LA BASE DE DATOS 
+//
+//  DESAFIO COMPLEMENTARIO ENTREGABLE #5
+//
 /********************************************************************************* */
 import __dirname from "./utils.js"
 import express from 'express';
