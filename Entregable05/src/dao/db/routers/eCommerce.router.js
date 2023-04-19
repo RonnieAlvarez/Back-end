@@ -6,6 +6,7 @@ import * as eCartController from '../controllers/ecarts.controller.js'
 const route = express.Router()
 
 
+
 /* These are routes for handling HTTP requests related to products with socket.io. */
 route.get('/realTimeProducts',eProductController.getRealProducts)
 route.post('/realTimeProducts',eProductController.createRealProduct)
@@ -22,6 +23,5 @@ route.get('/realTimeCart/delete',eCartController.deleteRealCart)
     route.get('/:pid',eProductController.getProduct)
     route.put('/:pid',eProductController.updateProduct)
     route.delete('/:pid',eProductController.deleteProduct)
-
 
 export default route

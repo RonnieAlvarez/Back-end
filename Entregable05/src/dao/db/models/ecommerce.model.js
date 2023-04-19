@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import mongooseDelete from "mongoose-delete";
+import mongoosePaginate from "mongoose-paginate-v2"
 
 /* This code is defining a Mongoose schema for a product. It includes various fields such as id, title,
 description, code, price, status, stock, category, and thumbnail. Each field has a specific data
@@ -107,6 +108,7 @@ CartSchema.plugin(mongooseDelete,{ deletedAt: true });
 const CartModel = new mongoose.model("Cart", CartSchema);
 
 ProductSchema.plugin(mongooseDelete, { deletedAt: true });
+ProductSchema.plugin(mongoosePaginate);
 const ProductModel = mongoose.model("Product", ProductSchema);
 
 ChatSchema.plugin(mongooseDelete, { deletedAt: true });

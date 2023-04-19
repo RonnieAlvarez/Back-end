@@ -15,6 +15,7 @@ import dotenv from 'dotenv';
 import './config/db.js';
 import EcommerceRouter from './dao/db/routers/eCommerce.router.js';
 import EchatRouter from './dao/db/routers/eChat.router.js';
+import EmenuRouter from './dao/db/routers/eMenu.router.js';
 import { createSocketServer } from './config/socketServer.js';
 
 dotenv.config();
@@ -36,6 +37,7 @@ app.set('views', path.join(__dirname, 'views'));
 // Routes
 app.use('/', EcommerceRouter);
 app.use('/api/', EchatRouter);
+app.use('/menu/',EmenuRouter)
 
 // Server
 const server = app.listen(PORT, () => console.log(`Server up on PORT: ${PORT}`));

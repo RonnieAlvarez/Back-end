@@ -1,4 +1,5 @@
 import { ProductModel } from "../models/ecommerce.model.js";
+
 //**************************************** */
 export async function getProduct(pid) {
   try {
@@ -14,18 +15,22 @@ export async function getProduct(pid) {
   }
 }
 //**************************************** */
-export async function getProducts() {
+export async function getProducts(page, limit) {
   try {
-    const Products = await ProductModel.find({ deletedAt: { $exists: false } });
+    const Products = await ProductModel.paginate({ deletedAt: { $exists: false } }, { page: page, limit: limit, lean: true });
     return Products;
   } catch (error) {
-    throw new Error(error.message);
+    return {
+      error: error.message,
+      status: 400
+    };
   }
 }
 //**************************************** */
 export async function getAllProducts() {
   try {
-    const Products = await ProductModel.find({ deletedAt: { $exists: false } });
+    const Products = await ProductModel.find({ deletedAt: { $exists: false } }).Paginate({},{sort,limit, pages})
+    //const Products = await ProductModel.Paginate({},{sort:sort,limit:limit,pages:pages})
     return Products;
   } catch (error) {
     throw new Error(error.message);

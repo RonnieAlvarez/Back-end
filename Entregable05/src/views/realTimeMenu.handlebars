@@ -1,0 +1,27 @@
+<form class="container mt-1 p-2 m-auto bg-dark">
+
+
+  <div class="py-10  px-3 mt-2  mx-auto flex items-center bg-info">
+    <label for="limite">Products per page:</label>
+    <input type="number" id="limit" name="limit" min="1" max="100" value=1  >
+  </div>
+
+  <div class="py-10 px-3 mt-2  mx-auto flex items-center bg-info">
+
+    <label for="cantidad">Initial Page:</label>
+    <input type="number" id="pages" name="pages" min="1" max="100" value=1 >
+  </div>
+
+  <button class="btn btn-info mt-5 btn-sm rounded"  type="submit">Generate URL</button>
+</form>
+
+<script>
+  const form = document.querySelector('form');
+  form.addEventListener('submit', (event) => {
+    event.preventDefault();
+    const limit = form.elements.limit.value 
+    const page = form.elements.pages.value
+    const url = `/?page=${page}&limit=${limit}`;
+    window.location = url;
+  });
+</script>
