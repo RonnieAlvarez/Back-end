@@ -39,7 +39,7 @@ export async function getProducts(req, res) {
 
     const products = await ProductModel.paginate(
       { deletedAt: { $exists: false } },
-      { page, limit, lean: true }
+      { page, limit, lean: true  }
     );
 
     const productsprevLink = `http://localhost:${localPort}/?page=${products.prevPage}&limit=${limit}`;
@@ -80,6 +80,10 @@ export async function getProducts(req, res) {
       <a href=${productsnextLink}  class="btn btn-secondary btn-sm rounded  ">Next Page</a>
       <a href=${productHomeLink}  class="btn btn-secondary btn-sm rounded  ">Home Menu</a>
       </div>
+      <div class="container mt-1 p-2 m-auto bg-info rounded">
+      <p>Page {{ products.page }} of {{ products.totalPages }}, showing {{ products.docs.length }} out of {{ products.totalDocs }} results</p>
+    </div>
+    
       </body>
 
 </html>
@@ -87,6 +91,7 @@ export async function getProducts(req, res) {
 
     const renderedHtml = template({ products: products });
     return res.send(renderedHtml);
+    //document.getElementById("stats").innerHTML = products
   } catch (error) {
     return res.status(400).json({
       error: error.message,
