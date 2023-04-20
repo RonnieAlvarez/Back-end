@@ -31,19 +31,21 @@ export async function getProduct(req, res) {
  * */
 export async function getProducts(req, res) {
   try {
-    const url = req.originalUrl;
     const localPort = parseInt(process.env.port);
-    let { page, limit } = req.query;
+    let { page, limit,sort,sortorder} = req.query;
     page = parseInt(page);
     limit = parseInt(limit);
-
+    if (sortorder ==='Desc'){
+      sort=`-${sort}`
+    }
+    const query = {Category:'ropa'}
     const products = await ProductModel.paginate(
-      { deletedAt: { $exists: false } },
-      { page, limit, lean: true  }
-    );
+      query,{ page, limit,sort,sortorder, lean: true  },{ deletedAt: { $exists: false } }
+    )
+  
 
-    const productsprevLink = `http://localhost:${localPort}/?page=${products.prevPage}&limit=${limit}`;
-    const productsnextLink = `http://localhost:${localPort}/?page=${products.nextPage}&limit=${limit}`;
+    const productsprevLink = `http://localhost:${localPort}/?page=${products.prevPage}&limit=${limit}&sort=${sort}`;
+    const productsnextLink = `http://localhost:${localPort}/?page=${products.nextPage}&limit=${limit}&sort=${sort}`;
     const productHomeLink = `http://localhost:${localPort}/menu/menu`
     if (!products.docs) {
       return res.send("<p>No products found</p>");
