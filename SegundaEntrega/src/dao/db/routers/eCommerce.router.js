@@ -18,7 +18,6 @@ route.post('/realTimeCarts/add',eCartController.saveProductToCart)
 route.get('/realTimeCart/delete',eCartController.deleteRealCart)
 
 /* These are routes for handling HTTP requests related to products without socket.io. */
-//route.get('/serv/',eProductController.getProducts)
     route.get('/',eProductController.getProducts)
     route.post('/',eProductController.createProduct)
     route.get('/:pid',eProductController.getProduct)

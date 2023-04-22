@@ -4,10 +4,10 @@ import { ProductModel } from "../models/ecommerce.model.js";
 export async function getProduct(pid) {
   try {
     const Products = await ProductModel.find({
-      $and: [{ _id: pid }, { deleted: false }],
+      $and: [{ id: pid }, { deleted: false }],
     });
-    if ({ _id: pid } && { deleted: true }) {
-      return "Registro eliminado";
+    if (Products.length === 0) {
+      return "Record doesnt exist !!";
     }
     return Products;
   } catch (error) {
@@ -15,7 +15,7 @@ export async function getProduct(pid) {
   }
 }
 //**************************************** */
-export async function getProducts(page, limit) {
+export async function getmenuProducts(page, limit) {
   try {
     const Products = await ProductModel.paginate({ deletedAt: { $exists: false } }, { page: page, limit: limit, lean: true });
     return Products;
@@ -27,10 +27,19 @@ export async function getProducts(page, limit) {
   }
 }
 //**************************************** */
+export async function getProducts() {
+  try {
+    const Products = await ProductModel.find({ deletedAt: { $exists: false } });
+    return Products;
+  } catch (error) {
+    throw new Error(error.message);
+  }
+}
+
+//**************************************** */
 export async function getAllProducts() {
   try {
-    const Products = await ProductModel.find({ deletedAt: { $exists: false } }).Paginate({},{sort,limit, pages})
-    //const Products = await ProductModel.Paginate({},{sort:sort,limit:limit,pages:pages})
+    const Products = await ProductModel.find({ deletedAt: { $exists: false } })
     return Products;
   } catch (error) {
     throw new Error(error.message);
@@ -72,6 +81,9 @@ export async function deleteProduct(pid) {
   }
 }
 //***************************************************** */
+/**
+ * This function deletes a real product from the database using its ID.
+ */
 export async function deleteRealProduct(id) {
   try {
     await ProductModel.findOneAndDelete({ id: id });

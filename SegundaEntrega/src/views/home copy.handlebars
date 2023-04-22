@@ -2,7 +2,6 @@
     <div class="container m-auto bg-dark">
         {{#each productsa}}
             <div class=" py-10 mt-2 mx-auto flex items-center bg-info">
-                <h2 class=" mx-5">_ID: {{lookup this "_id"}}</h2>
                 <h2 class=" mx-5">ID: {{lookup this "id"}}</h2>
                 <h2 class=" mx-5">Name: {{lookup this "Title"}}</h2>
                 <h3 class=" mx-5">Price: {{lookup this "Price"}}</h3>
@@ -11,3 +10,5 @@
         {{/each}}
     </div>
 {{/if}}
+
+

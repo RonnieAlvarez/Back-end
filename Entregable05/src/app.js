@@ -35,9 +35,38 @@ app.set('view engine', 'handlebars');
 app.set('views', path.join(__dirname, 'views'));
 
 // Routes
-app.use('/', EcommerceRouter);
+app.use('/products/', EcommerceRouter);
 app.use('/api/', EchatRouter);
 app.use('/menu/',EmenuRouter)
+
+
+const backendUrl = `localhost:${PORT}`
+app.get('/', (req, res) => {
+    const menu = `
+      <ul>
+        <li><a href="/products/">Products List</a></li>
+        <li><a href="/products/realTimeProducts/">RealTimeProducts</a></li>
+        <li><a href="/products/RealTimeCarts/">RealTimeCarts</a></li>
+        <li><a href="/api/Chat/">RealTimeChat</a></li>
+      </ul>
+    `;
+    
+    const html = `
+      <!DOCTYPE html>
+      <html>
+        <head>
+          <meta charset="UTF-8">
+          <title>My Ecommerce App</title>
+        </head>
+        <body>
+          <h1>Welcome to My Ecommerce App</h1>
+          ${menu}
+        </body>
+      </html>
+    `;
+    
+    res.send(html);
+  });
 
 // Server
 const server = app.listen(PORT, () => console.log(`Server up on PORT: ${PORT}`));

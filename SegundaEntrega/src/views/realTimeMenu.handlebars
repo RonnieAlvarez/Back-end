@@ -4,13 +4,17 @@
   
   <label for="filterselect">Filter By:</label>
 <select id="filterselect" name="filterselect">
-  <option value="Title">Title</option>
-  <option value="Price">Price</option>
   <option value="Category">Category</option>
+  <option value="Price">Price</option>
 </select>
 
 <label for="filterfor">Filter for:</label>
-<input type="text" id="filterfor" name="filterfor" value="" >
+<select id="filterfor" name="filterfor">
+   {{#each categories}}
+      <option value="{{this}}">{{this}}</option>
+    {{/each}}
+</select>
+
 
   <label for="sortselect">Sort By:</label>
 <select id="sortselect" name="sortselect">
@@ -27,7 +31,7 @@
 
   <div class="py-10  px-3 mt-2  mx-auto flex items-center bg-info">
     <label for="limite">Products per page:</label>
-    <input type="number" id="limit" name="limit" min="1" max="100" value=1  >
+    <input type="number" id="limit" name="limit" min="1" max="100" value=10  >
   </div>
 
   <div class="py-10 px-3 mt-2  mx-auto flex items-center bg-info">
@@ -43,10 +47,10 @@
   const form = document.querySelector('form');
   form.addEventListener('submit', (event) => {
     event.preventDefault();
-    const limit = form.elements.limit.value 
-    const page = form.elements.pages.value
-    let sort = form.elements.sortselect.value
-    let filterselect = form.elements.filterselect.value
+    const limit = form.elements.limit.value ?? 10
+    const page = form.elements.pages.value ?? 1
+    let sort = form.elements.sortselect.value ?? 'Price'
+    let filterselect = form.elements.filterselect.value 
     let filterfor = form.elements.filterfor.value
     let filterstring =`${filterselect}:${filterfor}`
     const sortorder = form.elements.sortorder.value
