@@ -49,45 +49,30 @@
     <div id="login">
       <h3 class="text-center text-white pt-5">My eCommerce Login form</h3>
       <div class="container">
-        <div
-          id="login-row"
-          class="row justify-content-center align-items-center"
-        >
+        <div id="login-row" class="row justify-content-center align-items-center">
           <div id="login-column" class="col-md-6">
             <div id="login-box" class="col-md-12">
-              <form action="http://localhost:3033/login" method="POST">
+              <!-- <form action="http://localhost:3033/login" method="POST"> -->
+              <form id="login-form">
                 <h3 class="text-center text-info">Login</h3>
                 <div class="form-group">
                   <label for="" class="form-label">Email</label>
-                  <input
-                    type="email"
-                    class="form-control"
-                    name="email"
-                    id="email"
-                    placeholder="abc@mail.com"
-                  />
+                  <input type="email" class="form-control" name="email" id="email" placeholder="abc@mail.com" />
                 </div>
                 <div class="form-group">
                   <label for="" class="form-label">Password</label>
-                  <input
-                    type="password"
-                    class="form-control"
-                    name="pass"
-                    id="pass"
-                    placeholder="password"
-                  />
+                  <input type="password" class="form-control" name="pass" id="pass" placeholder="password"/>
                 </div>
                 <div class="form-group">
-                  <button type="submit">Enviar datos</button>
+                  <button type="submit">Submit</button>
                 </div>
               </form>
-              <!-- <form action="http://localhost:3000/readcookie" method="get">
-                <button type="submit">Obtener cookie</button> -->
-              <!-- </form> -->
+              <p><a href="/users/register">Register here</a></p>
             </div>
           </div>
         </div>
       </div>
     </div>
+    <script src="/js/login.js"></script>
   </body>
 </html>

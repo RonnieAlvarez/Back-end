@@ -1,0 +1,17 @@
+import { STATUS } from "../../../config/constants.js";
+
+/**
+ * This function returns a rendered real-time chat page with a 201 status code or a 400 status code
+ * with an error message.
+ */
+export async function getchat(req, res) {
+    try {
+      return res.status(201).render("realTimeChat");
+    } catch (error) {
+      res.status(400).json({
+        error: error.message,
+        status: STATUS.FAIL,
+      });
+    }
+  }
+
