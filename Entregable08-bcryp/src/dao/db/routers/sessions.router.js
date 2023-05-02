@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import  userModel from "../models/ecommerce.model.js";
-
+import {createHash, isValidPassword } from '../../../utils.js';
 
 const router = Router();
 
@@ -18,8 +18,8 @@ router.post("/register", async (req, res)=>{
         last_name,
         email,
         age,
-        password ,
-        roll:'User'
+        roll:'User',
+        password:createHash(password)
     };
     const result = await userModel.create(user);
     return res.status(201).redirect('/users/login')
@@ -38,8 +38,13 @@ router.post("/login", async (req, res)=>{
         const sessemail = res.cookie('session-id',email);
         return res.redirect('/')
     }
-    const user = await userModel.findOne({email,password}); 
-    if(!user) return res.status(401).redirect('/users/register')
+    //const user = await userModel.findOne({email,password}); 
+    const user = await userModel.findOne({email}); 
+    //if(!user) return res.status(401).redirect('/users/register')
+    if(!isValidPassword(user,password )){
+        return res.status(401).redirect('/users/register')
+    }
+
     req.session.user= {
         name : `${user.first_name} ${user.last_name}`,
         email: user.email,
