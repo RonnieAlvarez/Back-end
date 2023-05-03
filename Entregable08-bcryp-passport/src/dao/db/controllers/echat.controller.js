@@ -6,7 +6,10 @@ import { STATUS } from "../../../config/constants.js";
  */
 export async function getchat(req, res) {
     try {
-      return res.status(201).render("realTimeChat");
+      let user = req.user._doc
+      const name = user.first_name+' '+user.last_name
+      user={name,...user}
+      return res.status(201).render("realTimeChat",{user});
     } catch (error) {
       res.status(400).json({
         error: error.message,

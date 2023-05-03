@@ -12,7 +12,9 @@ export async function getMenu(req, res) {
   try {
     const sessi = req.cookies;
     const sessionId = sessi["session-id"];
-    const user = req.user;
+    let user = req.user._doc;
+    const name = user.first_name+' '+user.last_name
+    user={name,...user}
     const categories = await ProductModel.distinct("Category");
     return res.status(201).render("realTimeMenu", { categories, user });
   } catch (error) {

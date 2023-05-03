@@ -79,7 +79,7 @@ app.set("views", path.join(__dirname, "views"));
 
 // Routes
 app.use("/products/", auth,EcommerceRouter);
-app.use("/api/", EchatRouter);
+app.use("/api/",auth, EchatRouter);
 app.use("/menu/", auth,EmenuRouter);
 app.use("/users", usersViewRouter);
 app.use("/api/sessions", sessionsRouter);
@@ -99,13 +99,16 @@ res.redirect("/")
 
 //Define the Protected Route, by using the "checkAuthenticated" function defined above as middleware
 app.get("/", checkAuthenticated, (req, res) => {
-res.render("menuprincipal")
+  let user = req.user._doc;
+  const name = user.first_name+' '+user.last_name
+  user={name,...user}
+res.render("menuprincipal",{user})
 })
 
 //Define the Logout
 app.post("/logout", (req,res) => {
   req.logOut()
-  res.redirect("/login")
+  res.redirect("/users/login")
   console.log(`-------> User Logged out`)
 })
 
