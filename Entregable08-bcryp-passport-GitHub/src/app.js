@@ -26,6 +26,7 @@ import auth from "./middlewares/auth.middleware.js";
 import passport from "passport";
 import initializePassport from "./config/passport.config.js";
 import initializeGooglePassport from "./config/google.passport.js";
+import githubLoginViewRouter from "./dao/db/routers/github-login.views.router.js";
 
 dotenv.config();
 
@@ -46,29 +47,58 @@ app.use(
         userNewUrlParse: true,
         useUnifiedTopology: true,
       },
-      ttl: 1040,
+      ttl: 140,
     }),
     secret: process.env.SECRET,
     resave: false,
     saveUninitialized: false,
-    cookie: { maxAge: 50000 },
+    cookie: { maxAge: 150000 },
   })
 );
 //Middleware Passport
-initializePassport()
-initializeGooglePassport()
-app.use(passport.initialize()) // init passport on every route call
-app.use(passport.session())    //allow passport to use "express-session"
+initializePassport();
+initializeGooglePassport();
+app.use(passport.initialize()); // init passport on every route call
+app.use(passport.session()); //allow passport to use "express-session"
 
-app.get('/auth/google', passport.authenticate('google', {
-  scope: ['email', 'profile'],
-  prompt: 'select_account'
-}));
+/* This code is setting up a route for Google OAuth 2.0 authentication. When a user navigates to this
+route, the `passport.authenticate` middleware is called with the `'google'` strategy and the
+specified options. This middleware initiates the authentication process with Google and redirects
+the user to the Google login page. Once the user logs in and grants permission to the requested
+scopes, Google will redirect the user back to the callback URL specified in the Google Developer
+Console. */
+app.get(
+  "/auth/google",
+  passport.authenticate("google", {
+    scope: ["email", "profile"],
+    prompt: "select_account",
+  }),
+  async (req, res) => {}
+);
 
-app.get('/auth/google/callback', passport.authenticate('google', {
-  successRedirect: '/',
-  failureRedirect: '/users/register'
-}));
+/* This code is handling the callback URL that is called after a user successfully authenticates with
+Google using OAuth 2.0. It uses the `passport.authenticate` middleware to handle the authentication
+process and redirect the user to the appropriate page based on whether the authentication was
+successful or not. If the authentication was successful, it sets the user's session data and
+redirects them to the home page. */
+app.get(
+  "/auth/google/callback",
+  passport.authenticate("google", {
+    //  successRedirect: '/',
+    failureRedirect: "/users/register",
+  }),
+  async (req, res) => {
+    const user = req.user;
+    req.session.user = {
+      name: `${user.first_name} ${user.last_name}`,
+      email: user.email,
+      age: user.age,
+      roll: user.roll,
+    };
+    req.session.admin = true;
+    res.redirect("/");
+  }
+);
 
 // View engine
 const hbs = exphbs.create({ helpers: { lookup: (obj, field) => obj[field] } });
@@ -77,44 +107,35 @@ app.set("view engine", "handlebars");
 app.set("views", path.join(__dirname, "views"));
 
 // Routes
-app.use("/products/", auth,EcommerceRouter);
+app.use("/products/", auth, EcommerceRouter);
 app.use("/api/", EchatRouter);
-app.use("/menu/", auth,EmenuRouter);
+app.use("/menu/", auth, EmenuRouter);
 app.use("/users", usersViewRouter);
 app.use("/api/sessions", sessionsRouter);
-app.use("/",auth, menuprincipal);
+app.use("/", auth, menuprincipal);
+app.use("/github", githubLoginViewRouter);
 
 // Server
 const server = app.listen(PORT, () =>
   console.log(`Server up on PORT: ${PORT}`)
 );
 
-
-
-
-
-
 //Use the req.isAuthenticated() function to check if user is Authenticated
 const checkAuthenticated = (req, res, next) => {
-  console.log(req.isAuthenticated())
-if (req.isAuthenticated()) { return next() }
-res.redirect("/")
-}
+  console.log(req.isAuthenticated());
+  if (req.isAuthenticated()) {
+    return next();
+  }
+  res.redirect("/");
+};
 
 //Define the Protected Route, by using the "checkAuthenticated" function defined above as middleware
 app.get("/", checkAuthenticated, (req, res) => {
   let user = req.user._doc;
-  const name = user.first_name+' '+user.last_name
-  user={name,...user}
-res.render("menuprincipal",{user})
-})
-
-//Define the Logout
-// app.post("/logout", (req,res) => {
-//   req.logOut()
-//   res.redirect("/users/login")
-//   console.log(`-------> User Logged out`)
-// })
+  const name = user.first_name + " " + user.last_name;
+  user = { name, ...user };
+  res.render("menuprincipal", { user });
+});
 
 server.on("error", (err) => console.log(err));
 

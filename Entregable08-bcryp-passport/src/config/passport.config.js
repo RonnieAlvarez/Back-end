@@ -64,6 +64,7 @@ const initializePassport = ()=>{
                     console.warn("Invalid credentials for user: " + username);
                     return done(null, false);
                 }
+                
                 return done(null, user);
             } catch (error) {
                 return done(error);
@@ -74,7 +75,7 @@ const initializePassport = ()=>{
 
     //Funciones de Serializacion y Desserializacion
     passport.serializeUser((user, done) => {
-        done(null, user._id);
+        done(null, user);
     });
 
     passport.deserializeUser(async (id, done) => {

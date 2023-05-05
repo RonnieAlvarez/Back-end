@@ -10,7 +10,7 @@ router.post("/register", passport.authenticate('register', { failureRedirect: '/
 
 
     router.post("/login", passport.authenticate('login', { failureRedirect: '/users/register' }), async (req, res) => {
-        const user = req.user._doc;
+        
         const {email, password} = req.body;
     if (email==='adminCoder@coder.com' && password ==='adminCod3r123'){
         req.session.user= {
@@ -23,6 +23,7 @@ router.post("/register", passport.authenticate('register', { failureRedirect: '/
         const sessemail = res.cookie('session-id',email);
         return res.redirect('/')
     }
+    const user = req.user._doc;
         if (!user) return res.status(401).redirect('/users/register')
         req.session.user = {
             name: `${user.first_name} ${user.last_name}`,

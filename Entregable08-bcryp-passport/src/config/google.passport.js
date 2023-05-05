@@ -39,7 +39,8 @@ const initializeGooglePassport = () => {
         user = { ...user, _id };
       }
       //Todo sale OK
-    
+      req.session.login=true;
+      const sessemail = res.cookie('session-id',email);
       return done(null, user);
     } catch (error) {
       return done("Error registrando el usuario: " + error);
