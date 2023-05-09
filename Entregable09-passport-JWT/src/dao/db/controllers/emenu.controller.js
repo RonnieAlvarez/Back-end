@@ -7,14 +7,10 @@ import { ProductModel } from "../models/ecommerce.model.js";
  * It contains methods and properties that allow the server to send data, set headers, and control the
  * response status code. In this specific code snippet, `res` is used to send a rendered HTML page with
  * @returns A rendered view called "realTimeMenu" with a status code of 201 is being returned.
- */
+*/
 export async function getMenu(req, res) {
   try {
-    const sessi = req.cookies;
-    const sessionId = sessi["session-id"];
-    let user = req.user._doc;
-    const name = user.first_name+' '+user.last_name
-    user={name,...user}
+    let user = req.user;
     const categories = await ProductModel.distinct("Category");
     return res.status(201).render("realTimeMenu", { categories, user });
   } catch (error) {
@@ -43,8 +39,8 @@ export async function getmenuProducts(req, res) {
     engine to access the user's information and display it on the rendered HTML page. */
     //res.locals.user = req.session.user;
     //const { name, roll } = res.locals.user;
-    const  {first_name,last_name, roll}  = req.user._doc;
-    let name =first_name+' '+last_name
+    const  {name, roll}  = req.user;
+    
     /* ************************************* */
     const localPort = parseInt(process.env.port);
     let { page, limit, sort, sortorder, filter } = req.query;
@@ -162,11 +158,7 @@ export async function getmenuProducts(req, res) {
  * This function renders the main menu page with the user's session information.
  */
 export async function menuprincipal(req, res) {
-  let user = req.session.user;
-  //let user = req.user._doc;
-  //const name = user.first_name+' '+user.last_name
-  //user={name,...user}
-  
+  let user = req.user
   try {
     return res.render("menuprincipal", { user });
   } catch (error) {

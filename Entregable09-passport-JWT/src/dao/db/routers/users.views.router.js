@@ -1,9 +1,32 @@
 import {Router} from 'express';
+import {authToken} from '../../../utils.js';
+import passport from "passport";
+import { passportCall, authorization } from '../../../utils.js';
+
 
 const router = Router();
 
-router.get('/login', (req, res)=>{
-    res.render("login");
+// router.get('/',authToken, (req, res)=>{
+//     res.render("profile", {
+//         // user: req.session.user
+//         user: req.user
+//     });
+// })
+
+
+router.get("/",
+    // authToken,
+    passportCall('jwt'), 
+    authorization('User'),
+    async (req, res)=>{
+         res.render("menuprincipal",{user: req.user})
+    }
+)
+
+
+
+router.get('/login', async (req, res)=>{
+     res.render("login");
 })
 
 router.get('/register', (req, res)=>{

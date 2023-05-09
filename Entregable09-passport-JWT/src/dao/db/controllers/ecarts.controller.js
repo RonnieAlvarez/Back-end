@@ -8,9 +8,7 @@ import { CartModel } from "../models/ecommerce.model.js";
 export async function getRealCarts(req, res) {
   try {
     const carts = await CartModel.find();
-    let user = req.user._doc
-    const name = user.first_name+' '+user.last_name
-  user={name,...user}
+    let user = req.user
     return res.status(201).render("realTimeCarts", { carts: carts,user });
   } catch (error) {
     res.status(400).json({
@@ -26,9 +24,7 @@ export async function getRealCarts(req, res) {
 export async function createRealCart(req, res) {
   try {
     const { body } = req;
-    let user = req.user._doc
-    const name = user.first_name+' '+user.last_name
-  user={name,...user}
+    let user = req.user
     await CartService.createCart(body);
     const carts = await CartModel.find();
     return res.status(201).render("realTimeCarts", { carts: carts,user });
@@ -45,9 +41,7 @@ export async function createRealCart(req, res) {
 export async function deleteRealCart(req, res) {
   try {
     const id = parseInt(req.query.cid);
-    let user = req.user._doc
-    const name = user.first_name+' '+user.last_name
-  user={name,...user}
+    let user = req.user
     await CartService.deleteRealCart(id);
     const carts = await CartModel.find();
     return res.status(201).render("realTimeCarts", { carts: carts,user });
@@ -65,9 +59,7 @@ export async function deleteRealCart(req, res) {
 export async function saveProductToCart(req, res) {
   try {
     const { body } = req;
-    let user = req.user._doc
-    const name = user.first_name+' '+user.last_name
-  user={name,...user}
+    let user = req.user
     let id = parseInt(body.id);
     let pid = parseInt(body.pid);
     let Quantity = parseInt(body.Quantity);

@@ -1,6 +1,11 @@
 import {fileURLToPath} from 'url'
 import { dirname } from 'path'
 import bcrypt from 'bcrypt'
+import jwt  from 'jsonwebtoken'
+import passport from 'passport'
+import dotenv from "dotenv";
+dotenv.config();
+
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = dirname(__filename)
 
@@ -11,6 +16,59 @@ export const isValidPassword = (user, password )=>{
 //    console.log(`Datos a validar: user-password: ${user.password}, password: ${password}`);
     return bcrypt.compareSync(password, user.password)
 }
+
+
+const PRIVATE_KEY= process.env.JWTPRIVATE_KEY
+
+export const generateJWToken =(user)=>{
+    const token = jwt.sign({user},PRIVATE_KEY,{expiresIn:'24h'})
+    return token
+}
+
+export  const authToken = (req,res,next)=>{
+    const authHeader = req.headers.authorization
+    if(!authHeader) return res.status(401).json({message:'Token no valido',error:"Not autorized"})
+    const token = authHeader.split(' ')[1]
+    jwt.verify(token,PRIVATE_KEY,(error,credentials)=>{
+            if(error) return res.status(403).json({message:'Token no valido',error:"Not autorized"})
+            req.user=credentials.user
+            next()
+    })
+}
+
+// para manejo de errores
+export const passportCall = (strategy) => {
+    return async (req, res, next) => {
+//        console.log("Entrando a llamar strategy: ");
+//        console.log(strategy);
+        passport.authenticate(strategy, function (err, user, info) {
+            if (err) return next(err);
+            if (!user) {
+                return res.status(401).send({error: info.messages?info.messages:info.toString()});
+            }
+//            console.log("Usuario obtenido del strategy: ");
+//            console.log(user);
+            req.user = user;
+            next();
+        })(req, res, next);
+    }
+};
+function capitalizeFirstLetter(str) {
+    return str.charAt(0).toUpperCase() + str.slice(1);
+  }
+
+// para manejo de Auth
+export const authorization = (roll) => {
+    return async (req, res, next) => {
+        if (!req.user) return res.status(401).send("Unauthorized: User not found in JWT"); 
+        if (req.user.roll !== capitalizeFirstLetter(roll)) {
+            return res.status(403).send("Forbidden: El usuario no tiene permisos con este rol."); 
+        }
+        next();
+    }
+};
+
+
 
 
 export default __dirname

@@ -1,6 +1,6 @@
 <div class="container">
     <div>
-    <form action="/realTimeCarts" method="post" id="form-carts"
+    <form action="/products/realTimeCarts" method="post" id="form-carts"
       class="p-2 m-1 h-100 mt-10 mx-auto  items-center bg-info d-flex justify-content-center align-items-center rounded">
       <div>
         <input class="p-1 btn btn-secondary btn-sm my-1" type="submit" value="Add Cart" />
@@ -9,7 +9,7 @@
   </div>
 
   <div>
-    <form action="/realTimeCarts/add" method="post" id="form-carts"
+    <form action="/products/realTimeCarts/add" method="post" id="form-carts"
       class="p-2 m-1 h-100 mt-10 mx-auto  items-center bg-info d-flex justify-content-center align-items-center rounded">
       <div>
         <input class="gap-1 border-botton  border-2 " placeholder="Cart Id" type="number" name="id" id="id" />
@@ -25,7 +25,7 @@
 
   <div class="text-center align-middle ">
      <form id="delete-form" method="GET"
-      action="/realTimeCart/delete" class="p-2 h-100 mt-10 mx-auto items-center bg-info">
+      action="/products/realTimeCart/delete" class="p-2 h-100 mt-10 mx-auto items-center bg-info">
       <input class="me-3 border-botton border-black mt-1 border-2 rounded" type="text" name="cid" placeholder="Id to delete" />
       <input class="btn btn-secondary btn-sm my-1" type="submit" value="Delete Cart" />
     </form>

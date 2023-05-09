@@ -4,8 +4,14 @@ import userModel from "../dao/db/models/ecommerce.model.js";
 import { createHash, isValidPassword } from "../utils.js";
 import GitHubStrategy from "passport-github2";
 import dotenv from "dotenv";
-dotenv.config();
+import jwtStrategy from 'passport-jwt';
 
+
+const JwtStrategy = jwtStrategy.Strategy;
+const ExtractJWT = jwtStrategy.ExtractJwt;
+
+dotenv.config();
+const PRIVATE_KEY= process.env.JWTPRIVATE_KEY
 const PORT= process.env.PORT
 const GITCLIENTID=process.env.GITCLIENTID
 const GITCLIENTSECRET=process.env.GITCLIENTSECRET
@@ -14,6 +20,30 @@ const GITCLIENTSECRET=process.env.GITCLIENTSECRET
 const localStrategy = passportLocal.Strategy;
 
 const initializePassport = () => {
+
+  passport.use('jwt', new JwtStrategy(
+    // extraer la  cookie
+    {
+        jwtFromRequest: ExtractJWT.fromExtractors([cookieExtractor]),
+        secretOrKey: PRIVATE_KEY
+    },
+    // Ambiente Async
+    async(jwt_payload, done)=>{
+//        console.log("Entrando a passport Strategy con JWT.");
+        try {
+//            console.log("JWT obtenido del payload");
+//            console.log(jwt_payload);
+            return done(null, jwt_payload.user)
+        } catch (error) {
+            console.error(error);
+            return done(error);
+        }
+    }
+));
+
+
+
+
   // estrategia github
   passport.use(
     "github",
@@ -84,23 +114,21 @@ const initializePassport = () => {
             loggedBy: "LocalStrategy"
           };
           if (exists) {
-            console.log("El usuario ya existe.");
+    //        console.log("El usuario ya existe.");
             const result = await userModel.findOneAndUpdate({email},user);
             return done(null, result);
           }
           const result = await userModel.create(user);
           //Todo sale OK
           return done(null, result);
+
         } catch (error) {
           return done("Error registrando el usuario: " + error);
         }
       }
     )
   );
-  //https://docs.google.com/document/d/1unNjlklxK-uWUpV3HvdlV9VbbKzyGfiHtXekI9wR35w/edit
-  // https://github.com/AleHts29/51135-programacion-backend/blob/main/Clase_20/2-PassportLocal-Bcrypt/src/config/passport.config.js
-  // https://coderhouse.zoom.us/rec/play/ix-JGF0Zt1Bz1pkgWhFnwulpXUk7J0UbvSCBRrHTUb9bECmBDWkwqUJu49vhDkKfqAaS_RqfGD7f_pc.XcwHlK-7enRebhJx?canPlayFromShare=true&from=share_recording_detail&continueMode=true&componentName=rec-play&originRequestUrl=https%3A%2F%2Fcoderhouse.zoom.us%2Frec%2Fshare%2FOn4nW_tjZuaCb5ArXfhiNqqIybKRhzo3Q0ISR0EO6YwJQEL2Encstn-bCIli1v_I.SWlpWCgigdRjgUFY
-  // 1:40.08
+  
 
   // estrategia login
   passport.use(
@@ -143,5 +171,20 @@ const initializePassport = () => {
     }
   });
 };
+
+// Funcion para hacer la extraccion de la cookie
+const cookieExtractor = req =>{
+  let token = null;
+  // console.log("Entrando a cookie extractor");
+  if(req && req.cookies){ //Validamos que exista el request y las cookies.
+  //   console.log("Cookies presentes!");
+  //   console.log(req.cookies);
+     token = req.cookies['jwtCookieToken'];
+  //   console.log("token obtenido desde cookie");
+  //   console.log(token);
+  }
+  return token;
+}
+
 
 export default initializePassport;

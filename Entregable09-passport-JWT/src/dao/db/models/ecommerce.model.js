@@ -124,13 +124,18 @@ custom validation function for the date field, which can be used to validate the
 range. This schema can be used to create a User model in the database. */
 const UserSchema = new mongoose.Schema({
   //_id: {type: mongoose.SchemaTypes.ObjectId},
-  first_name: { type: String, required: true },
-  last_name: { type: String, required: true },
+  first_name: { type: String },
+  last_name: { type: String },
   email: { type: String, required: true, unique:true },
-  age: { type: Number, required: true },
-  password: { type: String, required: true },
+  age: { type: Number },
+  password: { type: String },
   loggedBy:{ type:String,default:""},
-  roll:{type:String,required:false},
+  //roll:{type:String,required:false},
+  roll: {
+    type: String,
+    default: 'User',
+    enum: ['User', 'Admin'],
+},
   date: { 
     type: String,
     default: Date.now,

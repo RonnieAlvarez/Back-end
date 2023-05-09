@@ -1,7 +1,6 @@
 import * as ProductService from "../services/eproducts.service.js";
 import { STATUS } from "../../../config/constants.js";
 
-
 /**
  * This is an asynchronous function that retrieves a product based on a given ID and returns a JSON
  * response with the product and a status.
@@ -26,9 +25,7 @@ export async function getProduct(req, res) {
 //**************************************** */
 export async function getProducts(req, res) {
   try {
-    let user = req.user._doc
-    const name = user.first_name+' '+user.last_name
-  user={name,...user}
+    let user = req.user
     const products = await ProductService.getProducts();
     return res.render("home", { productsa: products,user });
   } catch (error) {
@@ -48,11 +45,9 @@ export async function getProducts(req, res) {
  * This function retrieves all products from a ProductService and renders them in a real-time view.
  */
 export async function getRealProducts(req, res) {
+
   try {
-    //const user = req.session.user
-    let user = req.user._doc
-    const name = user.first_name+' '+user.last_name
-  user={name,...user}
+    let user = req.user
     const products = await ProductService.getAllProducts();
     return res.render("realTimeProducts", { productsa: products, user });
   } catch (error) {
@@ -69,10 +64,7 @@ export async function getRealProducts(req, res) {
 export async function createRealProduct(req, res) {
   try {
     const { body } = req;
-    //const user = req.session.user
-    let user = req.user._doc
-    const name = user.first_name+' '+user.last_name
-  user={name,...user}
+    let user = req.user
     let products = await ProductService.createProduct(body);
     products = await ProductService.getProducts();
     res.status(201).render("realTimeProducts", { productsa: products,user });
@@ -90,9 +82,7 @@ export async function createRealProduct(req, res) {
  */
 export async function deleteRealProduct(req, res) {
   try {
-    let user = req.user._doc
-    const name = user.first_name+' '+user.last_name
-  user={name,...user}
+    let user = req.user
     const id = parseInt(req.query.pid);
     await ProductService.deleteRealProduct(id);
     let products = await ProductService.getAllProducts();

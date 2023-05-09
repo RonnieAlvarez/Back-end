@@ -1,5 +1,6 @@
 import { Router } from "express";
 import passport from "passport";
+import {generateJWToken} from '../../../utils.js';
 
 const router = Router();
 
@@ -88,4 +89,24 @@ router.post(
   }
 );
 
+router.post(
+  "/loginJWT",
+  passport.authenticate("login", { failureRedirect: "/users/register" }),
+  async (req, res) => {
+    //const { email, password } = req.body;
+    const user = req.user;
+    if (!user) return res.status(401).redirect("/users/register");
+     req.user = {
+       name: `${user.first_name} ${user.last_name}`,
+       email: user.email,
+       age: user.age,
+       roll: user.roll,
+     };
+    const access_Token = generateJWToken(user)
+    console.log(access_Token);
+    res.send({access_token:access_Token});
+    const sessemail = res.cookie("session-id", user.email);
+    return res.redirect("/",{access_token:access_Token});
+  }
+);
 export default router;
