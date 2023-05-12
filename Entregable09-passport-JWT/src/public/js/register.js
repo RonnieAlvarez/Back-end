@@ -13,15 +13,16 @@ form.addEventListener('submit',async e=>{
         },
         body:JSON.stringify(obj)
     })
-     if (response.ok) {
-        console.log(data)
-      window.location.replace('/');
-      //window.location.replace('/users/profile');
+    if (response.ok) {
+      console.log('Registed: '+ data)
+      //window.location.replace('/');
+      window.location.replace('/users/login');
     } else {
       throw new Error('Unable to log in');
     }
   } catch (error) {
     console.error(error);
   }
-
+  console.log(response.ok);
+  
 })

@@ -87,12 +87,13 @@ export async function getmenuProducts(req, res) {
 </head>
 
 <body class="bg-ligth">
-<div class="container mt-1 p-2 m-auto d-flex flex-column w-100 rounded">
-    <div class="container my-1 d-flex flex-column sticky-top bg-dark p-2 rounded">
+
+<div class="container my-1 d-flex flex-column sticky-top px-2 rounded">
+    <div class="container d-flex flex-column sticky-top bg-dark p-2 rounded">
         <span class="d-sm-inline-flex text-center align-middle justify-content-center text-light fs-4 fw-bold opacity-75">
         Back-end Final Project </span>
     </div>
-    <div class="container mt-1 p-2 m-auto  bg-dark rounded d-flex justify-content-between">
+    <div class="container my-1 p-3 mx-auto  bg-dark rounded d-flex justify-content-between">
     <div>
     <a href=${productsprevLink}  class="btn btn-secondary btn-sm rounded sticky-sm-bottom ">Prev Page</a>
     <a href=${productsnextLink}  class="btn btn-secondary btn-sm rounded sticky-sm-bottom ">Next Page</a>
@@ -102,10 +103,10 @@ export async function getmenuProducts(req, res) {
     <span class=" text-center" style="color:white">Products</span>
     </div>
     <div>
-    // <span  class="btn btn-secondary btn-sm rounded  style="color:white">${roll}: ${name}</span>
+    // <span  class="btn btn-info btn-sm rounded fw-bold style="color:white">${roll}: ${name}</span>
     </div>
       </div>
-    <div class="container d-flex flex-column-reverse mt-2  bg-dark p-2 rounded">
+    <div class="container d-flex flex-column-reverse mt-1  bg-dark p-2 rounded">
           <div >
               <table class='w-100 bg-info py-10 mt-2  mx-auto items-center p-2'>
               <thead class='bg-light text-start rounded'>

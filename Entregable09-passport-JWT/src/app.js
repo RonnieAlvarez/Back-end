@@ -60,7 +60,7 @@ app.use(
     secret: process.env.SECRET,
     resave: false,
     saveUninitialized: false,
-    cookie: { maxAge: 150000 },
+    cookie: { maxAge: 60000 },
   })
 );
 app.use(cookieParser('Coder$3crtC0d3clav'));
@@ -70,6 +70,15 @@ initializePassport();
 initializeGooglePassport();
 app.use(passport.initialize()); // init passport on every route call
 app.use(passport.session()); //allow passport to use "express-session"
+
+app.use(function(req, res, next) {
+  console.log('%s %s', req.method, req.url);
+  console.log(req.isAuthenticated ? 'Authenticated' : 'Not Authenticated')
+  next();
+});
+  //console.log('Cookies: ', req.cookies)
+  //console.log('Signed Cookies: ', req.signedCookies)
+
 
 /* This code is setting up a route for Google OAuth 2.0 authentication. When a user navigates to this
 route, the `passport.authenticate` middleware is called with the `'google'` strategy and the
@@ -83,7 +92,9 @@ app.get(
     scope: ["email", "profile"],
     prompt: "select_account",
   }),
-  async (req, res) => {}
+  async (req, res,next) => {
+    next()
+  }
 );
 
 /* This code is handling the callback URL that is called after a user successfully authenticates with
@@ -107,7 +118,7 @@ app.get(
     };
     req.session.admin = true;
     res.status(401).redirect('/users/login');
-    //res.redirect("/");
+    //res.status(200).redirect('/');
   }
 );
 
@@ -150,6 +161,9 @@ const server = app.listen(PORT, () =>
 //   user = { name, ...user };
 //   res.render("menuprincipal", { user });
 // });
+
+
+
 
 server.on("error", (err) => console.log(err));
 

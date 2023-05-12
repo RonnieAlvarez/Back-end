@@ -10,7 +10,7 @@
                         <div class="row mb-1">
                             <label class="col-3 form-label">First name</label>
                             <input type="text" class="col-4 form-control w-75" name="first_name" id="first_name"
-                                placeholder="Joe" />
+                                placeholder="Joe" pattern="/^[a-zA-Z0-9._-]+$/"/>
                         </div>
                         <div class="row my-1">
                             <label class="col-3 form-label ">Last name</label>
@@ -24,20 +24,24 @@
                                     placeholder="21" />
                             </div>
                             <div class="row ">
-                                <label class="form-label col-3">Roll</label>
-                                <input type="text" class="ms-1 col-4 form-control w-25" name="roll" id="roll" disabled
-                                    value="User" />
+                                <label for="roll" class="form-label col-3">Roll</label>
+                                <select class="ms-1 col-4 form-control w-25" name="roll" id="roll">
+                                    <optgroup label="Rolls">
+                                        <option value="User">User</option>
+                                        <option value="Admin">Admin</option>
+                                    </optgroup>
+                                    </select>
                             </div>
                         </div>
                         <div class="row my-1">
                             <label class="form-label col-3">Email</label>
                             <input type="email" class="col-4 form-control w-75" name="email" id="email"
-                                placeholder="abc@mail.com" />
+                                placeholder="abc@mail.com" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$" required/>
                         </div>
                         <div class="row my-1">
                             <label class="form-label col-3">Password</label>
                             <input type="password" class="col-4 form-control w-75" name="password" id="password"
-                                placeholder="password" />
+                                placeholder="password"  autocomplete="current-password"  />
                         </div>
                         <div class="form-group d-flex flex-row justify-content-between mt-1 mb-3">
                             <a href="/users/login" class="btn btn-light rounded mt-2 opacity-75" role="button">Already

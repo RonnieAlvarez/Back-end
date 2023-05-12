@@ -19,16 +19,18 @@ form.addEventListener('submit',e=>{
                 //localStorage.setItem('authToken', json.jwt);
             //    console.log("Cookies generadas:");
             //    console.log(document.cookie);
-            //    alert("Login realizado con exito!");
                 window.location.replace('/users');
             });
         } else if (result.status === 401){
             console.log(result);
             window.location.replace('/users/register');
-            if(result.status===200 ){
+        } else if (result.status === 403){
+            console.log(result);
+            window.location.replace('/users/login');
+        }
+    }).then(result=>{
+        if(result.status===200){
                 window.location.replace('/users/login');
             }
-        //    alert("Login invalido revisa tus credenciales!");
-        }
     })
 })

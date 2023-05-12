@@ -34,7 +34,7 @@ router.get('/register', (req, res)=>{
 })
 
 router.get('/profile', (req, res)=>{
-    const user = req.session.user
+    const user = req.user
     res.render("profile", {user});
 })
 

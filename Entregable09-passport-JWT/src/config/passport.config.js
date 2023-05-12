@@ -109,7 +109,7 @@ const initializePassport = () => {
             last_name,
             email,
             age: age ?? 21,
-            roll: "User",
+            roll: roll ?? "User",
             password: createHash(password),
             loggedBy: "LocalStrategy"
           };
@@ -138,8 +138,6 @@ const initializePassport = () => {
       async (req, username, password, done) => {
         try {
           const user = await userModel.findOne({ email: username });
-          //        console.log("Usuario encontrado para login:");
-          //      console.log(user);
           if (!user) {
             console.warn("User doesn't exists with username: " + username);
             return done(null, false);
@@ -159,12 +157,15 @@ const initializePassport = () => {
 
   //Funciones de Serializacion y Desserializacion
   passport.serializeUser((user, done) => {
+    console.log("serializando"+user)
     done(null, user);
   });
 
   passport.deserializeUser(async (id, done) => {
+    console.log('deserializando '+ id)
     try {
       let user = await userModel.findById(id);
+      console.log(user)
       done(null, user);
     } catch (error) {
       console.error("Error deserializando el usuario: " + error);

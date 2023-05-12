@@ -4,6 +4,22 @@ import {generateJWToken} from '../../../utils.js';
 
 const router = Router();
 
+// router.get("/current",passport.authenticate("login", { failureRedirect: "/users/register" }),
+// async (req, res) => {
+//   const token = req.cookies.jwtCookieToken
+//     if (token){
+//         const decoded = jwt_decode(tokens)
+//         let user = decoded.user
+//         req.user = user
+//         next(null,req.user)
+//     } 
+//     if (!req.user){
+//         res.status(401).redirect('/users/login');
+//     }
+// })
+
+
+
 /* This code is defining two routes for GitHub authentication using Passport.js middleware. */
 router.get(
   "/github",
@@ -38,7 +54,7 @@ route. If the registration is successful, it returns a status code of 201 and re
 the `/users/login` route. */
 router.post(
   "/register",
-  passport.authenticate("register", { failureRedirect: "/users/register" }),
+  passport.authenticate("register", { failureRedirect: "/users/login" }),
   async (req, res) => {
     const user = req.user._doc;
     req.session.user = {
@@ -49,7 +65,8 @@ router.post(
     };
     req.session.login = true;
     const sessemail = res.cookie("session-id", user.email);
-    return res.status(201).redirect("/users/login");
+    //return res.status(200).redirect("/");
+    return res.status(201).redirect("/users/profile");
   }
 );
 
@@ -71,8 +88,8 @@ router.post(
         age: 21,
         roll: "Admin",
       };
-      req.session.login = true;
-      const sessemail = res.cookie("session-id", email);
+//      req.session.login = true;
+//      const sessemail = res.cookie("session-id", email);
       return res.redirect("/");
     }
     const user = req.user._doc;
@@ -83,8 +100,8 @@ router.post(
       age: user.age,
       roll: user.roll,
     };
-    req.session.login = true;
-    const sessemail = res.cookie("session-id", user.email);
+//    req.session.login = true;
+//    const sessemail = res.cookie("session-id", user.email);
     return res.redirect("/");
   }
 );
@@ -93,7 +110,16 @@ router.post(
   "/loginJWT",
   passport.authenticate("login", { failureRedirect: "/users/register" }),
   async (req, res) => {
-    //const { email, password } = req.body;
+    const { email, password } = req.body;
+    if (email === "adminCoder@coder.com" && password === "adminCod3r123") {
+      req.user = {
+        name: "CoderHouse",
+        email: email,
+        age: 21,
+        roll: "Admin",
+      };
+      return res.redirect("/");
+    }
     const user = req.user;
     if (!user) return res.status(401).redirect("/users/register");
      req.user = {
@@ -105,7 +131,7 @@ router.post(
     const access_Token = generateJWToken(user)
     console.log(access_Token);
     res.send({access_token:access_Token});
-    const sessemail = res.cookie("session-id", user.email);
+  //  const sessemail = res.cookie("session-id", user.email);
     return res.redirect("/",{access_token:access_Token});
   }
 );
