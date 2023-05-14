@@ -16,7 +16,7 @@ const router = Router();
 
 router.get("/",
     // authToken,
-    passportCall('jwt'), 
+    passportCall('jwt'),
     authorization('User'),
     async (req, res)=>{
          res.render("menuprincipal",{user: req.user})

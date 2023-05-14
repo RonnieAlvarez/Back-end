@@ -5,7 +5,6 @@
             <div id="register-column" class="col-md-9">
                 <div id="register-box" class="col-md-12">
                     <form id="registerForm">
-                        {{!-- <form id="registerForm" action="/api/sessions/register" method="POST"></form> --}}
                         <h3 class="text-center text-light">Register</h3>
                         <div class="row mb-1">
                             <label class="col-3 form-label">First name</label>
@@ -20,8 +19,8 @@
                         <div class="row my-1 ">
                             <div class="row mb-1">
                                 <label class="col-3 form-label">Age</label>
-                                <input type="text" class="ms-1 col-4 form-control w-25" name="age" id="age"
-                                    placeholder="21" />
+                                <input type="number" class="ms-1 col-4 form-control w-25" name="age" id="age"
+                                    placeholder=21 />
                             </div>
                             <div class="row ">
                                 <label for="roll" class="form-label col-3">Roll</label>
@@ -35,8 +34,8 @@
                         </div>
                         <div class="row my-1">
                             <label class="form-label col-3">Email</label>
-                            <input type="email" class="col-4 form-control w-75" name="email" id="email"
-                                placeholder="abc@mail.com" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$" required/>
+                            <input type="text" class="col-4 form-control w-75" name="email" id="email"
+                                placeholder="abc@mail.com" />
                         </div>
                         <div class="row my-1">
                             <label class="form-label col-3">Password</label>

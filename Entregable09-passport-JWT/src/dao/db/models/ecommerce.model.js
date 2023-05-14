@@ -130,7 +130,7 @@ const UserSchema = new mongoose.Schema({
   age: { type: Number },
   password: { type: String },
   loggedBy:{ type:String,default:""},
-  //roll:{type:String,required:false},
+  cartId: {type: mongoose.Schema.Types.ObjectId, ref: 'CartSchema'},
   roll: {
     type: String,
     default: 'User',

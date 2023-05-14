@@ -1,15 +1,17 @@
-# Entregable 08 Passport y GitHub
+# Entregable 09 JWT
 
 # RONNIE ALVAREZ CASTRO 
 
-## Refactor a nuestro login con Passport y GitHub
+## Practica de Integración sobre el eCommerce
 
 ![image](img/login.png)
 
-![image](img/consigna1.png)
+![image](img/con1.png)
 
 
-![image](img/testing.png)
+![image](img/con2.png)
+
+![image](img/con3.png)
 
 ## END-POINTS
 

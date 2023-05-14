@@ -5,7 +5,7 @@ import { generateJWToken } from '../../../utils.js';
 
 const router = Router();
 
-router.post("/loginjwt", async (req, res)=>{
+router.post("/current", async (req, res)=>{
    const {email, password} = req.body
    try {
     const user = await userModel.findOne({email: email});

@@ -63,10 +63,10 @@ router.post(
       age: user.age,
       roll: user.roll,
     };
-    req.session.login = true;
-    const sessemail = res.cookie("session-id", user.email);
+    //req.session.login = true;
+    //const sessemail = res.cookie("session-id", user.email);
     //return res.status(200).redirect("/");
-    return res.status(201).redirect("/users/profile");
+    return res.status(200).redirect("/users/login");
   }
 );
 
@@ -107,7 +107,7 @@ router.post(
 );
 
 router.post(
-  "/loginJWT",
+  "/current",
   passport.authenticate("login", { failureRedirect: "/users/register" }),
   async (req, res) => {
     const { email, password } = req.body;

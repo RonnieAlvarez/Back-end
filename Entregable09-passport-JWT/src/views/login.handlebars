@@ -4,22 +4,25 @@
     <div id="login-row" class="row justify-content-center align-items-center">
       <div id="login-column" class="col-md-11">
         <div id="login-box" class="col-md-12">
-          <form id="loginForm" >
-            {{!-- <form id="loginForm" action="/api/sessions/login" method="POST"></form> --}}
+          <form id="loginForm">
             <h3 class="text-center text-light">Login</h3>
             <div class="row my-2">
               <label class="col-3 form-label">Email</label>
-              <input type="email" class="col-4 form-control w-75" name="email" id="email" placeholder="abc@mail.com"  pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$" required />
+              <input type="text" class="col-4 form-control w-75" name="email" id="email" placeholder="abc@mail.com" />
             </div>
             <div class="row mb-2">
               <label class="col-3 form-label">Password</label>
-              <input type="password" class="col-4 form-control w-75" name="password" id="password" placeholder="password"  autocomplete="current-password" />
+              <input type="password" class="col-4 form-control w-75" name="password" id="password"
+                placeholder="password" />
             </div>
             <div class="form-group d-flex flex-row justify-content-between mt-1 mb-3">
-                <a href="/users/register" class="btn-sm me-2 btn btn-light rounded mt-2 opacity-75" role="button">Register here</a>
-                <a href="/auth/google" class="btn me-2 btn-sm btn-light rounded mt-2 opacity-75" role="button">Register with Google</a>
-                <a href="/api/sessions/github" class="me-2 btn btn-sm btn-light rounded mt-2 opacity-75" role="button">Register with GitHub</a>
-                <input class="mt-2 btn btn-primary btn-sm rounded px-2 fw-bold" type="submit"></input>
+              <a href="/users/register" class="btn-sm me-2 btn btn-light rounded mt-2 opacity-75" role="button">Register
+                here</a>
+              <a href="/auth/google" class="btn me-2 btn-sm btn-light rounded mt-2 opacity-75" role="button">Register
+                with Google</a>
+              <a href="/api/sessions/github" class="me-2 btn btn-sm btn-light rounded mt-2 opacity-75"
+                role="button">Register with GitHub</a>
+              <input class="mt-2 btn btn-primary btn-sm rounded px-2 fw-bold" type="submit"></input>
             </div>
           </form>
         </div>
@@ -29,4 +32,3 @@
 </div>
 
 <script src="/js/loginjwt.js"></script>
-
