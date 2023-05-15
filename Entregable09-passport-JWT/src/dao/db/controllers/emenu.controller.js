@@ -7,18 +7,18 @@ import { ProductModel } from "../models/ecommerce.model.js";
  * It contains methods and properties that allow the server to send data, set headers, and control the
  * response status code. In this specific code snippet, `res` is used to send a rendered HTML page with
  * @returns A rendered view called "realTimeMenu" with a status code of 201 is being returned.
-*/
+ */
 export async function getMenu(req, res) {
-  try {
-    let user = req.user;
-    const categories = await ProductModel.distinct("Category");
-    return res.status(201).render("realTimeMenu", { categories, user });
-  } catch (error) {
-    res.status(400).json({
-      error: error.message,
-      status: STATUS.FAIL,
-    });
-  }
+    try {
+        let user = req.user;
+        const categories = await ProductModel.distinct("Category");
+        return res.status(201).render("realTimeMenu", { categories, user });
+    } catch (error) {
+        res.status(400).json({
+            error: error.message,
+            status: STATUS.FAIL,
+        });
+    }
 }
 
 /**
@@ -31,49 +31,49 @@ export async function getMenu(req, res) {
  * results. The HTML
  */
 export async function getmenuProducts(req, res) {
-  try {
-    /* `res.locals.user = req.session.user;` is setting a local variable `user` on the `res` object,
+    try {
+        /* `res.locals.user = req.session.user;` is setting a local variable `user` on the `res` object,
     which can be accessed by the view engine when rendering the HTML template. The value of `user`
     is being retrieved from the `user` property on the `req.session` object, which is set when the
     user logs in and contains information about the current user's session. This allows the view
     engine to access the user's information and display it on the rendered HTML page. */
-    //res.locals.user = req.session.user;
-    //const { name, roll } = res.locals.user;
-    const  {name, roll}  = req.user;
-    
-    /* ************************************* */
-    const localPort = parseInt(process.env.port);
-    let { page, limit, sort, sortorder, filter } = req.query;
-    page = parseInt(page);
-    limit = parseInt(limit);
-    if (sortorder === "Desc") {
-      sort = `-${sort}`;
-    }
-    const query = {};
-    const separator = ":";
-    const index = filter.indexOf(separator);
-    const key = filter.slice(0, index);
-    const value = filter.slice(index + 1);
-    query[key] = value;
-    const products = await ProductModel.paginate(
-      query,
-      { page, limit, sort, sortorder, lean: true },
-      { deletedAt: { $exists: false } }
-    );
-    const nextpage = parseInt(products.nextPage)
-      ? parseInt(products.nextPage)
-      : 1;
-    const prevpage = parseInt(products.prevPage)
-      ? parseInt(products.prevPage)
-      : 1;
-    const productsprevLink = `http://localhost:${localPort}/menu/products/?page=${prevpage}&limit=${limit}&sort=${sort}&filter=${filter}`;
-    const productsnextLink = `http://localhost:${localPort}/menu/products/?page=${nextpage}&limit=${limit}&sort=${sort}&filter=${filter}`;
-    const productHomeLink = `http://localhost:${localPort}/menu/menu`;
-    if (!products.docs) {
-      return res.send("<p>No products found</p>");
-    }
+        //res.locals.user = req.session.user;
+        //const { name, roll } = res.locals.user;
+        const { name, roll } = req.user;
 
-    const template = handlebars.compile(`
+        /* ************************************* */
+        const localPort = parseInt(process.env.port);
+        let { page, limit, sort, sortorder, filter } = req.query;
+        page = parseInt(page);
+        limit = parseInt(limit);
+        if (sortorder === "Desc") {
+            sort = `-${sort}`;
+        }
+        const query = {};
+        const separator = ":";
+        const index = filter.indexOf(separator);
+        const key = filter.slice(0, index);
+        const value = filter.slice(index + 1);
+        query[key] = value;
+        const products = await ProductModel.paginate(
+            query,
+            { page, limit, sort, sortorder, lean: true },
+            { deletedAt: { $exists: false } }
+        );
+        const nextpage = parseInt(products.nextPage)
+            ? parseInt(products.nextPage)
+            : 1;
+        const prevpage = parseInt(products.prevPage)
+            ? parseInt(products.prevPage)
+            : 1;
+        const productsprevLink = `http://localhost:${localPort}/menu/products/?page=${prevpage}&limit=${limit}&sort=${sort}&filter=${filter}`;
+        const productsnextLink = `http://localhost:${localPort}/menu/products/?page=${nextpage}&limit=${limit}&sort=${sort}&filter=${filter}`;
+        const productHomeLink = `http://localhost:${localPort}/menu/menu`;
+        if (!products.docs) {
+            return res.send("<p>No products found</p>");
+        }
+
+        const template = handlebars.compile(`
     <!DOCTYPE html>
 <html lang="en">
 
@@ -145,48 +145,48 @@ export async function getmenuProducts(req, res) {
 </html>
 `);
 
-    const renderedHtml = template({ products: products });
-    return res.send(renderedHtml);
-  } catch (error) {
-    return res.status(400).json({
-      error: error.message,
-      status: STATUS.FAIL,
-    });
-  }
+        const renderedHtml = template({ products: products });
+        return res.send(renderedHtml);
+    } catch (error) {
+        return res.status(400).json({
+            error: error.message,
+            status: STATUS.FAIL,
+        });
+    }
 }
 
 /**
  * This function renders the main menu page with the user's session information.
  */
 export async function menuprincipal(req, res) {
-  let user = req.user
-  try {
-    return res.render("menuprincipal", { user });
-  } catch (error) {
-    res.status(400).json({
-      error: error.message,
-      status: STATUS.FAIL,
-    });
-  }
+    let user = req.user;
+    try {
+        return res.render("menuprincipal", { user });
+    } catch (error) {
+        res.status(400).json({
+            error: error.message,
+            status: STATUS.FAIL,
+        });
+    }
 }
 
 /**
  * This function logs out a user by destroying their session and redirecting them to the login page.
  */
 export async function logout(req, res) {
-  try {
-    req.session.destroy((err) => {
-      if (err) {
-        res.json(err);
-      } else {
-        res.clearCookie("session-id");
-        res.redirect("/login");
-      }
-    });
-  } catch {
-    res.status(400).json({
-      error: error.message,
-      status: STATUS.FAIL,
-    });
-  }
+    try {
+        req.session.destroy((err) => {
+            if (err) {
+                res.json(err);
+            } else {
+                res.clearCookie("session-id");
+                res.redirect("/login");
+            }
+        });
+    } catch {
+        res.status(400).json({
+            error: error.message,
+            status: STATUS.FAIL,
+        });
+    }
 }

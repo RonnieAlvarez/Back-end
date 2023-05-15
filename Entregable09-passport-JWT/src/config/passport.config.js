@@ -18,6 +18,15 @@ const GITCLIENTSECRET = process.env.GITCLIENTSECRET;
 const localStrategy = passportLocal.Strategy;
 
 const initializePassport = () => {
+    /* This code is defining a Passport strategy for authenticating with a JSON Web Token (JWT). It is
+    using the `passport.use()` method to create a new instance of the `JwtStrategy` class, which is
+    a Passport strategy for authenticating with a JWT. The strategy takes an options object and a
+    callback function as parameters. The options object specifies how to extract the JWT from the
+    request object and the secret key used to sign the JWT. The callback function is called when the
+    user is authenticated with the JWT. It uses the `jwt_payload` object to extract the user
+    information from the JWT and calls the `done` function with the user object as the second
+    parameter. If there is an error, the function logs the error to the console and calls the `done`
+    function with the error object as the second parameter. */
     passport.use(
         "jwt",
         new JwtStrategy(
@@ -36,7 +45,15 @@ const initializePassport = () => {
         )
     );
 
-    // estrategia github
+    /* This code is defining a Passport strategy for authenticating with GitHub. It is using the
+`passport.use()` method to create a new instance of the `GitHubStrategy` class, which is a Passport
+strategy for authenticating with GitHub using the OAuth 2.0 API. The strategy takes a client ID, a
+client secret, a callback URL, and a callback function as parameters. The callback function is
+called when the user is authenticated with GitHub. It uses the `userModel.findOne()` method to find
+a user with the specified email. If the user is not found, the function creates a new user with the
+information obtained from the GitHub profile and calls the `done` function with the new user object
+as the second parameter. If the user is found, the function calls the `done` function with the user
+object as the second parameter. */
     passport.use(
         "github",
         new GitHubStrategy(
@@ -81,17 +98,12 @@ const initializePassport = () => {
         )
     );
 
-    /**
-     *  Inicializando la estrategia local, username sera para nosotros email.
-     *  Done será nuestro callback
-     */
-
-    // estrategia register
+    /* This code is defining a local strategy for user registration. It is using the `passport.use()`
+method to create a new instance of the `localStrategy` class, which is a Passport strategy for
+authenticating with a username and password. */
     passport.use(
         "register",
         new localStrategy(
-            // passReqToCallback: para convertirlo en un callback de request, para asi poder iteracturar con la data que viene del cliente
-            // usernameField: renombramos el username
             { passReqToCallback: true, usernameField: "email" },
             async (req, username, password, done) => {
                 const { first_name, last_name, email, age, roll } = req.body;
@@ -102,7 +114,7 @@ const initializePassport = () => {
                         last_name,
                         email,
                         age: age ?? 21,
-                        roll: roll ??  "User",
+                        roll: roll ?? "User",
                         password: createHash(password),
                         loggedBy: "LocalStrategy",
                     };
@@ -123,7 +135,17 @@ const initializePassport = () => {
         )
     );
 
-    // estrategia login
+    /* This code is defining a local strategy for user login. It is using the `passport.use()` method
+    to create a new instance of the `localStrategy` class, which is a Passport strategy for
+    authenticating with a username and password. The strategy takes a request object, a username
+    (which is the user's email in this case), a password, and a callback function `done` as
+    parameters. The function uses the `userModel.findOne()` method to find a user with the specified
+    email. If the user is not found, the function logs a warning message to the console and calls
+    the `done` function with `false` as the second parameter. If the user is found, the function
+    uses the `isValidPassword()` function to check if the password is valid. If the password is not
+    valid, the function logs a warning message to the console and calls the `done` function with
+    `false` as the second parameter. If the password is valid, the function calls the `done`
+    function with the user object as the second parameter. */
     passport.use(
         "login",
         new localStrategy(
@@ -152,12 +174,22 @@ const initializePassport = () => {
         )
     );
 
-    //Funciones de Serializacion y Desserializacion
+    /* This code defines the function that serializes a user object into a session store based on the
+    user ID. It takes the user object and a callback function `done` as parameters. The function
+    logs a message to the console indicating that it is serializing the user object, and then calls
+    the `done` function with the user ID as the second parameter. This function is used by Passport
+    to store the user object in the session store. */
     passport.serializeUser((user, done) => {
         console.log("serializando" + user);
         done(null, user._id);
     });
 
+    /* This code defines the function that deserializes a user object from a session store based on the
+user ID. It takes the user ID as a parameter and uses it to retrieve the user object from the
+database using the `userModel.findById()` method. Once the user object is retrieved, it is passed to
+the `done` callback function along with a `null` error parameter. This function is used by Passport
+to retrieve the user object from the session store and attach it to the `req.user` property for
+subsequent requests. */
     passport.deserializeUser(async (id, done) => {
         console.log("deserializando " + id);
         try {
@@ -170,17 +202,18 @@ const initializePassport = () => {
     });
 };
 
-// Funcion para hacer la extraccion de la cookie
+/**
+ * The function extracts a JWT token from a cookie in a request object.
+ * @param req - The `req` parameter is an object that represents the HTTP request made by a client to a
+ * server. It contains information about the request, such as the URL, headers, and any data sent in
+ * the request body. In this case, the `req` object is used to extract a JWT token
+ * @returns The `cookieExtractor` function returns the value of the "jwtCookieToken" cookie from the
+ * `req` object, or `null` if the cookie is not present.
+ */
 const cookieExtractor = (req) => {
     let token = null;
-    // console.log("Entrando a cookie extractor");
     if (req && req.cookies) {
-        //Validamos que exista el request y las cookies.
-        //   console.log("Cookies presentes!");
-        //   console.log(req.cookies);
         token = req.cookies["jwtCookieToken"];
-        //   console.log("token obtenido desde cookie");
-        //   console.log(token);
     }
     return token;
 };

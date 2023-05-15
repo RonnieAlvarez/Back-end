@@ -4,22 +4,6 @@ import {generateJWToken} from '../../../utils.js';
 
 const router = Router();
 
-// router.get("/current",passport.authenticate("login", { failureRedirect: "/users/register" }),
-// async (req, res) => {
-//   const token = req.cookies.jwtCookieToken
-//     if (token){
-//         const decoded = jwt_decode(tokens)
-//         let user = decoded.user
-//         req.user = user
-//         next(null,req.user)
-//     } 
-//     if (!req.user){
-//         res.status(401).redirect('/users/login');
-//     }
-// })
-
-
-
 /* This code is defining two routes for GitHub authentication using Passport.js middleware. */
 router.get(
   "/github",
@@ -63,9 +47,6 @@ router.post(
       age: user.age,
       roll: user.roll,
     };
-    //req.session.login = true;
-    //const sessemail = res.cookie("session-id", user.email);
-    //return res.status(200).redirect("/");
     return res.status(200).redirect("/users/login");
   }
 );
@@ -88,8 +69,6 @@ router.post(
         age: 21,
         roll: "Admin",
       };
-//      req.session.login = true;
-//      const sessemail = res.cookie("session-id", email);
       return res.redirect("/");
     }
     const user = req.user._doc;
@@ -100,12 +79,18 @@ router.post(
       age: user.age,
       roll: user.roll,
     };
-//    req.session.login = true;
-//    const sessemail = res.cookie("session-id", user.email);
     return res.redirect("/");
   }
 );
 
+/* This code is defining a route for retrieving the current user's information and generating a JSON
+Web Token (JWT) for authentication purposes. It uses Passport.js middleware to authenticate the
+login process. If the login is successful, it retrieves the user information from the `req.user`
+object and stores it in the `user` variable. If the user is an admin, it sets the `req.user` object
+to a hardcoded admin user object. If the user is not an admin, it sets the `req.user` object to the
+retrieved user information. It then generates a JWT using the `generateJWToken` function and sends
+it back to the client in a JSON object with the key `access_token`. Finally, it redirects the user
+to the home page with the `access_token` as a query parameter. */
 router.post(
   "/current",
   passport.authenticate("login", { failureRedirect: "/users/register" }),
@@ -131,8 +116,8 @@ router.post(
     const access_Token = generateJWToken(user)
     console.log(access_Token);
     res.send({access_token:access_Token});
-  //  const sessemail = res.cookie("session-id", user.email);
     return res.redirect("/",{access_token:access_Token});
   }
 );
+
 export default router;

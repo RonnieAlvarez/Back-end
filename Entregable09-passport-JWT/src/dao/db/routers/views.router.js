@@ -1,14 +1,8 @@
 import {Router} from 'express';
-import cookieParser from 'cookie-parser';
+
 
 const router = Router();
 
-//router.use(cookieParser());
-// router.use(cookieParser("CoderS3cr3tC0d3"));
-
-router.get('/',(req,res)=>{
-    res.render('index',{});
-});
 
 //Login
 router.get("/logout", (req, res) => {
