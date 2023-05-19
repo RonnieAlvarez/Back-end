@@ -1,0 +1,52 @@
+<div class="container">
+    <div>
+    <form action="/products/realTimeCarts" method="post" id="form-carts"
+      class="p-2 m-1 h-100 mt-10 mx-auto  items-center bg-info d-flex justify-content-center align-items-center rounded">
+      <div>
+        <input class="p-1 btn btn-secondary btn-sm my-1" type="submit" value="Add Cart" />
+      </div>
+    </form>
+  </div>
+
+  <div>
+    <form action="/products/realTimeCarts/add" method="post" id="form-carts"
+      class="p-2 m-1 h-100 mt-10 mx-auto  items-center bg-info d-flex justify-content-center align-items-center rounded">
+      <div>
+        <input class="gap-1 border-botton  border-2 " placeholder="Cart Id" type="number" name="id" id="id" />
+        <input class="gap-1 border-botton  border-2 " placeholder="Product id" type="number" name="pid" />
+        <input class="gap-1 border-botton  border-2 " placeholder="Product Quantity" type="number" name="Quantity" />
+      </div>
+      <div>
+        <input class="p-1 btn btn-secondary btn-sm my-1" type="submit" value="Add products to a Cart" />
+        <input class="p-1 btn btn-danger btn-sm" type="reset" value="Reset form">
+      </div>
+    </form>
+  </div>
+
+  <div class="text-center align-middle ">
+     <form id="delete-form" method="GET"
+      action="/products/realTimeCart/delete" class="p-2 h-100 mt-10 mx-auto items-center bg-info">
+      <input class="me-3 border-botton border-black mt-1 border-2 rounded" type="text" name="cid" placeholder="Id to delete" />
+      <input class="btn btn-secondary btn-sm my-1" type="submit" value="Delete Cart" />
+    </form>
+  </div>
+
+    {{#if carts}}
+  <div class=" m-auto bg-dark">
+  {{#each carts}}
+  <div class="py-10 mt-2 mx-auto flex items-center bg-info">
+    <h6 class="mx-5">Cart ID: {{lookup this "id"}}</h6>
+    <ul>
+      {{#each _doc.products}}
+        <li class="flex items-center">Product Id: {{lookup this "pid"}} and Quantity: {{lookup this "Quantity"}}</li>
+      {{/each}}
+    </ul>
+  </div>
+{{/each}}
+
+  </div>
+  {{/if}}
+
+
+</div>
+
