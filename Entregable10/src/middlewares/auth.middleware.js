@@ -1,4 +1,6 @@
 import jwt_decode from "jwt-decode"
+
+
 /**
  * This function checks for a JWT token in the cookies of a request and sets the user property of the
  * request object if the token is valid, otherwise it redirects to the login page.
@@ -15,10 +17,13 @@ import jwt_decode from "jwt-decode"
  */
 export default function auth(req,res,next){
     const tokens = req.cookies.jwtCookieToken
+    //const authHeader = req.headers;
+    //console.log(authHeader);
     if (tokens){
         const decoded = jwt_decode(tokens)
         let user = decoded.user
         req.user = user
+        console.log(user.roll)
         next(null,req.user)
     } 
     if (!req.user){
@@ -26,3 +31,20 @@ export default function auth(req,res,next){
     }
 }
 
+//export const authenticateJWT = (req, res, next) => {
+//    const authHeader = req.headers.authorization;
+//  
+//    if (authHeader) {
+//      const token = authHeader.split(' ')[1];
+//      // Aquí debes especificar tu accessTokenSecret, que es la clave secreta utilizada para firmar el token JWT
+//      jwt.verify(token, accessTokenSecret, (err, user) => {
+//        if (err) {
+//          return res.sendStatus(403); // Acceso prohibido si el token no es válido
+//        }
+//        req.user = user;
+//        next();
+//      });
+//    } else {
+//      res.sendStatus(401); // No autorizado si no se proporciona el encabezado de autorización
+//    }
+//  };

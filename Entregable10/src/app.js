@@ -10,19 +10,19 @@ import __dirname from "./utils.js";
 import express from "express";
 import path from "path";
 import exphbs from "express-handlebars";
-import dotenv from "dotenv";
+import jwt from "jsonwebtoken";
+//import dotenv from "dotenv";
 import "./config/db.js";
 import { createSocketServer } from "./config/socketServer.js";
 import mongoStore from "connect-mongo";
 import cookie from "cookie-parser";
 import session from "express-session";
-//import { menuprincipal } from "./dao/db/controllers/emenu.controller.js";
 import auth from "./middlewares/auth.middleware.js";
 import passport from "passport";
 import initializePassport from "./config/passport.config.js";
 import initializeGooglePassport from "./config/google.passport.js";
 import cookieParser from "cookie-parser";
-
+import cookieExtractor from "./config/passport.config.js";
 // Import Routers
 import githubLoginViewRouter from "./dao/db/routers/github-login.views.router.js";
 import usersViewRouter from "./dao/db/routers/users.views.router.js";
@@ -33,7 +33,9 @@ import EmenuRouter from "./dao/db/routers/eMenu.router.js";
 import jwtRouter from "./dao/db/routers/jwt.router.js";
 import usersRouter from "./dao/db/routers/user.router.js";
 import UsersExtendRouter from './dao/db/routers/custom/users.extend.router.js'
+import EcommerceExtendRouter from './dao/db/routers/custom/eCommerce.router.js'
 import config from '../src/config/config.js'
+import { authToken } from "./utils.js";
 const app = express();
 //dotenv.config({ path: '../src/config/.env' });
 //const PORT = process.env.PORT || 8080;
@@ -72,12 +74,17 @@ initializeGooglePassport();
 app.use(passport.initialize()); // init passport on every route call
 app.use(passport.session()); //allow passport to use "express-session"
 
+
+
 /* This code is a middleware function that logs the HTTP method and URL of each incoming request, as
 well as whether the request is authenticated or not. It then calls the `next()` function to pass
 control to the next middleware function in the stack. */
 app.use(function (req, res, next) {
     console.log("%s %s", req.method, req.url);
     console.log(req.isAuthenticated ? "Authenticated" : "Not Authenticated");
+//    let pruebaAutorizacion=authToken()
+//    console.log(pruebaAutorizacion);
+//    console.log(req.headers.authorization)
     next();
 });
 
@@ -131,19 +138,25 @@ app.set("views", path.join(__dirname, "views"));
 
 // Routes
 const usersExtendRouter = new UsersExtendRouter();
+const ecommerceExtendRouter = new EcommerceExtendRouter();
 
- app.use("/products/", auth, EcommerceRouter);//auth
+ app.use("/products/",auth,authToken, ecommerceExtendRouter.getRouter());//auth
  app.use("/api/", EchatRouter);
  app.use("/menu/", auth, EmenuRouter);//auth
  app.use("/users", usersViewRouter);
  app.use("/api/sessions", sessionsRouter);
  app.use("/api/jwt", jwtRouter); // new
  //app.use("/api/users", usersRouter); // new
- app.use("/",auth, usersExtendRouter.getRouter());//auth
  app.use("/github", githubLoginViewRouter);
-
+ 
+ app.use("/",auth, usersExtendRouter.getRouter());//auth
 app.use("/api/extend/users", usersExtendRouter.getRouter());
 
+app.get('/', (req, res) => {
+    const authHeader = req.headers.authorization;
+    console.log(authHeader);
+    // Do something with the authorization header
+  });
 // Server
 const server = app.listen(PORT, () =>{
     console.log(`Server up on PORT: ${PORT}`)

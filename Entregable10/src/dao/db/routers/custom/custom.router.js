@@ -17,6 +17,7 @@ export default class CustomRouter {
     get(path, policies, ...callbacks) {
         console.log("Entrando por GET a custom router con Path: " + path);
         console.log(policies);
+        
         this.router.get(
             path,
             this.handlePolicies(policies),
@@ -89,14 +90,18 @@ export default class CustomRouter {
         next();
     };
 
-    handlePolicies = (policies) => (req, res, next) => {
+//    handlePolicies = (policies) => (req, res, next) => {
+    handlePolicies ({ policies}) {
+        return (req, res, next) => {
         console.log("Politicas a evaluar:");
         console.log(policies);
         //Validar si tiene acceso publico:
-        if (policies[0] === "PUBLIC") return next(); //Puede entrar cualquiera
-
+        if (policies.includes('PUBLIC')) {
+            return next() // anyone can access
+          }
+        //if (policies[0] === "PUBLIC") return next(); //Puede entrar cualquiera
         //El JWT token se guarda en los headers de autorización.
-        const authHeader = req.headers.authorization;
+        const authHeader = req.headers.cookie;
         console.log("Token present in header auth:");
         console.log(authHeader);
         if (!authHeader) {
@@ -104,8 +109,8 @@ export default class CustomRouter {
                 .status(401)
                 .send({ error: "User not authenticated or missing token." });
         }
-        const token = authHeader.split(" ")[1]; //Se hace el split para retirar la palabra Bearer.
-
+        const token = authHeader.split("=")[1]; //Se hace el split para retirar la palabra Bearer.
+    
         //Validar token
         jwt.verify(token, PRIVATE_KEY, (error, credentials) => {
             if (error)
@@ -113,8 +118,10 @@ export default class CustomRouter {
                     .status(403)
                     .send({ error: "Token invalid, Unauthorized!" });
             //Token OK
-            const user = credentials.user;
-            if (!policies.includes(user.role.toUpperCase()))
+            let user = credentials.user;
+            user.role='PUBLIC'
+            console.log('custom router linea 118 '+{user})
+            if (!policies.includes(user.roll))
                 return res.status(403).send({
                     error: "El usuario no tiene privilegios, revisa tus roles!",
                 });
@@ -123,4 +130,5 @@ export default class CustomRouter {
             next();
         });
     };
+}
 }

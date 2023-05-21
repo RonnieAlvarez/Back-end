@@ -39,6 +39,10 @@ const PRIVATE_KEY = config.jwtKey
  */
 export const generateJWToken = (user) => {
     const token = jwt.sign({ user }, PRIVATE_KEY, { expiresIn: "24h" });
+//    console.log('token generado utils linea 41 :'+token)
+//    req.headers.authorization = `Bearer ${access_token}`;
+    //res.set('Authorization',`Bearer ${token}`)
+//    res.send('Token generado' )
     return token;
 };
 
@@ -61,18 +65,23 @@ export const generateJWToken = (user) => {
  * key, and if
  */
 export const authToken = (req, res, next) => {
-    const authHeader = req.headers.authorization;
+    const authHeader = req.headers.cookie;
+//    const auxhet = authHeader.split("=")[1];
+//    const token1 = authHeader.split(".")[1];
+//    console.log(authHeader);
     if (!authHeader)
         return res
             .status(401)
             .json({ message: "Token no valido", error: "Not autorized" });
-    const token = authHeader.split(" ")[1];
-    jwt.verify(token, PRIVATE_KEY, (error, credentials) => {
+    const token = authHeader.split("=")[1];
+    
+    jwt.verify(token,PRIVATE_KEY, (error, credentials) => {
         if (error)
             return res
                 .status(403)
                 .json({ message: "Token no valido", error: "Not autorized" });
         req.user = credentials.user;
+        
         next();
     });
 };

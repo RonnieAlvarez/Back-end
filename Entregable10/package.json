@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon --inspect entregable10/src/app.js"
+    "start": "nodemon --inspect src/app.js"
   },
   "keywords": [],
   "author": "Ronnie Alvarez Castro",

@@ -119,6 +119,8 @@ router.post(
      };
     const access_Token = generateJWToken(user)
     console.log(access_Token);
+    req.headers.Authorization=`Bearer ${access_Token}`
+    console.log('session linea 123: '+req.headers.Authorization)
     res.send({access_token:access_Token});
     return res.redirect("/",{access_token:access_Token});
   }

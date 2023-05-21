@@ -195,7 +195,7 @@ subsequent requests. */
         console.log("deserializando " + id);
         try {
             let user = await userModel.findById(id);
-            //console.log(user);
+            console.log(user);
             done(null, user);
         } catch (error) {
             console.error("Error deserializando el usuario: " + error);
@@ -211,7 +211,7 @@ subsequent requests. */
  * @returns The `cookieExtractor` function returns the value of the "jwtCookieToken" cookie from the
  * `req` object, or `null` if the cookie is not present.
  */
-const cookieExtractor = (req) => {
+const cookieExtractor = (req,res) => {
     let token = null;
     if (req && req.cookies) {
         token = req.cookies["jwtCookieToken"];
