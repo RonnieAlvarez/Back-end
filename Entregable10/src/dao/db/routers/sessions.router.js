@@ -8,8 +8,7 @@ const router = Router();
 router.get(
   "/github",
   passport.authenticate("github", { scope: ["user:email"] }),
-  
- passportCall('jwt'),
+  passportCall('jwt'),
  authorization('USER'),
 //  async (req, res)=>{
 //       res.render("menuprincipal",{user: req.user})
@@ -49,7 +48,7 @@ route. If the registration is successful, it returns a status code of 201 and re
 the `/users/login` route. */
 router.post(
   "/register",
-  passport.authenticate("register", { failureRedirect: "/api/jwt/current" }),
+  passport.authenticate("register", {successRedirect:"/users/login", failureRedirect: "/api/jwt/current" }),
   async (req, res) => {
     const user = req.user._doc;
     req.session.user = {

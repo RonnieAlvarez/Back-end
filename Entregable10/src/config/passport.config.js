@@ -101,7 +101,7 @@ method to create a new instance of the `localStrategy` class, which is a Passpor
 authenticating with a username and password. */
     passport.use(
         "register",
-        new localStrategy({ passReqToCallback: true, usernameField: "email" }, async (req, password, done) => {
+        new localStrategy({ passReqToCallback: true, usernameField: "email" }, async (req,password, done) => {
             const { first_name, last_name, email, age, roll } = req.body;
             try {
                 const exists = await userModel.findOne({ email });
@@ -119,10 +119,11 @@ authenticating with a username and password. */
                     return done(null, result);
                 }
                 const result = await userModel.create(user);
+                console.log(result)
                 //Todo sale OK
                 return done(null, result);
             } catch (error) {
-                return done("Error registrando el usuario: " + error);
+                return done(null, error);
             }
         })
     );

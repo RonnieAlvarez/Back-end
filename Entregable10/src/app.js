@@ -68,17 +68,13 @@ initializePassport();
 app.use(passport.initialize()); // init passport on every route call
 app.use(passport.session()); //allow passport to use "express-session"
 
-
-/* This code is a middleware function that logs the HTTP method and URL of each incoming request, as
-well as whether the request is authenticated or not. It then calls the `next()` function to pass
-control to the next middleware function in the stack. */
+/* This code is creating a middleware function that logs the HTTP method and URL of every incoming
+request to the server. It then calls the `next()` function to pass control to the next middleware
+function in the chain. */
 app.use(function (req, res, next) {
     console.log("%s %s", req.method, req.url);
-    console.log(req.isAuthenticated ? "Authenticated" : "Not Authenticated");
-    console.log(req.isAuthenticated());
     next();
 });
-
 
 // View engine
 const hbs = exphbs.create({ helpers: { lookup: (obj, field) => obj[field] } });
@@ -91,7 +87,6 @@ const usersExtendRouter = new UsersExtendRouter();
 const chatExtendRouter = new ChatExtendRouter();
 const ecommerceExtendRouter = new EcommerceExtendRouter();
 const emenuExtendRouter = new EmenuExtendRouter();
-
 
 app.use("/products/",auth,authToken, ecommerceExtendRouter.getRouter());//auth
 app.use("/api/chat",auth,authToken, chatExtendRouter.getRouter());
