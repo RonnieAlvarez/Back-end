@@ -8,7 +8,7 @@ export default class UsersExtendRouter extends CustomRouter {
         //Nota que dentro "init" realizamos la inicializacion de nuestras rutas
         const userService = new UserService();
         //Aqui se declaran los router.get
-        this.get("/", ["PUBLIC"],callback1, callback2
+        this.get("/", ["USER"],callback1, callback2
         );
 
         this.get("/currentUser", ["USER", "USER_PREMIUM"], (req, res) => {
@@ -22,7 +22,7 @@ export default class UsersExtendRouter extends CustomRouter {
         });
 
 
-        this.post("/login", ['PUBLIC'], async (req, res) => {
+        this.post("/login", ['USER'], async (req, res) => {
             const { email, password } = req.body;
             try {
                 const user = await userService.findByUsername(email);
@@ -53,7 +53,7 @@ export default class UsersExtendRouter extends CustomRouter {
 
 
 
-        this.post("/register", ["PUBLIC"], async (req, res) => {
+        this.post("/register", ["USER"], async (req, res) => {
             const { first_name, last_name, email, age, password } = req.body;
             console.log("Registrando usuario:");
             console.log(req.body);

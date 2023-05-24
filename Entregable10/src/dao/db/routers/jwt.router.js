@@ -41,8 +41,6 @@ router.post("/current", async (req, res) => {
             roll: user.roll,
         };
         const access_token = generateJWToken(tokenUser);
-    //    req.headers.authorization = `Bearer ${access_token}`;
-    //    console.log(req.headers.authorization)
         res.cookie("jwtCookieToken", access_token, {
             maxAge: 60000,
             // httpOnly: false // expone la cookie

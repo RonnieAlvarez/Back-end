@@ -9,7 +9,7 @@ dotenv.config(
     }
 )
 
-console.log(process.env.PORT)
+// console.log(process.env.PORT)
 
 export default {
     port: process.env.PORT,

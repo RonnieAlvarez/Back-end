@@ -5,8 +5,6 @@ import { createHash, isValidPassword } from "../utils.js";
 import GitHubStrategy from "passport-github2";
 import jwtStrategy from "passport-jwt";
 import config from "./config.js";
-//import dotenv from "dotenv";
-//dotenv.config();
 
 const JwtStrategy = jwtStrategy.Strategy;
 const ExtractJWT = jwtStrategy.ExtractJwt;
@@ -63,6 +61,7 @@ object as the second parameter. */
                 clientSecret: GITCLIENTSECRET,
                 callbackUrl: `http://localhost:&{PORT}/api/sessions/githubcallback`,
             },
+            //            async (accessToken, refreshToken, profile, done) => {
             async (accessToken, refreshToken, profile, done) => {
                 console.log("Profile obtenido del usuario GIT: ");
                 console.log(profile);
@@ -73,10 +72,7 @@ object as the second parameter. */
                     console.log("Usuario encontrado para login GIT:");
                     console.log(user);
                     if (!user) {
-                        console.warn(
-                            "User doesn't exists with username: " +
-                                profile._json.email
-                        );
+                        console.warn("User doesn't exists with username: " + profile._json.email);
                         let namesplited = profile._json.name.split(" ");
                         let newUser = {
                             first_name: namesplited[0],
@@ -84,16 +80,17 @@ object as the second parameter. */
                             age: 21,
                             email: profile._json.email,
                             password: createHash(profile._json.email),
-                            roll: "User",
+                            roll: "USER",
                             loggedBy: "GitHub",
                         };
                         const result = await userModel.create(newUser);
+                        console.log("usuario creado");
                         return done(null, result);
                     } else {
                         return done(null, user);
                     }
                 } catch (error) {
-                    return done(error);
+                    return done(null, error);
                 }
             }
         )
@@ -104,36 +101,30 @@ method to create a new instance of the `localStrategy` class, which is a Passpor
 authenticating with a username and password. */
     passport.use(
         "register",
-        new localStrategy(
-            { passReqToCallback: true, usernameField: "email" },
-            async (req, username, password, done) => {
-                const { first_name, last_name, email, age, roll } = req.body;
-                try {
-                    const exists = await userModel.findOne({ email });
-                    const user = {
-                        first_name,
-                        last_name,
-                        email,
-                        age: age ?? 21,
-                        roll: roll ?? "User",
-                        password: createHash(password),
-                        loggedBy: "LocalStrategy",
-                    };
-                    if (exists) {
-                        const result = await userModel.findOneAndUpdate(
-                            { email },
-                            user
-                        );
-                        return done(null, result);
-                    }
-                    const result = await userModel.create(user);
-                    //Todo sale OK
+        new localStrategy({ passReqToCallback: true, usernameField: "email" }, async (req, password, done) => {
+            const { first_name, last_name, email, age, roll } = req.body;
+            try {
+                const exists = await userModel.findOne({ email });
+                const user = {
+                    first_name,
+                    last_name,
+                    email,
+                    age: age ?? 21,
+                    roll: roll ?? "USER",
+                    password: createHash(password),
+                    loggedBy: "LocalStrategy",
+                };
+                if (exists) {
+                    const result = await userModel.findOneAndUpdate({ email }, user);
                     return done(null, result);
-                } catch (error) {
-                    return done("Error registrando el usuario: " + error);
                 }
+                const result = await userModel.create(user);
+                //Todo sale OK
+                return done(null, result);
+            } catch (error) {
+                return done("Error registrando el usuario: " + error);
             }
-        )
+        })
     );
 
     /* This code is defining a local strategy for user login. It is using the `passport.use()` method
@@ -149,30 +140,22 @@ authenticating with a username and password. */
     function with the user object as the second parameter. */
     passport.use(
         "login",
-        new localStrategy(
-            { passReqToCallback: true, usernameField: "email" },
-            async (req, username, password, done) => {
-                try {
-                    const user = await userModel.findOne({ email: username });
-                    if (!user) {
-                        console.warn(
-                            "User doesn't exists with username: " + username
-                        );
-                        return done(null, false);
-                    }
-                    if (!isValidPassword(user, password)) {
-                        console.warn(
-                            "Invalid credentials for user: " + username
-                        );
-                        return done(null, false);
-                    }
-
-                    return done(null, user);
-                } catch (error) {
-                    return done(error);
+        new localStrategy({ passReqToCallback: true, usernameField: "email" }, async (username, password, done) => {
+            try {
+                const user = await userModel.findOne({ email: username });
+                if (!user) {
+                    console.warn("local User doesn't exists with username: " + username);
+                    return done(null, false);
                 }
+                if (!isValidPassword(user, password)) {
+                    console.warn("Invalid credentials for user: " + username);
+                    return done(null, false);
+                }
+                return done(null, user);
+            } catch (error) {
+                return done(error);
             }
-        )
+        })
     );
 
     /* This code defines the function that serializes a user object into a session store based on the
@@ -195,8 +178,7 @@ subsequent requests. */
         console.log("deserializando " + id);
         try {
             let user = await userModel.findById(id);
-            console.log(user);
-            done(null, user);
+            return done(null, user);
         } catch (error) {
             console.error("Error deserializando el usuario: " + error);
         }
@@ -205,13 +187,8 @@ subsequent requests. */
 
 /**
  * The function extracts a JWT token from a cookie in a request object.
- * @param req - The `req` parameter is an object that represents the HTTP request made by a client to a
- * server. It contains information about the request, such as the URL, headers, and any data sent in
- * the request body. In this case, the `req` object is used to extract a JWT token
- * @returns The `cookieExtractor` function returns the value of the "jwtCookieToken" cookie from the
- * `req` object, or `null` if the cookie is not present.
  */
-const cookieExtractor = (req,res) => {
+const cookieExtractor = (req, res) => {
     let token = null;
     if (req && req.cookies) {
         token = req.cookies["jwtCookieToken"];

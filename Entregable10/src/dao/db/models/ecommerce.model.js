@@ -136,8 +136,8 @@ const UserSchema = new mongoose.Schema(
         cartId: { type: mongoose.Schema.Types.ObjectId, ref: "CartSchema" },
         roll: {
             type: String,
-            default: "User",
-            enum: ["User", "Admin"],
+            default: "USER",
+            enum: ["USER", "ADMIN"],
         },
         date: {
             type: String,

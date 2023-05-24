@@ -17,17 +17,17 @@ form.addEventListener("submit", (e) => {
         },
     })
         .then((result) => {
-            console.log(result)
+        //    console.log(result)
             if (result.status === 200) {
                 result.json().then((json) => {
-                    console.log(json);
+        //            console.log(json);
                     window.location.replace("/users");
                 });
             } else if (result.status === 401) {
-                console.log(result);
+        //        console.log(result);
                 window.location.replace("/users/register");
             } else if (result.status === 403) {
-                console.log(result);
+        //        console.log(result);
                 window.location.replace("/users/login");
             }
         })

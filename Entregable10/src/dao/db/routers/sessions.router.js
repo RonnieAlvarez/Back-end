@@ -1,6 +1,6 @@
 import { Router } from "express";
 import passport from "passport";
-import {generateJWToken} from '../../../utils.js';
+import {generateJWToken,passportCall,authorization} from '../../../utils.js';
 
 const router = Router();
 
@@ -8,11 +8,16 @@ const router = Router();
 router.get(
   "/github",
   passport.authenticate("github", { scope: ["user:email"] }),
-  async (req, res) => {
-    window.location.replace("/users");
-
-//    res.status(200).redirect("/")
-  }
+  
+ passportCall('jwt'),
+ authorization('USER'),
+//  async (req, res)=>{
+//       res.render("menuprincipal",{user: req.user})
+//  }
+async (req, res) => {
+  req.session.admin = true;
+    res.status(200).redirect("/users/login");
+ }
 );
 
 /* This code defines a route for handling the callback from GitHub authentication using Passport.js
@@ -23,6 +28,7 @@ the authentication fails, it redirects the user to the `/github/error` route. */
 router.get(
   "/githubcallback",
   passport.authenticate("github", { failureRedirect: "/github/error" }),
+  
   async (req, res) => {
     const user = req.user;
     req.session.user = {
@@ -32,7 +38,8 @@ router.get(
       roll: user.roll,
     };
     req.session.admin = true;
-    res.redirect("/github");
+    res.status(200).redirect("/users/login");
+
   }
 );
 
@@ -71,7 +78,7 @@ router.post(
         name: "CoderHouse",
         email: email,
         age: 21,
-        roll: "Admin",
+        roll: "ADMIN",
       };
       return res.redirect("/");
     }
@@ -118,11 +125,7 @@ router.post(
        roll: user.roll,
      };
     const access_Token = generateJWToken(user)
-    console.log(access_Token);
-    req.headers.Authorization=`Bearer ${access_Token}`
-    console.log('session linea 123: '+req.headers.Authorization)
-    res.send({access_token:access_Token});
-    return res.redirect("/",{access_token:access_Token});
+    return res.status(200).redirect("/",{access_token:access_Token});
   }
 );
 

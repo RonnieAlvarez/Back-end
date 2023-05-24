@@ -15,9 +15,7 @@ export default class CustomRouter {
     init() {} //Esta inicialilzacion se usa para las clases heredadas.
 
     get(path, policies, ...callbacks) {
-        console.log("Entrando por GET a custom router con Path: " + path);
-        console.log(policies);
-        
+
         this.router.get(
             path,
             this.handlePolicies(policies),
@@ -55,14 +53,12 @@ export default class CustomRouter {
 
     applyCallbacks(callbacks) {
         return callbacks.map((callback) => async (req, res, next) => {
-            if (typeof callback !== 'function') {
-                console.error('Callback is not a function:', callback);
+            if (typeof callback !== "function") {
                 return next();
             }
             try {
                 await callback.apply(this, [req, res, next]);
             } catch (error) {
-                console.error(error);
                 res.status(500).send(error);
             }
         });
@@ -70,19 +66,15 @@ export default class CustomRouter {
 
     generateCustomResponses = (req, res, next) => {
         //Custom responses
-        res.sendSuccess = (payload) =>
-            res.status(200).send({ status: "Success", payload });
-        res.sendInternalServerError = (error) =>
-            res.status(500).send({ status: "Error", error });
+        res.sendSuccess = (payload) => res.status(200).send({ status: "Success", payload });
+        res.sendInternalServerError = (error) => res.status(500).send({ status: "Error", error });
         res.sendClientError = (error) =>
             res.status(400).send({
                 status: "Client Error, Bad request from client.",
                 error,
             });
         res.sendUnauthorizedError = (error) =>
-            res
-                .status(401)
-                .send({ error: "User not authenticated or missing token." });
+            res.status(401).send({ error: "User not authenticated or missing token." });
         res.sendForbiddenError = (error) =>
             res.status(403).send({
                 error: "Token invalid or user with no access, Unauthorized please check your roles!",
@@ -90,45 +82,25 @@ export default class CustomRouter {
         next();
     };
 
-//    handlePolicies = (policies) => (req, res, next) => {
-    handlePolicies ({ policies}) {
+    handlePolicies({ policies }) {
         return (req, res, next) => {
-        console.log("Politicas a evaluar:");
-        console.log(policies);
-        //Validar si tiene acceso publico:
-        if (policies.includes('PUBLIC')) {
-            return next() // anyone can access
-          }
-        //if (policies[0] === "PUBLIC") return next(); //Puede entrar cualquiera
-        //El JWT token se guarda en los headers de autorización.
-        const authHeader = req.headers.cookie;
-        console.log("Token present in header auth:");
-        console.log(authHeader);
-        if (!authHeader) {
-            return res
-                .status(401)
-                .send({ error: "User not authenticated or missing token." });
-        }
-        const token = authHeader.split("=")[1]; //Se hace el split para retirar la palabra Bearer.
-    
-        //Validar token
-        jwt.verify(token, PRIVATE_KEY, (error, credentials) => {
-            if (error)
-                return res
-                    .status(403)
-                    .send({ error: "Token invalid, Unauthorized!" });
-            //Token OK
-            let user = credentials.user;
-            user.role='PUBLIC'
-            console.log('custom router linea 118 '+{user})
-            if (!policies.includes(user.roll))
-                return res.status(403).send({
-                    error: "El usuario no tiene privilegios, revisa tus roles!",
-                });
-            req.user = user;
-            console.log(req.user);
-            next();
-        });
-    };
-}
+            if (policies.includes("USER")) {
+                return next(); // anyone can access
+            }
+            const authHeader = req.headers.cookie;
+            if (!authHeader) {
+                return res.status(401).send({ error: "User not authenticated or missing token." });
+            }
+            const token = authHeader.split("=")[1]; //Se hace el split para retirar la palabra Bearer.
+            jwt.verify(token, PRIVATE_KEY, (error, credentials) => {
+                if (error) return res.status(403).send({ error: "Token invalid, Unauthorized!" });
+                let user = credentials.user;
+                if (!policies.includes(user.roll))
+                    return res.status(403).send({
+                        error: "El usuario no tiene privilegios, revisa tus roles!",
+                    });
+                next();
+            });
+        };
+    }
 }

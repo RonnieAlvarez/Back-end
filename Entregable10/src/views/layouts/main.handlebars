@@ -18,17 +18,22 @@
             Back-end Final Project </span>
     </div>
     <div class="container my-1 d-flex flex-row sticky-top bg-dark p-2 rounded justify-content-between">
+        {{#if user.name}}
         <div>
             <a href="/users" class="btn btn-secondary btn-sm px-2 fw-bold" tabindex="-1" role="button" aria-disabled="true">BACK HOME</a>
         </div>
-        {{#if user.name}}
          <div>
             <a href="/users/logout" class="btn btn-danger btn-sm px-2 fw-bold" tabindex="-1" role="button" aria-disabled="true">LOGOUT</a>
         </div>
         <div class="btn btn-info btn-sm fw-bold">
-            <span style="color: rgb(32, 30, 30);">{{user.roll}}: {{user.name}}</span>
+            <a href="/users/profile" style=" text-decoration: none">
+                <span style="color: rgb(32, 30, 30);">🧔🏻‍♂️ {{user.roll}}: {{user.name}}</span>
+            </a>
         </div>
         {{else}}
+        <div>
+            <a href="/users/login" class="btn btn-secondary btn-sm px-2 fw-bold" tabindex="-1" role="button" aria-disabled="true">BACK HOME</a>
+        </div>
         <div class="btn btn-warning btn-sm fw-bold">
             <span>Not logged in</span>
         </div>
