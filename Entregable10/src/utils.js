@@ -33,12 +33,17 @@ export const generateJWToken = (user) => {
  * of a request and grants access to the next function if the token is valid.
   */
 export const authToken = (req, res, next) => {
-    const authHeader = req.headers.cookie;  //inicialmente era headers.authorization
+    //const authHeader = req.headers.cookie;  //inicialmente era headers.authorization
+    const authHeader = req.cookies.jwtCookieToken;  //inicialmente era headers.authorization
+    //console.log(authHeader);    
+    //console.log('utils 38')
     if (!authHeader)
         return res
             .status(401)
             .json({ message: "Token no valido", error: "Not autorized" });
-    const token = authHeader.split("=")[1]; // antes " "
+    //const token = authHeader.split("=")[1]; // antes " "
+    const token=authHeader
+    //console.log(token)
     jwt.verify(token,PRIVATE_KEY, (error, credentials) => {
         if (error)
             return res
