@@ -20,14 +20,15 @@ import passport from "passport";
 import initializePassport from "./config/passport.config.js";
 import cookieParser from "cookie-parser";
 // Import Routers
-import githubLoginViewRouter from "./dao/db/routers/github-login.views.router.js";
+
 import usersViewRouter from "./dao/db/routers/users.views.router.js";
 import sessionsRouter from "./dao/db/routers/sessions.router.js";
 import jwtRouter from "./dao/db/routers/jwt.router.js";
 import EmenuExtendRouter from './dao/db/routers/custom/eMenu.router.js'
-import UsersExtendRouter from './dao/db/routers/custom/users.extend.router.js'
 import EcommerceExtendRouter from './dao/db/routers/custom/eCommerce.router.js'
 import ChatExtendRouter from './dao/db/routers/custom/chat.router.js'
+import favicon from 'serve-favicon'
+import cors from 'cors'
 
 import config from '../src/config/config.js'
 import { authToken } from "./utils.js";
@@ -42,7 +43,9 @@ app.use(express.urlencoded({ extended: true }));
 // Middlewares
 const pathPublic = path.join(__dirname, "/public");
 app.use(express.static(pathPublic));
+app.use(favicon(__dirname + '/public/imgs/shopping-cart-icon-29088-Windows.ico'));
 app.use(cookie());
+app.use(cors());
 app.use(
     session({
         store: mongoStore.create({
@@ -52,15 +55,15 @@ app.use(
                 userNewUrlParse: true,
                 useUnifiedTopology: true,
             },
-            ttl: 140,
+            ttl: 24*60*60,
         }),
         secret: config.mongoSecret,
         resave: false,
         saveUninitialized: false,
-        cookie: { maxAge: 60000 },
+        cookie: { maxAge: 24*60*60 },
     })
 );
-app.use(cookieParser("Coder$3crtC0d3clav"));
+app.use(cookieParser(`${config.cookiePassword}`));
 
 //Middleware Passport
 initializePassport();
@@ -83,7 +86,6 @@ app.set("view engine", "handlebars");
 app.set("views", path.join(__dirname, "views"));
 
 // Routes
-const usersExtendRouter = new UsersExtendRouter();
 const chatExtendRouter = new ChatExtendRouter();
 const ecommerceExtendRouter = new EcommerceExtendRouter();
 const emenuExtendRouter = new EmenuExtendRouter();
@@ -94,11 +96,7 @@ app.use("/menu/", auth,authToken, emenuExtendRouter.getRouter());//auth
 app.use("/users", usersViewRouter);
 app.use("/api/sessions", sessionsRouter);
 app.use("/api/jwt", jwtRouter); // new
-app.use("/github", githubLoginViewRouter);
 
-
-app.use("/",auth,authToken, usersExtendRouter.getRouter());//auth
-app.use("/api/extend/users", usersExtendRouter.getRouter());
 
 
 

@@ -1,6 +1,26 @@
+{{#if message}}
 <div class="container h-100 d-flex flex-column justify-content-center align-items-center">
-    <div class="mt-5  rounded">
-        <p>Page not found !!</p>
+    <div class="mt-5  rounded alert alert-warning" role="alert">
+        <p>{{message}}</p>
     </div>
 
 </div>
+{{else if messagedanger}}
+<div class="container h-100 d-flex flex-column justify-content-center align-items-center">
+    <div class="mt-5  rounded alert alert-danger" role="alert">
+        <p>{{messagedanger}}</p>
+    </div>
+</div>
+{{else if messageSuccess}}
+<div class="container h-100 d-flex flex-column justify-content-center align-items-center">
+    <div class="mt-5  rounded alert alert-success" role="alert">
+        <p>{{messageSuccess}}</p>
+    </div>
+</div>
+{{else}}
+<div class="container h-100 d-flex flex-column justify-content-center align-items-center">
+    <div class="mt-5  rounded alert alert-danger" role="alert">
+        <p>Page not found !!</p>
+    </div>
+</div>
+{{/if}}

@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "cors": "^2.8.5",
+    "serve-favicon": "^2.5.0"
+  }
+}

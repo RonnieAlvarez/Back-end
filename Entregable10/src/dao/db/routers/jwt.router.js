@@ -2,6 +2,7 @@ import { Router } from "express";
 import userModel from "../models/ecommerce.model.js";
 import { isValidPassword } from "../../../utils.js";
 import { generateJWToken } from "../../../utils.js";
+import config from "../../../config/config.js"
 
 const router = Router();
 
@@ -18,15 +19,24 @@ there was an internal error. */
 router.post("/current", async (req, res) => {
     const { email, password } = req.body;
     try {
-        const user = await userModel.findOne({ email: email });
+        let user = await userModel.findOne({ email: email });
         if (!user) {
-            console.warn("User doesn't exists with username: " + email);
-            return res
-                .status(401)
-                .send({
-                    error: "Not found",
-                    message: "User not found: " + email,
-                });
+            if (email === config.adminName && password === config.adminPassword) {
+                user = {
+                    first_name: "Admin",
+                    last_name: "CoderHouse",
+                    email: email,
+                    age: 21,
+                    roll: "ADMIN"
+                }} else {
+                    console.warn("User doesn't exists with username: " + email);
+                    return res
+                    .status(401)
+                    .send({
+                        error: "Not found",
+                        message: "User not found: " + email,
+                    });
+                }
         }
         if (!isValidPassword) {
             console.warn("Invalid credentials for user: " + email);
@@ -39,7 +49,7 @@ router.post("/current", async (req, res) => {
             email: user.email,
             age: user.age,
             roll: user.roll,
-        };
+        }
         const access_token = generateJWToken(tokenUser);
         res.cookie("jwtCookieToken", access_token, {
             maxAge: 60000,

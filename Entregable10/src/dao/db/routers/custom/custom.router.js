@@ -87,7 +87,7 @@ export default class CustomRouter {
             if (policies.includes("USER")) {
                 return next(); // anyone can access
             }
-            const authHeader = req.headers.cookie;
+            const authHeader = req.cookies.jwtCookieToken ? req.cookies.jwtCookieToken : req.headers.cookie //inicialmente era headers.authorization
             if (!authHeader) {
                 return res.status(401).send({ error: "User not authenticated or missing token." });
             }

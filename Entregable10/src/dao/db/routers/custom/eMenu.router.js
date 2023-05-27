@@ -6,8 +6,8 @@ export default class eMenuRouter extends CustomRouter {
   init () {
 
 
-this.get('/products', { policies: ['USER'] },eMenuController.getmenuProducts)
-this.get('/menu', { policies: ['USER'] },eMenuController.getMenu)
+this.get('/products', { policies: ['USER','ADMIN'] },eMenuController.getmenuProducts)
+this.get('/menu', { policies: ['USER','ADMIN'] },eMenuController.getMenu)
 
 
 }}

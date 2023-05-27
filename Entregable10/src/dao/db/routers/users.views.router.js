@@ -4,7 +4,7 @@ import bcrypt from "bcrypt";
 
 const router = Router();
 
-router.get("/", passportCall("jwt"), authorization("USER"), async (req, res) => {
+router.get("/", passportCall("jwt"), authorization(["USER","ADMIN"]), async (req, res) => {
     res.render("menuprincipal", { user: req.user });
 });
 
@@ -20,7 +20,7 @@ router.get("/gitregister", (req, res) => {
     res.render("gitRegister");
 });
 
-router.get("/profile", passportCall("jwt"), authorization("USER"), (req, res) => {
+router.get("/profile", passportCall("jwt"), authorization(["USER","ADMIN"]), (req, res) => {
     res.render("profile", { user: req.user });
 });
 

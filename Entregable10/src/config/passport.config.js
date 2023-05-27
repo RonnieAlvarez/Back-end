@@ -63,16 +63,11 @@ object as the second parameter. */
             },
             //            async (accessToken, refreshToken, profile, done) => {
             async (accessToken, refreshToken, profile, done) => {
-                console.log("Profile obtenido del usuario GIT: ");
-                console.log(profile);
                 try {
                     const user = await userModel.findOne({
                         email: profile._json.email,
                     });
-                    console.log("Usuario encontrado para login GIT:");
-                    console.log(user);
                     if (!user) {
-                        console.warn("User doesn't exists with username: " + profile._json.email);
                         let namesplited = profile._json.name.split(" ");
                         let newUser = {
                             first_name: namesplited[0],
@@ -84,7 +79,6 @@ object as the second parameter. */
                             loggedBy: "GitHub",
                         };
                         const result = await userModel.create(newUser);
-                        console.log("usuario creado");
                         return done(null, result);
                     } else {
                         return done(null, user);
@@ -119,7 +113,6 @@ authenticating with a username and password. */
                     return done(null, result);
                 }
                 const result = await userModel.create(user);
-                console.log(result)
                 //Todo sale OK
                 return done(null, result);
             } catch (error) {
@@ -165,7 +158,7 @@ authenticating with a username and password. */
     the `done` function with the user ID as the second parameter. This function is used by Passport
     to store the user object in the session store. */
     passport.serializeUser((user, done) => {
-        console.log("serializando" + user);
+//        console.log("serializando" + user);
         done(null, user._id);
     });
 
@@ -176,12 +169,12 @@ the `done` callback function along with a `null` error parameter. This function 
 to retrieve the user object from the session store and attach it to the `req.user` property for
 subsequent requests. */
     passport.deserializeUser(async (id, done) => {
-        console.log("deserializando " + id);
+//        console.log("deserializando " + id);
         try {
             let user = await userModel.findById(id);
             return done(null, user);
         } catch (error) {
-            console.error("Error deserializando el usuario: " + error);
+            console.error("User Deserialized Error : " + error);
         }
     });
 };

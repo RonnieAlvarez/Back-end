@@ -49,7 +49,7 @@ export async function getRealProducts(req, res) {
   try {
     let user = req.user
     const products = await ProductService.getAllProducts();
-    return res.render("realTimeProducts", { productsa: products, user });
+    return res.render("realTimeProducts", { productsa: products,user: user });
   } catch (error) {
     res.status(400).json({
       error: error.message,
@@ -67,7 +67,7 @@ export async function createRealProduct(req, res) {
     let user = req.user
     let products = await ProductService.createProduct(body);
     products = await ProductService.getProducts();
-    res.status(201).render("realTimeProducts", { productsa: products,user });
+    return res.render("realTimeProducts", { productsa: products,user: user });
   } catch (error) {
     res.status(400).json({
       error: error.message,
@@ -86,7 +86,7 @@ export async function deleteRealProduct(req, res) {
     const id = parseInt(req.query.pid);
     await ProductService.deleteRealProduct(id);
     let products = await ProductService.getAllProducts();
-    res.status(201).render("realTimeProducts", { productsa: products,user });
+    res.status(201).render("realTimeProducts", { productsa: products,user: user });
   } catch (error) {
     res.status(400).json({
       error: error.message,

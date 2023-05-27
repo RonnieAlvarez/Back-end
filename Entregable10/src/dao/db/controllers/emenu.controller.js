@@ -96,50 +96,48 @@ export async function getmenuProducts(req, res) {
     </div>
     <div class="container my-1 p-3 mx-auto  bg-dark rounded d-flex justify-content-between">
     <div>
-    <a href=${productsprevLink}  class="btn btn-secondary btn-sm rounded sticky-sm-bottom ">Prev Page</a>
-    <a href=${productsnextLink}  class="btn btn-secondary btn-sm rounded sticky-sm-bottom ">Next Page</a>
-    <a href=${productHomeLink}  class="btn btn-secondary btn-sm rounded  sticky-sm-bottom ">Home Menu</a>
-    </div>
+        <a href=${productsprevLink}  class="btn btn-secondary btn-sm rounded sticky-sm-bottom ">Prev Page</a>
+        <a href=${productsnextLink}  class="btn btn-secondary btn-sm rounded sticky-sm-bottom ">Next Page</a>
+        <a href=${productHomeLink}  class="btn btn-secondary btn-sm rounded  sticky-sm-bottom ">Home Menu</a>
+    </div>    
     <div>
-    <span class=" text-center" style="color:white">Products</span>
+        <span class=" text-center" style="color:white">Products</span>
     </div>
-    <div>
-    // <span  class="btn btn-info btn-sm rounded fw-bold style="color:white">${roll}: ${name}</span>
     </div>
-      </div>
+    </div>
     <div class="container d-flex flex-column-reverse mt-1  bg-dark p-2 rounded">
-          <div >
-              <table class='w-100 bg-info py-10 mt-2  mx-auto items-center p-2'>
-              <thead class='bg-light text-start rounded'>
-              <tr >
-              <th>Product _ID</th>
-              <th>Title</th>
-              <th>Price</th>
-              <th>Description</th>
-              <th>Category</th>
-              <th>Stock</th>
-              </tr>
-              </thead>
-              <tbody class='bg-info rounded'>
-              {{#each products.docs}}
-              <tr>
-              <td><span class=" mx-2">{{lookup this "id"}}</span></td>
-              <td><span class=" mx-2">{{lookup this "Title"}}</span></td>
-              <td><span class=" mx-2">{{lookup this "Price"}}</span></td>
-              <td><span class=" mx-2">{{lookup this "Description"}}</span></td>
-              <td><span class=" mx-2">{{lookup this "Category"}}</span></td>
-              <td><span class=" mx-2">{{lookup this "Stock"}}</span></td>
-              </tr>
-              {{/each}}
-              </tbody
-              </table>
-          </div>
-          <div class="container mt-1 p-2 m-auto bg-info rounded d-flex justify-content-between">
-          <span>Page {{ products.page }} of {{ products.totalPages }} </span> 
-          <span> showing ${filter}</span>
-          <span> {{ products.docs.length }}  products of {{ products.totalDocs }} results</span></span>
-          </div>
-      </div>
+        <div >
+            <table class='w-100 bg-info py-10 mt-2  mx-auto items-center p-2'>
+            <thead class='bg-light text-start rounded'>
+            <tr >
+            <th>Product _ID</th>
+            <th>Title</th>
+            <th>Price</th>
+            <th>Description</th>
+            <th>Category</th>
+            <th>Stock</th>
+            </tr>
+            </thead>
+            <tbody class='bg-info rounded'>
+            {{#each products.docs}}
+            <tr>
+            <td><span class=" mx-2">{{lookup this "id"}}</span></td>
+            <td><span class=" mx-2">{{lookup this "Title"}}</span></td>
+            <td><span class=" mx-2">{{lookup this "Price"}}</span></td>
+            <td><span class=" mx-2">{{lookup this "Description"}}</span></td>
+            <td><span class=" mx-2">{{lookup this "Category"}}</span></td>
+            <td><span class=" mx-2">{{lookup this "Stock"}}</span></td>
+            </tr>
+            {{/each}}
+            </tbody
+            </table>
+        </div>
+        <div class="container mt-1 p-2 m-auto bg-info rounded d-flex justify-content-between">
+        <span>Page {{ products.page }} of {{ products.totalPages }} </span> 
+        <span> showing ${filter}</span>
+        <span> {{ products.docs.length }}  products of {{ products.totalDocs }} results</span></span>
+        </div>
+        </div>
     </div>
 </div>
 </body>

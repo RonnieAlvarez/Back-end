@@ -19,5 +19,6 @@ export default {
     adminPassword: process.env.ADMIN_PASSWORD,
     jwtKey: process.env.JWTPRIVATE_KEY,
     gitClientId: process.env.GITCLIENTID,
-    gitClientSecret: process.env.GITCLIENTSECRET
+    gitClientSecret: process.env.GITCLIENTSECRET,
+    cookiePassword: process.env.COOKIEPASSWORD
 };

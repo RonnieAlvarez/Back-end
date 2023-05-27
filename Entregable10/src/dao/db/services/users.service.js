@@ -1,8 +1,9 @@
 import userModel from '../models/ecommerce.model.js';
 
+/* This is a class that provides methods for interacting with a user model, including getting all
+users, saving a user, finding a user by username, and updating a user. */
 export default class UserService {
     constructor(){
-//        console.log("Calling users model using a service.");
     };  
     getAll = async () => {
         let users = await userModel.find();

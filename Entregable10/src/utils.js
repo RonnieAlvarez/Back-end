@@ -8,17 +8,16 @@ import config from "./config/config.js";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-export const createHash = (password) =>
-    bcrypt.hashSync(password, bcrypt.genSaltSync(10));
+export const createHash = (password) => bcrypt.hashSync(password, bcrypt.genSaltSync(10));
 
 /**
  * The function checks if a given password matches the hashed password of a user using bcrypt.
-  */
+ */
 export const isValidPassword = (user, password) => {
     return bcrypt.compareSync(password, user.password);
 };
 
-const PRIVATE_KEY = config.jwtKey
+const PRIVATE_KEY = config.jwtKey;
 
 /**
  * This function generates a JSON Web Token (JWT) for a given user with a 24-hour expiration time.
@@ -31,26 +30,14 @@ export const generateJWToken = (user) => {
 /**
  * This is a middleware function that verifies the authenticity of a token in the authorization header
  * of a request and grants access to the next function if the token is valid.
-  */
+ */
 export const authToken = (req, res, next) => {
-    //const authHeader = req.headers.cookie;  //inicialmente era headers.authorization
-    const authHeader = req.cookies.jwtCookieToken;  //inicialmente era headers.authorization
-    //console.log(authHeader);    
-    //console.log('utils 38')
-    if (!authHeader)
-        return res
-            .status(401)
-            .json({ message: "Token no valido", error: "Not autorized" });
-    //const token = authHeader.split("=")[1]; // antes " "
-    const token=authHeader
-    //console.log(token)
-    jwt.verify(token,PRIVATE_KEY, (error, credentials) => {
-        if (error)
-            return res
-                .status(403)
-                .json({ message: "Token no valido", error: "Not autorized" });
+    const authHeader = req.cookies.jwtCookieToken ? req.cookies.jwtCookieToken : req.headers.cookie //inicialmente era headers.authorization
+    if (!authHeader) return res.status(401).json({ message: "Token no valido", error: "Not autorized" });
+    const token = authHeader;
+    jwt.verify(token, PRIVATE_KEY, (error, credentials) => {
+        if (error) return res.status(403).json({ message: "Token no valido", error: "Not autorized" });
         req.user = credentials.user;
-        
         next();
     });
 };
@@ -64,10 +51,11 @@ export const passportCall = (strategy) => {
         passport.authenticate(strategy, function (err, user, info) {
             if (err) return next(err);
             if (!user) {
-                return res
+                return (
+                    res
                     .status(401)
-                    //.send({error: info.messages ? info.messages : info.toString()})
-                    .redirect('/login')
+                    .redirect("/login")
+                    );
             }
             req.user = user;
             next();
@@ -78,15 +66,18 @@ export const passportCall = (strategy) => {
 /**
  * This is a middleware function that checks if the user has the required role to access a certain
  * route.
-  */
+ */
 export const authorization = (roll) => {
     return async (req, res, next) => {
-        if (!req.user)
-            return res.status(401).send("Unauthorized: User not found in JWT");
-            if (req.user.roll.toUpperCase() !== roll.toUpperCase()) {            
+        const userRole = req.user.roll.toUpperCase();
+        const allowedRoles = roll.map((elementos) => {
+            return elementos.toUpperCase();
+        });
+        if (!req.user) return res.status(401).render("nopage", { message: "Unauthorized: User not found in JWT" });
+        if (!allowedRoles.includes(userRole)) {
             return res
                 .status(403)
-                .send("Forbidden: El usuario no tiene permisos con este rol.");
+                .render("nopage", { messagedanger: "Forbidden: The User doesn't have permission with this roll." });
         }
         next();
     };
