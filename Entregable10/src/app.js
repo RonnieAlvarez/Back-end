@@ -76,6 +76,7 @@ request to the server. It then calls the `next()` function to pass control to th
 function in the chain. */
 app.use(function (req, res, next) {
     console.log("%s %s", req.method, req.url);
+    
     next();
 });
 
@@ -96,7 +97,7 @@ app.use("/menu/", auth,authToken, emenuExtendRouter.getRouter());//auth
 app.use("/users", usersViewRouter);
 app.use("/api/sessions", sessionsRouter);
 app.use("/api/jwt", jwtRouter); // new
-
+app.use("/",usersViewRouter); 
 
 
 
