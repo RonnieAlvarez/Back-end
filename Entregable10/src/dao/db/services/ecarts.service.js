@@ -75,9 +75,11 @@ export async function createCart(data) {
  */
 export async function updateCart(cid, data) {
   try {
-    const updatedCart = await CartModel.findByIdAndUpdate(cid, data, {
-      new: true,
-    });
+    const updatedCart = await CartModel
+    .findByIdAndUpdate(
+      cid, data, {
+      new: true })
+    .populate('products.product')
     return updatedCart;
   } catch (error) {
     throw new Error(error.message);

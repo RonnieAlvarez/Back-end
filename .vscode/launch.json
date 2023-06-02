@@ -1,11 +1,12 @@
 {
     "configurations": [
+        
         {
             "type": "node-terminal",
-            "name": "Run Script: start",
+            "name": "Run Tercera Entrega",
             "request": "launch",
             "command": "npm run start",
-            "cwd": "${workspaceFolder}\\Entregable10"
+            "cwd": "${workspaceFolder}\\TerceraEntrega"
         }
     ]
 }

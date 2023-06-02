@@ -76,12 +76,24 @@ const CartSchema = new mongoose.Schema({
                     type: Number,
                     default: 0,
                 },
+                totlinea: {
+                    type: Number,
+                    default: 0,
+                },
+                Title: {
+                    type: String,
+                    default: "",
+                },
             },
         ],
         default: [],
     },
     timestamp: { type: String },
 });
+
+CartSchema.pre('findOne', function () {
+    this.populate('products.product')
+  })
 
 /* This code is defining a Mongoose schema for a chat message. It includes fields such as userEmail,
 message, and date. The userEmail and message fields are required and have a data type of string. The
