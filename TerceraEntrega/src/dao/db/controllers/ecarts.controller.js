@@ -7,11 +7,32 @@ import { CartModel, ProductModel } from "../models/ecommerce.model.js";
  */
 export async function getRealCarts(req, res) {
     try {
-        const carts = await CartModel.find();
         let user = req.user;
-        const productsarray = await ProductModel.find().select('id Title')
-        const products = Array.from(productsarray, ({ id, Title }) => ({  id, Title }));
-        return res.status(201).render("realTimeCarts", { carts: carts, user,products: products});
+        const carts = await CartModel.find({ uid: user._id }).populate("products").lean();
+        const productsarray = await ProductModel.find().select("id Title Price");
+        let total =0
+        let carlinea=[]
+        carts[0].products.forEach((product) => {
+            productsarray.forEach((linea)=>{
+                if(linea.id == product.pid){
+                    carlinea.push({lid:linea.id,lQua:product.Quantity,lTitle:linea.Title,lPrice:linea.Price,lTotLine:linea.Price*product.Quantity})
+                    total=total +linea.Price*product.Quantity
+                }
+            })
+        })
+        
+        //console.log(carlinea)
+        //console.log('El total de la compra ',total)
+    
+//        const prueba2 = await CartModel.find({ uid: user._id }).populate("products", "id Title Price ").lean();
+//        console.log('prueba2 ',prueba2);
+        const products = Array.from(productsarray, ({ id, Title, Price }) => ({ id, Title, Price }));
+    //    console.log(products)
+    console.log(carlinea)
+    console.log(user._id)
+    console.log(products)
+    console.log(total)
+        return res.status(201).render("realTimeCarts", { carts: carlinea,user, products: products,lTotal:total });
     } catch (error) {
         res.status(400).json({
             error: error.message,
@@ -67,42 +88,54 @@ export async function saveProductToCart(req, res) {
         let Quantity = parseInt(body.Quantity);
 
         const product = await ProductModel.findOne({ id: pid });
+
         // si no existe el producto se cae la app
         if (!product) {
-           return res.status(201).render("nopage", { messagedanger: "Product doesn't Exist." });
-        } 
-
+            return res.status(201).render("nopage", { messagedanger: "Product doesn't Exist." });
+        }
+        let T_pid = product._id;
+        let pTitle = product.Title;
         if (Quantity > product.Stock) {
             Quantity === product.Stock;
         }
         const linePrice = product.Price * Quantity;
-        if (!id) {
-            const Carts = await CartService.getAllCarts();
-            let maxId = 0;
-            Carts.forEach((event) => {
-                if (event.id > maxId) maxId = event.id;
-            });
-            id = maxId + 1;
-        }
-        let cart = await CartModel.findOne({ id: id }).populate("products");
-        console.log(cart._doc,cart._doc._id)
+        // if (!id) {
+        //     const Carts = await CartService.getAllCarts();
+        //     let maxId = 0;
+        //     Carts.forEach((event) => {
+        //         if (event.id > maxId) maxId = event.id;
+        //     });
+        //     id = maxId + 1;
+        // }
+        let cartReady = {};
+        let cart = await CartModel.findOne({ uid: user._id }).populate("products");
         if (!cart) {
             let newCart = await CartModel.create({
-                id: id,
-                uid:user._id,
-                products: { pid: pid, Quantity: Quantity, _pid: product._id },
+                uid: user._id,
+                products: { pid: pid, Quantity: Quantity, _pid: T_pid, Title: pTitle },
             });
         } else {
-            const filter = { id: id };
-            //const update = {$push: { products: { pid: pid, Quantity: Quantity, totlinea: linePrice, Title: product.Title } }, };
-            const update = {$push: { products: { pid: pid, Quantity: Quantity, totlinea: linePrice, Title: product.Title } }, };
-            const options = { new: true };
-            
-            let updatedCart = await CartModel.findOneAndUpdate(filter, update, options);
+            let cartUpdated = await CartModel.findOneAndUpdate(
+                { uid: user._id, "products.pid": pid },
+                { $inc: { "products.$.Quantity": Quantity } },
+                { new: true }
+            ).populate("products.product");
+            //console.log(cartUpdated);
+            if (!cartUpdated) {
+                cartUpdated = await CartModel.findOneAndUpdate(
+                    //{uid: user._id ,"products.pid": pid},
+                    { uid: user._id },
+                    { $push: { products: { pid: pid, Quantity: Quantity, _pid: T_pid, Title: pTitle } } },
+                    { new: true }
+                );
+            }
+            //  let prueba = CartModel.findOne({uid: user._id }).lean(true)
+            //    console.log(prueba)
+            //    cartReady = cartUpdated ? cartUpdated : newCart
         }
-        const carts = await CartModel.find();
-        return res.status(200).redirect('/products/realTimeCarts/');
-        //return res.status(201).render("realTimeCarts", { carts: carts, user });
+        return res.status(200).redirect("/products/realTimeCarts/");
+
+        //return res.status(201).render("realTimeCarts", { productsa:cartReady._doc.products , user });
     } catch (error) {
         res.status(400).json({
             error: error.message,

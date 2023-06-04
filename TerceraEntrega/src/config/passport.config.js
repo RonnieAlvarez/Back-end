@@ -169,9 +169,9 @@ the `done` callback function along with a `null` error parameter. This function 
 to retrieve the user object from the session store and attach it to the `req.user` property for
 subsequent requests. */
     passport.deserializeUser(async (id, done) => {
-//        console.log("deserializando " + id);
         try {
             let user = await userModel.findById(id);
+            console.log("deserializando " +user._id);
             return done(null, user);
         } catch (error) {
             console.error("User Deserialized Error : " + error);

@@ -41,17 +41,22 @@
 
   {{#if carts}}
   <div class=" m-auto bg-dark">
-    {{#each carts}}
+    {{!-- {{#each uid}} --}}
     <div class="py-10 mt-2 mx-auto flex items-center bg-info">
-      <h6 class="mx-5">Cart ID: {{lookup this "id"}}</h6>
+      {{!-- <h6 class="mx-5">Cart ID: {{lookup this "uid"}}</h6> --}}
       <ul>
-        {{#each _doc.products}}
-        <li class="flex items-center">Product Id: {{lookup this "pid"}} Quantity: {{lookup this "Quantity"}} Line Price:
-          {{lookup this "totlinea"}} Title: {{lookup this "Title"}}</li>
+        {{#each carts}}
+        {{!-- <li class="flex items-center">Product Id: {{lookup this "lid"}} Quantity: {{lookup this "lQua"}} Line Price:
+          {{lookup this "ltotline"}} Title: {{lookup this "lTitle"}} Price: {{lookup this "lPrice"}}</li> --}}
+
+        <li class="flex items-center">Product Id: {{this.lid}} Title: {{this.lTitle}} Quantity: {{this.lQua}} Price: {{this.lPrice}} = Line Tot:
+          {{this.lTotLine}}  </li>
+
         {{/each}}
+        <li class="flex items-center">Total : {{lTotal}}</li>
       </ul>
     </div>
-    {{/each}}
+    {{!-- {{/each}} --}}
 
   </div>
   {{/if}}

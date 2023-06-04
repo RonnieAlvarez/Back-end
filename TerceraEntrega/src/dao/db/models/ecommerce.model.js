@@ -57,12 +57,12 @@ products, and timestamp. The products field is an array of objects, each contain
 (referenced from the Product model), a quantity, and a unique ID for the product in the cart. The
 schema also includes the mongoose-delete plugin to enable soft deletion of cart items. */
 const CartSchema = new mongoose.Schema({
-    id: {
-        type: Number,
-        required: true,
-    },
+    // id: {
+    //     type: Number,
+    //     required: true,
+    // },
     uid: {
-        type: Number,
+        type: String,
         required: true,
     },
     products: {
@@ -81,17 +81,16 @@ const CartSchema = new mongoose.Schema({
                     default: 0,
                 },
                 _pid:{
-                    type: Number,
-                    default: 0,
+                    type: mongoose.Schema.Types.ObjectId
                 },
                 totlinea: {
                     type: Number,
                     default: 0,
                 },
-                Title: {
-                    type: String,
-                    default: "",
-                },
+                // Title: {
+                //     type: String,
+                //     default: "",
+                // },
             },
         ],
         default: [],
