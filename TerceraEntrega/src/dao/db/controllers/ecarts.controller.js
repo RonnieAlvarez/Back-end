@@ -20,18 +20,7 @@ export async function getRealCarts(req, res) {
                 }
             })
         })
-        
-        //console.log(carlinea)
-        //console.log('El total de la compra ',total)
-    
-//        const prueba2 = await CartModel.find({ uid: user._id }).populate("products", "id Title Price ").lean();
-//        console.log('prueba2 ',prueba2);
         const products = Array.from(productsarray, ({ id, Title, Price }) => ({ id, Title, Price }));
-    //    console.log(products)
-    console.log(carlinea)
-    console.log(user._id)
-    console.log(products)
-    console.log(total)
         return res.status(201).render("realTimeCarts", { carts: carlinea,user, products: products,lTotal:total });
     } catch (error) {
         res.status(400).json({
