@@ -1,5 +1,6 @@
 import * as ProductService from "../services/eproducts.service.js";
 import { STATUS } from "../../../config/constants.js";
+import UserDto from "../../DTOs/user.Dto.js";
 
 /**
  * This is an asynchronous function that retrieves a product based on a given ID and returns a JSON
@@ -25,7 +26,7 @@ export async function getProduct(req, res) {
 //**************************************** */
 export async function getProducts(req, res) {
   try {
-    let user = req.user
+    let user = new UserDto(req.user)
     const products = await ProductService.getProducts();
     return res.render("home", { productsa: products,user });
   } catch (error) {
@@ -47,9 +48,12 @@ export async function getProducts(req, res) {
 export async function getRealProducts(req, res) {
 
   try {
-    let user = req.user
+    let user = new UserDto(req.user)
+    let canaddproducts = null
+    if (user.roll==="ADMIN") canaddproducts = true 
+    
     const products = await ProductService.getAllProducts();
-    return res.render("realTimeProducts", { productsa: products,user: user });
+    return res.render("realTimeProducts", { productsa: products,user: user,canaddproducts });
   } catch (error) {
     res.status(400).json({
       error: error.message,
@@ -64,10 +68,13 @@ export async function getRealProducts(req, res) {
 export async function createRealProduct(req, res) {
   try {
     const { body } = req;
-    let user = req.user
+    let user = new UserDto(req.user)
     let products = await ProductService.createProduct(body);
     products = await ProductService.getProducts();
-    return res.render("realTimeProducts", { productsa: products,user: user });
+    let canaddproducts = null
+    if (user.roll==="ADMIN") canaddproducts = true 
+
+    return res.render("realTimeProducts", { productsa: products,user: user, canaddproducts });
   } catch (error) {
     res.status(400).json({
       error: error.message,
@@ -82,11 +89,14 @@ export async function createRealProduct(req, res) {
  */
 export async function deleteRealProduct(req, res) {
   try {
-    let user = req.user
+    let user = new UserDto(req.user)
     const id = parseInt(req.query.pid);
     await ProductService.deleteRealProduct(id);
     let products = await ProductService.getAllProducts();
-    res.status(201).render("realTimeProducts", { productsa: products,user: user });
+    let canaddproducts = null
+    if (user.roll==="ADMIN") canaddproducts = true 
+
+    res.status(201).render("realTimeProducts", { productsa: products,user: user, canaddproducts });
   } catch (error) {
     res.status(400).json({
       error: error.message,

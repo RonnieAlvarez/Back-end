@@ -10,7 +10,7 @@ import __dirname from "./utils.js";
 import express from "express";
 import path from "path";
 import exphbs from "express-handlebars";
-import "./config/db.js";
+//import "./config/db.js";
 import { createSocketServer } from "./config/socketServer.js";
 import mongoStore from "connect-mongo";
 import cookie from "cookie-parser";
@@ -24,17 +24,19 @@ import cookieParser from "cookie-parser";
 import usersViewRouter from "./dao/db/routers/users.views.router.js";
 import sessionsRouter from "./dao/db/routers/sessions.router.js";
 import jwtRouter from "./dao/db/routers/jwt.router.js";
-import EmenuExtendRouter from './dao/db/routers/custom/eMenu.router.js'
-import EcommerceExtendRouter from './dao/db/routers/custom/eCommerce.router.js'
-import ChatExtendRouter from './dao/db/routers/custom/chat.router.js'
+import EmenuExtendRouter from "./dao/db/routers/custom/eMenu.router.js";
+import EcommerceExtendRouter from "./dao/db/routers/custom/eCommerce.router.js";
+import ChatExtendRouter from "./dao/db/routers/custom/chat.router.js";
 
-import cors from 'cors'
 
-import config from '../src/config/config.js'
+import cors from "cors";
+
+import config from "../src/config/config.js";
+import MongoSingleton from './config/MongoSingleton.js';
 import { authToken } from "./utils.js";
 
 const app = express();
-const PORT = config.port || 8080
+const PORT = config.port || 8080;
 
 //json settings postman
 app.use(express.json());
@@ -46,24 +48,20 @@ app.use(express.static(pathPublic));
 
 app.use(cookie());
 app.use(cors());
-app.use(
-    session({
-        store: mongoStore.create({
-            mongoUrl: config.mongoUrl,   //process.env.MONGO_URI,
-            collectionName: "sessions",
-            Options: {
-                userNewUrlParse: true,
-                useUnifiedTopology: true,
-            },
-            ttl: 24*60*60,
-        }),
-        secret: config.mongoSecret,
-        resave: false,
-        saveUninitialized: false,
-        cookie: { maxAge: 24*60*60 },
-    })
-);
+const sessionMiddleware = session({
+    store: mongoStore.create({
+        mongoUrl: config.mongoUrl, 
+        collectionName: "sessions",
+        Options: { userNewUrlParse: true, useUnifiedTopology: true },
+        ttl: 24 * 60 * 60,
+    }),
+    secret: config.mongoSecret,
+    resave: false,
+    saveUninitialized: false,
+})
+app.use(sessionMiddleware);
 app.use(cookieParser(`${config.cookiePassword}`));
+
 
 //Middleware Passport
 initializePassport();
@@ -81,21 +79,21 @@ app.use(function (req, res, next) {
 
 // View engine
 //const hbs = exphbs.create({ helpers: { lookup: (obj, field) => obj[field] } });
-const hbs = exphbs.create({})
-hbs.handlebars.registerHelper('lookup', (obj, field) => obj[field]);
-hbs.handlebars.registerHelper('substring', function(str, start, len) {
+const hbs = exphbs.create({});
+hbs.handlebars.registerHelper("lookup", (obj, field) => obj[field]);
+hbs.handlebars.registerHelper("substring", function (str, start, len) {
     return str.substr(start, len);
 });
-hbs.handlebars.registerHelper('select', function(value, options) {
-    // Create a select element 
-    var select = document.createElement('select');
+hbs.handlebars.registerHelper("select", function (value, options) {
+    // Create a select element
+    var select = document.createElement("select");
     // Populate it with the option HTML
     select.innerHTML = options.fn(this);
     // Set the value
     select.value = value;
     // Find the selected node, if it exists, add the selected attribute to it
     if (select.children[select.selectedIndex])
-        select.children[select.selectedIndex].setAttribute('selected', 'selected');
+        select.children[select.selectedIndex].setAttribute("selected", "selected");
     return select.innerHTML;
 });
 
@@ -108,33 +106,35 @@ const chatExtendRouter = new ChatExtendRouter();
 const ecommerceExtendRouter = new EcommerceExtendRouter();
 const emenuExtendRouter = new EmenuExtendRouter();
 
-app.use("/products/",auth,authToken, ecommerceExtendRouter.getRouter());//auth
-app.use("/api/chat",auth,authToken, chatExtendRouter.getRouter());
-app.use("/menu/", auth,authToken, emenuExtendRouter.getRouter());//auth
+app.use("/products/", auth, authToken, ecommerceExtendRouter.getRouter()); //auth
+app.use("/menu/", auth, authToken, emenuExtendRouter.getRouter()); //auth
+app.use("/api/chat", auth, authToken, chatExtendRouter.getRouter());
 app.use("/users", usersViewRouter);
 app.use("/api/sessions", sessionsRouter);
 app.use("/api/jwt", jwtRouter); // new
-app.use("/",usersViewRouter); 
-
-
+app.use("/", usersViewRouter);
 
 // Captura el evento SIGINT (Ctrl+C) y realiza alguna acción
-process.on('SIGINT', (res) => {
-    // Realiza cualquier limpieza necesaria
-    // Cierra la conexión a la base de datos, etc.
-    console.log('We recive a SIGINT signal. We are closing the Server...')
+process.on("SIGINT", (res) => {
+    console.log("We recive a SIGINT signal. We are closing the Server...");
     process.exit(0); // Salida exitosa
-  });
-
+});
 
 // Server
-const server = app.listen(PORT, () =>{
-    console.log(`Server up on PORT: ${PORT}`)
-//    console.log(process.argv.slice(2))
+const server = app.listen(PORT, () => {
+    console.log(`Server up on PORT: ${PORT}`);
+    //    console.log(process.argv.slice(2))
 });
 
 server.on("error", (err) => console.log(err));
-
 // Socket server
 createSocketServer(server);
 
+const mongoInstance = async () => {
+    try {
+        await MongoSingleton.getInstance();
+    } catch (error) {
+        console.error(error);
+    }
+};
+mongoInstance();

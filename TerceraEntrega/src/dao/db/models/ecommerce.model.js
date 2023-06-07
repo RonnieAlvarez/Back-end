@@ -201,5 +201,5 @@ const ProductModel = mongoose.model("Product", ProductSchema);
 ChatSchema.plugin(mongooseDelete, { deletedAt: true });
 const ChatModel = mongoose.model("Messages", ChatSchema);
 
-export {TicketModel, ProductModel, CartModel, ChatModel };
+export {TicketModel, ProductModel, CartModel, ChatModel,UserModel};
 export default UserModel;

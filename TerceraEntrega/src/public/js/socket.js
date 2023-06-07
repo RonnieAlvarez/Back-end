@@ -1,4 +1,5 @@
 const socket = io();
+
 let ename = document.getElementById("ename");
 let submit = document.getElementById("submit");
 let message = document.getElementById("message");
@@ -14,7 +15,7 @@ socket.on("Welcome", (arg) => {
   console.log(arg);
   newMessages = arg.messages;
   console.log(newMessages);
-  imprimirMessages(newMessages);
+  printMessages(newMessages);
 });
 
 
@@ -25,7 +26,8 @@ address and will validate that the input is not empty. Once the user enters thei
 will be stored in the `userEmail` variable and emitted to the server using the `socket.emit()`
 method with the event name "newUser". The email address is also displayed on the page using the
 `innerText` property of the `ename` element. */
-let userEmail = null
+
+let userEmail = null;
 if (!userEmail) {
   Swal.fire({
     title: "Log In",
@@ -93,3 +95,4 @@ socket.on("newUser", (_name) => {
     position: "top-right",
   });
 });
+

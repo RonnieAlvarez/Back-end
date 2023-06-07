@@ -33,16 +33,7 @@ export async function getMenu(req, res) {
  */
 export async function getmenuProducts(req, res) {
     try {
-        /* `res.locals.user = req.session.user;` is setting a local variable `user` on the `res` object,
-    which can be accessed by the view engine when rendering the HTML template. The value of `user`
-    is being retrieved from the `user` property on the `req.session` object, which is set when the
-    user logs in and contains information about the current user's session. This allows the view
-    engine to access the user's information and display it on the rendered HTML page. */
-        //res.locals.user = req.session.user;
-        //const { name, roll } = res.locals.user;
         const { name, roll } = req.user;
-
-        /* ************************************* */
         const localPort = parseInt(config.port);
         let { page, limit, sort, sortorder, filter } = req.query;
         page = parseInt(page);

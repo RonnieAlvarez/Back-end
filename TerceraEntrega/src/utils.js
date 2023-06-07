@@ -73,11 +73,12 @@ export const authorization = (roll) => {
         const allowedRoles = roll.map((elementos) => {
             return elementos.toUpperCase();
         });
-        if (!req.user) return res.status(401).render("nopage", { message: "Unauthorized: User not found in JWT" });
+        const singleName = req.user.name.split(" ")[0];
+        if (!req.user) return res.status(401).render("nopage", { message: `Unauthorized: User ${singleName} not found in JWT.`, user: req.user });
         if (!allowedRoles.includes(userRole)) {
             return res
                 .status(403)
-                .render("nopage", { messagedanger: "Forbidden: The User doesn't have permission with this roll." });
+                .render("nopage", { messagedanger: `Forbidden: The User ${singleName} doesn't have permission with the ${req.user.roll} roll.`, user: req.user });
         }
         next();
     };

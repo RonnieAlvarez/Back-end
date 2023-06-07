@@ -3,6 +3,7 @@ import userModel from "../models/ecommerce.model.js";
 import { isValidPassword } from "../../../utils.js";
 import { generateJWToken } from "../../../utils.js";
 import config from "../../../config/config.js"
+import UserDto from "../../DTOs/user.Dto.js";
 
 const router = Router();
 
@@ -38,23 +39,19 @@ router.post("/current", async (req, res) => {
                     });
                 }
         }
-        if (!isValidPassword) {
+        if (!isValidPassword(user,password)) {
             console.warn("Invalid credentials for user: " + email);
             return res
-                .status(401)
-                .send({ status: "error", error: "Invalid credentials!" });
+            .status(401) 
+            .send({ error: "Invalid password", message: "Invalid password for user: " + email });
         }
-        const tokenUser = {
-            _id: user._id,
-            name: `${user.first_name} ${user.last_name}`,
-            email: user.email,
-            age: user.age,
-            roll: user.roll,
-        }
-        const access_token = generateJWToken(tokenUser);
-        //res.set('Authorization',`Bearer ${access_token}`);
+        const tokenUser = new UserDto(user);
+        
+
+         const access_token = generateJWToken(tokenUser);
+        res.set('Authorization',`Bearer ${access_token}`);
         res.cookie("jwtCookieToken", access_token, {
-            maxAge: 60000,
+            maxAge: 8*24*60*60,
             // httpOnly: false // expone la cookie
             httpOnly: true, // No expone la cookie debe ir en true
         });

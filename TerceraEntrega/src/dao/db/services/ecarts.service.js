@@ -1,4 +1,4 @@
-import { CartModel, ProductModel } from "../models/ecommerce.model.js";
+import { CartModel, ProductModel,UserModel } from "../models/ecommerce.model.js";
 
 /**
  * This function retrieves a cart from a database based on a given ID and checks if it has been
@@ -58,10 +58,10 @@ export async function createCart(data) {
   //   const cart = await CartModel.create({id:id});
   //   return cart;
     try {
-      const Carts = await getAllCarts();
-      const maxId = Math.max(...Carts.map((cart) => cart.id));
-      const user = await UserModel.findById(data.userId);
-      const cart = await CartModel.create({ id: maxId + 1, user: user._id });
+      //const Carts = await getAllCarts();
+      //const maxId = Math.max(...Carts.map((cart) => cart.id));
+      //const user = await UserModel.findById(data.userId);
+      const cart = await CartModel.create({  uid: data });
       return cart;
 
 
@@ -117,7 +117,7 @@ export async function deleteCart(cid) {
  */
 export async function deleteRealCart(id) {
   try {
-    await CartModel.findOneAndDelete({ id: id });
+    await CartModel.findOneAndDelete({ uid: id });
   } catch (error) {
     throw new Error(error.message);
   }

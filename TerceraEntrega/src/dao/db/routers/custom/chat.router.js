@@ -4,8 +4,5 @@ import CustomRouter from './custom.router.js'
 
 export default class ChatRouter extends CustomRouter {
   init () {
-
-this.get('/chat',{ policies: ['USER','ADMIN'] },eChatController.getchat)
-
-
+this.get('/ini',{ policies: ['USER'] },eChatController.getchat)
 }}

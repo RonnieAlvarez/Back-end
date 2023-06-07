@@ -1,6 +1,7 @@
 import { Router } from "express";
 import jwt from "jsonwebtoken";
 import config from "../../../../config/config.js";
+import UserDto from "../../../DTOs/user.Dto.js";
 
 const PRIVATE_KEY = config.jwtKey;
 export default class CustomRouter {
@@ -15,7 +16,6 @@ export default class CustomRouter {
     init() {} //Esta inicialilzacion se usa para las clases heredadas.
 
     get(path, policies, ...callbacks) {
-
         this.router.get(
             path,
             this.handlePolicies(policies),
@@ -73,32 +73,48 @@ export default class CustomRouter {
                 status: "Client Error, Bad request from client.",
                 error,
             });
-        res.sendUnauthorizedError = (error) =>
-            res.status(401).send({ error: "User not authenticated or missing token." });
-        res.sendForbiddenError = (error) =>
-            res.status(403).send({
-                error: "Token invalid or user with no access, Unauthorized please check your roles!",
+        res.sendUnauthorizedError = (error) => async (req, res) =>
+            res
+                .status(401)
+                .render("nopage", { messagedanger: "User not authenticated or missing token.", user: req.user });
+        res.sendForbiddenError = (error) => async (req, res) =>
+            res.status(403).render("nopage", {
+                messagedanger:
+                    "Token invalid or user with no access, Unauthorized please check your roles! StatusCode(403)",
+                user: req.user,
             });
         next();
     };
 
     handlePolicies({ policies }) {
         return (req, res, next) => {
-            if (policies.includes("USER")) {
-                return next(); // anyone can access
-            }
-            const authHeader = req.cookies.jwtCookieToken ? req.cookies.jwtCookieToken : req.headers.cookie //inicialmente era headers.authorization
+            const authHeader = req.cookies.jwtCookieToken ? req.cookies.jwtCookieToken : req.headers.cookie; //inicialmente era headers.authorization
             if (!authHeader) {
-                return res.status(401).send({ error: "User not authenticated or missing token." });
-            }
-            const token = authHeader.split("=")[1]; //Se hace el split para retirar la palabra Bearer.
-            jwt.verify(token, PRIVATE_KEY, (error, credentials) => {
-                if (error) return res.status(403).send({ error: "Token invalid, Unauthorized!" });
-                let user = credentials.user;
-                if (!policies.includes(user.roll))
-                    return res.status(403).send({
-                        error: "El usuario no tiene privilegios, revisa tus roles!",
+                return async (req, res) =>
+                    res.status(401).render("nopage", {
+                        messagedanger: "User not authenticated or missing token."
                     });
+            }
+
+            const token = authHeader; 
+            jwt.verify(token, PRIVATE_KEY, (error, credentials) => {
+                if (error)
+                    return async (req, res) =>
+                        res.status(403).render("nopage", {
+                            messagedanger: "Token invalid, Unauthorized! StatusCode(403)"
+                        });
+                let user = new UserDto(credentials.user);
+                console.log("Roll: ", user.roll);
+                if (policies.includes(user.roll)) {
+                    console.log("policies: ", policies);
+                    console.log("user: ", user.roll);
+                }
+                if (!policies.includes(user.roll)) {
+                    return async (req, res) =>
+                        res.status(401).render("nopage", {
+                            messagedanger: "The user has no privileges, check your roles!  StatusCode(403)"
+                        });
+                }
                 next();
             });
         };
