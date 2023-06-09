@@ -4,7 +4,7 @@ let ename = document.getElementById("ename");
 let submit = document.getElementById("submit");
 let message = document.getElementById("message");
 let messages = document.getElementById("messages");
-
+let userEmail = " "
 /* This code is listening for a "Welcome" event emitted from the server using the `socket.on()` method.
 When the event is received, it logs the `arg` parameter to the console, which is an object
 containing a `messages` property. It then assigns the value of the `messages` property to the
@@ -18,32 +18,11 @@ socket.on("Welcome", (arg) => {
   printMessages(newMessages);
 });
 
-
-/* This code is creating a prompt for the user to enter their email address and storing it in the
-`userEmail` variable. If the `userEmail` variable is null, it will display a prompt using the
-`Swal.fire()` method from the SweetAlert library. The prompt will ask the user to enter their email
-address and will validate that the input is not empty. Once the user enters their email address, it
-will be stored in the `userEmail` variable and emitted to the server using the `socket.emit()`
-method with the event name "newUser". The email address is also displayed on the page using the
-`innerText` property of the `ename` element. */
-
-let userEmail = null;
-if (!userEmail) {
-  Swal.fire({
-    title: "Log In",
-    input: "text",
-    text: "User eMail",
-    allowOutsideClick: false,
-    color: '#716add',
-    inputValidator: (value) => {
-      return !value && "You have to write your eMail";
-    },
-  }).then((newUser) => {
-    userEmail = newUser.value;
+socket.on('userEmail', (userEmail) => {
     ename.innerText = userEmail;
     socket.emit("newUser", userEmail);
-  });
-}
+});
+
 
 /* This code is adding an event listener to the "submit" button. When the button is clicked, it
 prevents the default form submission behavior using `e.preventDefault()`. It then gets the value of

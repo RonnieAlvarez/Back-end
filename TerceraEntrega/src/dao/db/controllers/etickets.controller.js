@@ -1,4 +1,4 @@
-import { TicketModel } from "../models/ecommerce.model";
+import { TicketModel } from "../models/ecommerce.model.js";
 
 
 export async function createtickets(req, res) {

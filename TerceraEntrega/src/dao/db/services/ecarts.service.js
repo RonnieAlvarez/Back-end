@@ -123,3 +123,25 @@ export async function deleteRealCart(id) {
   }
 }
 
+
+export function generateUniqueCode() {
+  // Generar un identificador único utilizando un timestamp y un número aleatorio
+  const timestamp = Date.now().toString(36);
+  const randomNum = Math.floor(Math.random() * 100000).toString(36);
+
+  // Concatenar el timestamp y el número aleatorio para formar el código único
+  const uniqueCode = timestamp + randomNum;
+
+  return uniqueCode;
+}
+
+export function saveTicket(ticket) {
+  ticket
+  .save()
+  .then((savedTicket) => {
+      console.log({ticket:'Saved ticket ok '+savedTicket});
+  })
+  .catch((error) => {
+      console.log({ error: "Error al guardar el ticket "+error });
+  });
+}

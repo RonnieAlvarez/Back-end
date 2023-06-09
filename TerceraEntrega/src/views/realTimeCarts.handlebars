@@ -1,29 +1,21 @@
 <div class="container">
 {{#if canAddToCart}}  
   <div class="p-2 m-1 h-100 mt-10 mx-auto  items-center bg-info d-flex justify-content-center align-items-center rounded ">
-    {{!-- <form action="/products/realTimeCarts" method="post" id="form-carts"
-      class="">
-      <div>
-        <input class="p-1 btn btn-secondary btn-sm my-1 me-1" type="submit" value="Add Cart" />
-      </div>
-    </form> --}}
     <form id="delete-form" method="GET" action="/products/realTimeCart/delete">
-      {{!-- <input class="me-3 border-botton border-black mt-1 border-2 rounded" type="text" name="cid"
-        placeholder="Id to delete" /> --}}
-      <input class="btn btn-secondary btn-sm my-1" type="submit" value="Delete Cart" />
+      <input class="btn btn-danger btn-sm my-1" type="submit" value="Delete Cart" />
+    </form>
+    <form id="purchase-form" method="post" action="/products/realTimeCarts/purchase">
+      <input class="btn btn-primary btn-sm ms-1" type="submit" value="Purchase Products" />
     </form>
   </div>
-
   <div>
     <form action="/products/realTimeCarts/add" method="post" id="form-carts"
       class="p-2 m-1 h-100 mt-10 mx-auto  items-center bg-info d-flex justify-content-center align-items-center rounded">
       <div>
-        {{!-- <input class="gap-1 border-botton  border-2 " placeholder="Cart Id" type="number" name="id" id="id" /> --}}
-        {{!-- <label for="product">Select a product:</label> --}}
         <select id="product" name="product" class="gap-1 border-botton  border-2 ">
           <option value="" class="gap-1 border-botton  border-2 ">-- Choose Product --</option>
           {{#each products}}
-          <option value="{{this.id}}"> cod: {{this.id}} - {{this.Title}}</option>
+          <option value="{{this.id}}"> cod: {{this.id}} - {{this.Title}} - ${{this.Price}} - Qty:{{this.Stock}}</option>
           {{/each}}
         </select>
         <input class="gap-1 border-botton  border-2  my-1 me-1" placeholder="Product Quantity" type="number" name="Quantity" />

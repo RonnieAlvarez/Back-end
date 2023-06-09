@@ -25,6 +25,7 @@ import usersViewRouter from "./dao/db/routers/users.views.router.js";
 import sessionsRouter from "./dao/db/routers/sessions.router.js";
 import jwtRouter from "./dao/db/routers/jwt.router.js";
 import EmenuExtendRouter from "./dao/db/routers/custom/eMenu.router.js";
+import EticketsExtendRouter from "./dao/db/routers/custom/eTicket.router.js";
 import EcommerceExtendRouter from "./dao/db/routers/custom/eCommerce.router.js";
 import ChatExtendRouter from "./dao/db/routers/custom/chat.router.js";
 
@@ -105,10 +106,12 @@ app.set("views", path.join(__dirname, "views"));
 const chatExtendRouter = new ChatExtendRouter();
 const ecommerceExtendRouter = new EcommerceExtendRouter();
 const emenuExtendRouter = new EmenuExtendRouter();
+const eticketsExtendRouter = new EticketsExtendRouter();
 
 app.use("/products/", auth, authToken, ecommerceExtendRouter.getRouter()); //auth
 app.use("/menu/", auth, authToken, emenuExtendRouter.getRouter()); //auth
 app.use("/api/chat", auth, authToken, chatExtendRouter.getRouter());
+app.use("/api/tickets", auth, authToken, eticketsExtendRouter.getRouter());
 app.use("/users", usersViewRouter);
 app.use("/api/sessions", sessionsRouter);
 app.use("/api/jwt", jwtRouter); // new

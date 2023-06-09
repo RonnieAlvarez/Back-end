@@ -14,6 +14,7 @@ this.get("/realTimeCarts", { policies: ['USER','ADMIN'] }, eCartController.getRe
 this.post("/realTimeCarts",  { policies: ['USER'] },eCartController.createRealCart);
 this.post("/realTimeCarts/add", { policies: ['USER'] }, eCartController.saveProductToCart);
 this.get("/realTimeCart/delete",  { policies: ['USER'] },eCartController.deleteRealCart);
+this.post("/realTimeCarts/purchase", { policies: ['USER'] }, eCartController.purchaseProducts);
 this.get("/",  { policies: ['USER','ADMIN'] },eProductController.getProducts);
 this.post("/",  { policies: ['ADMIN'] },eProductController.createProduct);
 this.get("/:pid", { policies: ['USER','ADMIN'] }, eProductController.getProduct);

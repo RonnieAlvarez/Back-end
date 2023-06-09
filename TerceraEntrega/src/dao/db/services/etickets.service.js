@@ -4,6 +4,7 @@ import {eticketsModel} from '../models/ecommerce.model.js'
 
 export async function createTicket(data) {
     try {
+      console.log('data tickets', data)
       data =  { ...data, 'code':code,'amount':amount, 'purchaser':purchaser};
       const tickets = await eticketsModel.create(data);
       return tickets;

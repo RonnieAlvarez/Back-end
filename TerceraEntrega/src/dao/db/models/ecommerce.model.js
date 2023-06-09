@@ -175,15 +175,40 @@ const UserSchema = new mongoose.Schema(
 
 const TicketSchema = new mongoose.Schema(
     {
-        code: {type:String,unique: true, required: true }, // autogenerado y unico
-        purchase_datetime: { type: Date, default: Date.now, required: true },  //fecha y hora de la compra
-        amount: { type: Number, required: true },  // total de la compra
-        purchaser: { type: String, required: true } //email asociado al carrito
-    },
-    {
-        timestamps: true,
-    }
-);
+        code: {type:String,unique: true, required: true },
+        purchase_datetime: { type: Date, default: Date.now, required: true },  
+        amount: { type: Number, required: true }, 
+        purchaser: { type: String, required: true }, 
+        uid:{type: mongoose.Schema.Types.ObjectId},
+        products: {
+            type: [
+                {
+                    Quantity: {
+                        type: Number,
+                        default: 0,
+                    },
+                    _pid:{
+                        type: mongoose.Schema.Types.ObjectId
+                    },
+                    Total: {
+                        type: Number,
+                        default: 0,
+                    },
+                    Price: {
+                        type: Number,
+                        default: 0,
+                    },
+                    Title: {
+                        type: String,
+                        default: ""
+                    }
+                }
+            ],}
+        },
+        {
+            timestamps: true,
+        }
+        );
 
 TicketSchema.plugin(mongooseDelete, { deletedAt: true });
 const TicketModel = new mongoose.model("tickets", TicketSchema);
