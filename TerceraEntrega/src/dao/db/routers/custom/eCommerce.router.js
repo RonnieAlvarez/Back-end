@@ -9,17 +9,17 @@ export default class CartsRouter extends CustomRouter {
 
 this.get("/realTimeProducts",  { policies: ['USER','ADMIN'] }, authorization(["USER","ADMIN"]),eProductController.getRealProducts);
 this.post("/realTimeProducts",  { policies: ['ADMIN'] },authorization(["ADMIN"]),eProductController.createRealProduct);
-this.get("/realTimeProducts/delete",  { policies: ['USER','ADMIN'] },eProductController.deleteRealProduct);
+this.get("/realTimeProducts/delete",  { policies: ['ADMIN'] },authorization(["ADMIN"]),eProductController.deleteRealProduct);
 this.get("/realTimeCarts", { policies: ['USER','ADMIN'] }, eCartController.getRealCarts);
-this.post("/realTimeCarts",  { policies: ['USER'] },eCartController.createRealCart);
-this.post("/realTimeCarts/add", { policies: ['USER'] }, eCartController.saveProductToCart);
-this.get("/realTimeCart/delete",  { policies: ['USER'] },eCartController.deleteRealCart);
-this.post("/realTimeCarts/purchase", { policies: ['USER'] }, eCartController.purchaseProducts);
+this.post("/realTimeCarts",  { policies: ['USER'] },authorization(["USER"]),eCartController.createRealCart);
+this.post("/realTimeCarts/add", { policies: ['USER'] },authorization(["USER"]), eCartController.saveProductToCart);
+this.get("/realTimeCart/delete",  { policies: ['USER'] },authorization(["USER"]),eCartController.deleteRealCart);
+this.post("/realTimeCarts/purchase", { policies: ['USER'] },authorization(["USER"]), eCartController.purchaseProducts);
 this.get("/",  { policies: ['USER','ADMIN'] },eProductController.getProducts);
-this.post("/",  { policies: ['ADMIN'] },eProductController.createProduct);
+this.post("/",  { policies: ['ADMIN'] },authorization(["ADMIN"]),eProductController.createProduct);
 this.get("/:pid", { policies: ['USER','ADMIN'] }, eProductController.getProduct);
-this.put("/:pid", { policies: ['ADMIN'] }, eProductController.updateProduct);
-this.delete("/:pid",  { policies: ['ADMIN'] },eProductController.deleteProduct);
+this.put("/:pid", { policies: ['ADMIN'] },authorization(["ADMIN"]),eProductController.updateProduct);
+this.delete("/:pid",  { policies: ['ADMIN'] },authorization(["ADMIN"]),eProductController.deleteProduct);
 this.get("*", { policies: ['USER','ADMIN'] }, (req, res) => {
   res.status(404).render('nopage',{messagedanger: "Cannot get that URL!!"});
 });

@@ -15,7 +15,7 @@
         <select id="product" name="product" class="gap-1 border-botton  border-2 ">
           <option value="" class="gap-1 border-botton  border-2 ">-- Choose Product --</option>
           {{#each products}}
-          <option value="{{this.id}}"> cod: {{this.id}} - {{this.Title}} - ${{this.Price}} - Qty:{{this.Stock}}</option>
+          <option value="{{this.id}}"> cod: {{this.id}} - {{this.Title}} - {{this.Price}} - Qty:{{this.Stock}}</option>
           {{/each}}
         </select>
         <input class="gap-1 border-botton  border-2  my-1 me-1" placeholder="Product Quantity" type="number" name="Quantity" />

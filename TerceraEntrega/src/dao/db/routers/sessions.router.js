@@ -2,23 +2,15 @@ import { Router } from "express";
 import passport from "passport";
 import { generateJWToken, passportCall, authorization } from "../../../utils.js";
 import config from "../../../config/config.js";
-
+import UserDto from "../../DTOs/user.Dto.js";
 const router = Router();
 
-/* This code is defining two routes for GitHub authentication using Passport.js middleware. */
+
+
 router.get(
     "/github",
-    passport.authenticate("github", { scope: ["user:email"] }),
-    passportCall("jwt"),
-    authorization("USER"),
-    //  async (req, res)=>{
-    //       res.render("menuprincipal",{user: req.user})
-    //  }
-    async (req, res) => {
-        req.session.admin = true;
-        res.status(200).redirect("/users/login");
-    }
-);
+    passport.authenticate("github", { scope: ["user:email"] }), async (req,res) => {}
+  );
 
 /* This code defines a route for handling the callback from GitHub authentication using Passport.js
 middleware. When the user is successfully authenticated, the code retrieves the user information
@@ -27,17 +19,9 @@ the `req.session.admin` flag to `true`. Finally, it redirects the user to the `/
 the authentication fails, it redirects the user to the `/github/error` route. */
 router.get(
     "/githubcallback",
-    passport.authenticate("github", { successRedirect: "/users/logout", failureRedirect: "/github/error" }),
-
+    passport.authenticate("github", { failureRedirect: "/users/login" }),
     async (req, res) => {
-        const user = req.user;
-        req.session.user = {
-            name: `${user.first_name} ${user.last_name}`,
-            email: user.email,
-            age: user.age,
-            roll: user.roll,
-        };
-        req.session.admin = true;
+        req.session.user = new UserDto(req.user);
         res.status(200).redirect("/users/login");
     }
 );
@@ -50,13 +34,7 @@ router.post(
     "/register",
     passport.authenticate("register", { successRedirect: "/users/login", failureRedirect: "/api/jwt/current" }),
     async (req, res) => {
-        const user = req.user._doc;
-        req.session.user = {
-            name: `${user.first_name} ${user.last_name}`,
-            email: user.email,
-            age: user.age,
-            roll: user.roll,
-        };
+        req.session.user = new UserDto(req.user._doc);
         return res.status(200).redirect("/users/login");
     }
 );
@@ -78,10 +56,11 @@ router.post("/login", passport.authenticate("login", { successRedirect: "/", fai
         };
         return res.redirect("/");
     }
-    const user = req.user._doc;
+    
+    const user = UserDto(req.user._doc);
     if (!user) return res.status(401).redirect("/users/register");
     req.session.user = {
-        name: `${user.first_name} ${user.last_name}`,
+        name: user.name,
         email: user.email,
         age: user.age,
         roll: user.roll,
@@ -89,35 +68,5 @@ router.post("/login", passport.authenticate("login", { successRedirect: "/", fai
     return res.redirect("/");
 });
 
-/* This code is defining a route for retrieving the current user's information and generating a JSON
-Web Token (JWT) for authentication purposes. It uses Passport.js middleware to authenticate the
-login process. If the login is successful, it retrieves the user information from the `req.user`
-object and stores it in the `user` variable. If the user is an admin, it sets the `req.user` object
-to a hardcoded admin user object. If the user is not an admin, it sets the `req.user` object to the
-retrieved user information. It then generates a JWT using the `generateJWToken` function and sends
-it back to the client in a JSON object with the key `access_token`. Finally, it redirects the user
-to the home page with the `access_token` as a query parameter. */
-router.post("/current", passport.authenticate("login", { successRedirect: "/", failureRedirect: "/users/register" }), async (req, res) => {
-    const { email, password } = req.body;
-    if (email === config.adminName && password === config.adminPassword) {
-        req.user = {
-            name: "CoderHouse",
-            email: email,
-            age: 21,
-            roll: "ADMIN",
-        };
-        return res.redirect("/");
-    }
-    const user = req.user;
-    if (!user) return res.status(401).redirect("/users/register");
-    req.user = {
-        name: `${user.first_name} ${user.last_name}`,
-        email: user.email,
-        age: user.age,
-        roll: user.roll,
-    };
-    const access_Token = generateJWToken(user);
-    return res.status(200).redirect("/", { access_token: access_Token });
-});
 
 export default router;

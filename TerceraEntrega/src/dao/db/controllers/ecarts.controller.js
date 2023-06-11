@@ -1,8 +1,10 @@
 import * as CartService from "../services/ecarts.service.js";
 import { STATUS } from "../../../config/constants.js";
-import { CartModel, ProductModel,TicketModel } from "../models/ecommerce.model.js";
+import { CartModel, ProductModel, TicketModel } from "../models/ecommerce.model.js";
 import UserDto from "../../DTOs/user.Dto.js";
-
+import nodemailer from "nodemailer";
+import config from "../../../config/config.js";
+process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
 
 /**
  * This function retrieves all carts from a database and renders them in a real-time view.
@@ -30,7 +32,7 @@ export async function getRealCarts(req, res) {
                 });
             });
         }
-        
+
         /* This line of code is creating a new array called `products` by filtering the `productsarray`
         array to only include products with a `Stock` value greater than 0. It then maps each
         filtered product object to a new object with modified properties using the `Array.from()`
@@ -38,10 +40,24 @@ export async function getRealCarts(req, res) {
         `Title` converted to uppercase and truncated to the first 5 characters, `Price` formatted as
         a currency string using the `toLocaleString()` method, and `Stock` padded with leading zeros
         to a length of 2. */
-        const products = Array.from(productsarray.filter(product => product.Stock > 0), ({ id, Title, Price, Stock }) => ({ id:id.toString().padStart(3, "0"), Title:Title.toUpperCase().substring(0, 5), Price:Price.toLocaleString('en-US', { style: 'currency', currency: 'USD' }), Stock:Stock.toString().padStart(2, '0') }));
+        const products = Array.from(
+            productsarray.filter((product) => product.Stock > 0),
+            ({ id, Title, Price, Stock }) => ({
+                id: id.toString().padStart(3, "0"),
+                Title: Title.toUpperCase().substring(0, 5),
+                Price: Price.toLocaleString("en-US", { style: "currency", currency: "USD" }),
+                Stock: Stock.toString().padStart(2, "0"),
+            })
+        );
         //----------------------------------------------------------------
         let canAddToCart = null;
-        if (user.roll === "USER") canAddToCart = true;
+        if (user.roll === "USER") {canAddToCart = true;}else{
+            canAddToCart = false;
+                return res
+                    .status(403)
+                    .render("nopage", { messagedanger: `Forbidden: The User ${user.name} doesn't have permission with the ${user.roll} roll.`, user: user });
+            
+        }
         return res
             .status(201)
             .render("realTimeCarts", { carts: carlinea, user, products: products, lTotal: total, canAddToCart });
@@ -134,9 +150,31 @@ export async function saveProductToCart(req, res) {
     }
 }
 
+/**
+ * This function handles the purchase of products by a user, updates the stock of purchased products,
+ * generates a unique code for the purchase, creates a ticket with the purchase details, sends an email
+ * to the user with the purchase details, and redirects the user to the real-time carts page.
+ */
 export async function purchaseProducts(req, res) {
     try {
         let user = new UserDto(req.user);
+        const transport = nodemailer.createTransport({
+            service: "gmail",
+            port: 587,
+            ca: null,
+            secure: false,
+            auth: {
+                user: config.GOOGLE_CLIENT_EMAIL,
+                pass: config.GOOGLE_CLIENT_SECRET,
+            },
+        });
+        transport.verify(function (error, success) {
+            if (error) {
+                console.log(error);
+            } else {
+                console.log("Server is ready to send emails");
+            }
+        });
         let cart = await CartModel.findOne({ uid: user._id }).populate("products").lean();
         const productsarray = await ProductModel.find().select("id Title Price Stock Quantity").lean();
         let productPurchased = [];
@@ -149,6 +187,7 @@ export async function purchaseProducts(req, res) {
                 productPurchased.push({
                     Quantity: element.Quantity,
                     _pid: productto._id,
+                    pid: productto.id,
                     Title: productto.Title,
                     Price: productto.Price,
                     Total: productto.Price * element.Quantity,
@@ -170,13 +209,32 @@ export async function purchaseProducts(req, res) {
         const code = CartService.generateUniqueCode();
         const newTicket = new TicketModel({
             uid: user._id,
-            code:code,
+            code: code,
             amount: totalbuyed,
             purchaser: user.email,
             products: productPurchased,
         });
-        CartService.saveTicket(newTicket)
-
+        CartService.saveTicket(newTicket);
+        let html = `<h2 color="red">Shop detail #${code}</h2>`
+        html += `<h4 color="blue"> Purchaser: ${user.email}</h4>`
+        html += `<h4 color="blue"> Purchaser id: ${user._id}</h4>`
+        html += `<hr width="100%" color="gray" size="1"></hr><ul>`
+        for (let i = 0; i < productPurchased.length; i++) {
+            html += `<li> Line # ${i + 1} Title: ${productPurchased[i].Title}, Qua: ${ productPurchased[i].Quantity}, id: ${productPurchased[i].pid}, Price: ${productPurchased[i].Price}, sub-Total: ${productPurchased[i].Total} </li>`
+        }
+        html += "</ul>";
+        html += `<hr width="100%" color="gray" size="1"></hr>`
+        html += `<h3>Total: ${totalbuyed}</h3>`
+        html += `<hr width="100%" color="gray" size="1"></hr>`
+        const sendMail = async (req, res) => {
+            let result = await transport.sendMail({
+                from: "eCommerce shop 🛒 " + config.GOOGLE_CLIENT_EMAIL,
+                to: user.email,
+                subject: `Shop detail #${code}`,
+                html: html,
+            });
+        };
+        sendMail();
         return res.status(200).redirect("/products/realTimeCarts/");
     } catch (error) {
         res.status(400).json({
@@ -185,6 +243,4 @@ export async function purchaseProducts(req, res) {
         });
     }
 }
-
-
 

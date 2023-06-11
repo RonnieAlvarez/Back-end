@@ -1,24 +1,13 @@
-import {eticketsModel} from '../models/ecommerce.model.js'
+import { TicketModel } from "../models/ecommerce.model.js";
 
-
-
-export async function createTicket(data) {
+/**
+ * This function retrieves all non-deleted tickets from a MongoDB database using the eticketsModel.
+ */
+export async function getAllTickets() {
     try {
-      console.log('data tickets', data)
-      data =  { ...data, 'code':code,'amount':amount, 'purchaser':purchaser};
-      const tickets = await eticketsModel.create(data);
-      return tickets;
+        const Tickets = await TicketModel.find({ deletedAt: { $exists: false } }).lean();
+        return Tickets;
     } catch (error) {
-      throw new Error(error.message);
-    } 
-  }
-
-  export async function getAllTickets() {
-    try {
-      const Tickets = await eticketsModel.find({ deletedAt: { $exists: false } })
-      return Tickets;
-    } catch (error) {
-      throw new Error(error.message);
+        throw new Error(error.message);
     }
-  }
-
+}

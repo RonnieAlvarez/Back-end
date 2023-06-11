@@ -7,7 +7,6 @@ import { STATUS } from "../../../config/constants.js";
 export async function getchat(req, res) {
     try {
       let user = req.user
-      //res.cookie('userEmail', user.email,{ maxAge: 600000, httpOnly: true })
       return res.status(201).render("realTimeChat",{user});
     } catch (error) {
       res.status(400).json({

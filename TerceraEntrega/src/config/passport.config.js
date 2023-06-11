@@ -74,7 +74,7 @@ object as the second parameter. */
                             last_name: namesplited[1],
                             age: 21,
                             email: profile._json.email,
-                            password: createHash(profile._json.email),
+                            password:"", // createHash(profile._json.email),
                             roll: "USER",
                             loggedBy: "GitHub",
                         };

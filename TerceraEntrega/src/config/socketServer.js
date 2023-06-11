@@ -8,11 +8,10 @@ const messages = [];
 
 function decodeToken(token) {
     try {
-        const decoded = jwt.verify(token, PRIVATE_KEY); // Reemplaza 'secretKey' con tu propia clave secreta utilizada para firmar el token
+        const decoded = jwt.verify(token, PRIVATE_KEY); 
         return decoded;
     } catch (error) {
-        // Manejo de errores en caso de que el token sea inválido o haya expirado
-        console.error("Error al decodificar el token:", error);
+        console.error("Error decoding token:", error);
         return null;
     }
 }
@@ -24,7 +23,6 @@ export function createSocketServer(server) {
         let user = null;
 //---------------
 const cookie4 =String(socket.handshake.headers.cookie)
-//cookie4 = req.cookies
 const cookieaux = cookie4.split('; ');
 let auxToken=[]
 let tokens
@@ -38,11 +36,9 @@ else{
         console.log("Client disconnected");
     });
     res.send({ error: "Invalid Token", message: "Invalid Token for user: " });
-    //async (req,res)=> res.status(401).redirect('/users/logout');
 }
 
 //------------------
-    //    const tokens = socket.handshake.headers.cookie.split("=")[1];
         if (tokens) {
             const decoded = decodeToken(tokens);
             user = decoded.user;

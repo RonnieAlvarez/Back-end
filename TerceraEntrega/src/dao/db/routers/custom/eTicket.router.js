@@ -6,7 +6,7 @@ export default class eTicketRouter extends CustomRouter {
   init () {
 
 
-this.post('/create', { policies: ['USER'] },eTicketsController.createtickets)
+this.get('/show', { policies: ['USER'] },eTicketsController.showTickets)
 
 
 

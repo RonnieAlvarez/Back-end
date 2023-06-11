@@ -20,5 +20,8 @@ export default {
     jwtKey: process.env.JWTPRIVATE_KEY,
     gitClientId: process.env.GITCLIENTID,
     gitClientSecret: process.env.GITCLIENTSECRET,
-    cookiePassword: process.env.COOKIEPASSWORD
+    cookiePassword: process.env.COOKIEPASSWORD,
+    GOOGLE_CLIENT_ID:process.env.GOOGLE_CLIENT_ID,
+    GOOGLE_CLIENT_SECRET:process.env.GOOGLE_CLIENT_SECRET,
+    GOOGLE_CLIENT_EMAIL:process.env.GOOGLE_CLIENT_EMAIL
 };

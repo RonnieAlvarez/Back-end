@@ -79,7 +79,6 @@ export async function getmenuProducts(req, res) {
 </head>
 
 <body class="bg-ligth">
-
 <div class="container my-1 d-flex flex-column sticky-top px-2 rounded">
     <div class="container d-flex flex-column sticky-top bg-dark p-2 rounded">
         <span class="d-sm-inline-flex text-center align-middle justify-content-center text-light fs-4 fw-bold opacity-75">

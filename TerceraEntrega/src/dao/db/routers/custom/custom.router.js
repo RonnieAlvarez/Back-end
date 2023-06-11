@@ -95,7 +95,6 @@ export default class CustomRouter {
                         messagedanger: "User not authenticated or missing token."
                     });
             }
-
             const token = authHeader; 
             jwt.verify(token, PRIVATE_KEY, (error, credentials) => {
                 if (error)
@@ -110,10 +109,9 @@ export default class CustomRouter {
                     console.log("user: ", user.roll);
                 }
                 if (!policies.includes(user.roll)) {
-                    return async (req, res) =>
-                        res.status(401).render("nopage", {
-                            messagedanger: "The user has no privileges, check your roles!  StatusCode(403)"
-                        });
+                    return res
+                    .status(401)
+                    .render("nopage", { messagedanger: "The user has no privileges, check your roles!  StatusCode(403)", user: user });
                 }
                 next();
             });

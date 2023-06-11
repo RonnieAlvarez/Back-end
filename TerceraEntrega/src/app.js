@@ -10,7 +10,6 @@ import __dirname from "./utils.js";
 import express from "express";
 import path from "path";
 import exphbs from "express-handlebars";
-//import "./config/db.js";
 import { createSocketServer } from "./config/socketServer.js";
 import mongoStore from "connect-mongo";
 import cookie from "cookie-parser";
@@ -31,7 +30,6 @@ import ChatExtendRouter from "./dao/db/routers/custom/chat.router.js";
 
 
 import cors from "cors";
-
 import config from "../src/config/config.js";
 import MongoSingleton from './config/MongoSingleton.js';
 import { authToken } from "./utils.js";
@@ -79,7 +77,6 @@ app.use(function (req, res, next) {
 });
 
 // View engine
-//const hbs = exphbs.create({ helpers: { lookup: (obj, field) => obj[field] } });
 const hbs = exphbs.create({});
 hbs.handlebars.registerHelper("lookup", (obj, field) => obj[field]);
 hbs.handlebars.registerHelper("substring", function (str, start, len) {
@@ -116,6 +113,7 @@ app.use("/users", usersViewRouter);
 app.use("/api/sessions", sessionsRouter);
 app.use("/api/jwt", jwtRouter); // new
 app.use("/", usersViewRouter);
+app.get("*",  (req, res) => {res.status(404).render('nopage',{messagedanger: "Cannot get that URL!!"})});
 
 // Captura el evento SIGINT (Ctrl+C) y realiza alguna acción
 process.on("SIGINT", (res) => {
@@ -126,7 +124,6 @@ process.on("SIGINT", (res) => {
 // Server
 const server = app.listen(PORT, () => {
     console.log(`Server up on PORT: ${PORT}`);
-    //    console.log(process.argv.slice(2))
 });
 
 server.on("error", (err) => console.log(err));

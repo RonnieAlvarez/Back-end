@@ -1,3 +1,5 @@
+/* The UserDto class is a JavaScript class that constructs a user data transfer object with properties
+such as id, name, email, age, and roll. */
 export default class UserDto {
     constructor(user) {
         this._id= user._id,

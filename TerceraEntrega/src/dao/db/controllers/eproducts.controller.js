@@ -68,12 +68,12 @@ export async function getRealProducts(req, res) {
 export async function createRealProduct(req, res) {
   try {
     const { body } = req;
+    const id = Number(body.id)
     let user = new UserDto(req.user)
-    let products = await ProductService.createProduct(body);
+    let products = await ProductService.createProduct(id,body);
     products = await ProductService.getProducts();
     let canaddproducts = null
     if (user.roll==="ADMIN") canaddproducts = true 
-
     return res.render("realTimeProducts", { productsa: products,user: user, canaddproducts });
   } catch (error) {
     res.status(400).json({
@@ -95,7 +95,6 @@ export async function deleteRealProduct(req, res) {
     let products = await ProductService.getAllProducts();
     let canaddproducts = null
     if (user.roll==="ADMIN") canaddproducts = true 
-
     res.status(201).render("realTimeProducts", { productsa: products,user: user, canaddproducts });
   } catch (error) {
     res.status(400).json({
@@ -113,7 +112,7 @@ export async function deleteRealProduct(req, res) {
  */
 export async function createProduct(req, res) {
   try {
-    const { body } = req;
+    const { body } = req;const { pid } = req.params;
     const response = await ProductService.createProduct(body);
     res.status(201).json({
       product: response,
@@ -155,7 +154,6 @@ export async function updateProduct(req, res) {
 export async function deleteProduct(req, res) {
   try {
     const { pid } = req.params;
-
     await ProductService.deleteProduct(pid);
     res.status(201).json({
       message: "Product deleted !!",
