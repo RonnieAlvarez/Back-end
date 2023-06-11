@@ -3,10 +3,6 @@ import { CartModel, ProductModel,UserModel } from "../models/ecommerce.model.js"
 /**
  * This function retrieves a cart from a database based on a given ID and checks if it has been
  * deleted.
- * @param cid - The parameter `cid` is an identifier for a specific cart. It is used to query the
- * database for the cart with the matching `id` value.
- * @returns either an array of cart objects that match the given cid and are not deleted, or the string
- * "Registro eliminado" if there is a cart object that matches the given cid but is marked as deleted.
  */
 export async function getCart(cid) {
   try {
@@ -14,7 +10,7 @@ export async function getCart(cid) {
       $and: [{ id: cid }, { deleted: false }],
     });
     if ({ id: cid } && { deleted: true }) {
-      return "Registro eliminado";
+      return "Record deleted";
     }
     return Carts;
   } catch (error) {
@@ -40,12 +36,6 @@ export async function getAllCarts() {
 /**
  * This function creates a new cart by getting all existing carts, finding the maximum ID, adding 1 to
  * it, and creating a new cart with that ID.
- * @param data - There are no parameters being passed to the createCart function. The function is
- * retrieving all existing carts, finding the maximum ID, adding 1 to it to create a new ID, and then
- * creating a new cart with that ID using the CartModel. The function then returns the newly created
- * cart.
- * @returns a newly created cart object with an id property that is one greater than the highest id in
- * the existing carts.
  */
 export async function createCart(data) {
       try {
@@ -60,12 +50,6 @@ export async function createCart(data) {
 /**
  * This is an asynchronous function that updates a cart in a database using its ID and returns the
  * updated cart.
- * @param cid - cid is the ID of the cart that needs to be updated.
- * @param data - The `data` parameter in the `updateCart` function is an object that contains the
- * updated values for the cart. It could include properties such as `items`, `totalPrice`, `discounts`,
- * etc. These values will be used to update the corresponding fields in the cart document in the
- * database
- * @returns the updated cart object after updating it in the database.
  */
 export async function updateCart(cid, data) {
   try {
@@ -133,6 +117,6 @@ export function saveTicket(ticket) {
       console.log({ticket:'Saved ticket ok '+savedTicket});
   })
   .catch((error) => {
-      console.log({ error: "Error al guardar el ticket "+error });
+      console.log({ error: "Error saving the ticket. Error: "+error });
   });
 }
