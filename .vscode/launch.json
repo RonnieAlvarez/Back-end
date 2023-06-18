@@ -3,10 +3,10 @@
         
         {
             "type": "node-terminal",
-            "name": "Run Tercera Entrega",
+            "name": "Run 11Entregable",
             "request": "launch",
             "command": "npm run start",
-            "cwd": "${workspaceFolder}\\TerceraEntrega"
+            "cwd": "${workspaceFolder}\\Entregable11"
         }
     ]
 }
