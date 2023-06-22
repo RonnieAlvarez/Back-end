@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 /********************************************************************************* */
 //
 //  RONNIE ALVAREZ CASTRO  CODERHOUSE PROGRAMA FULLSTACK CURSO BACKEND
@@ -26,11 +27,11 @@ import EmenuExtendRouter from "./dao/db/routers/custom/eMenu.router.js";
 import EticketsExtendRouter from "./dao/db/routers/custom/eTicket.router.js";
 import EcommerceExtendRouter from "./dao/db/routers/custom/eCommerce.router.js";
 import ChatExtendRouter from "./dao/db/routers/custom/chat.router.js";
-import compression from 'express-compression';
+import compression from "express-compression";
 
 import cors from "cors";
 import config from "../src/config/config.js";
-import MongoSingleton from './config/MongoSingleton.js';
+import MongoSingleton from "./config/MongoSingleton.js";
 import { authToken } from "./utils.js";
 
 const app = express();
@@ -41,15 +42,17 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // Middlewares
-//app.use(compression()); este es el middleware de compression Gzip 
+//app.use(compression()); este es el middleware de compression Gzip
 // y es otro es el de Brotli
-app.use(compression({
-    level: 6,
-    threshold: 1024,
-    brotliEnabled: true,
-    brotliThreshold: 1024,
-    zlib:{}
-  }));
+app.use(
+    compression({
+        level: 6,
+        threshold: 1024,
+        brotliEnabled: true,
+        brotliThreshold: 1024,
+        zlib: {},
+    })
+);
 const pathPublic = path.join(__dirname, "/public");
 app.use(express.static(pathPublic));
 
@@ -57,7 +60,7 @@ app.use(cookie());
 app.use(cors());
 const sessionMiddleware = session({
     store: mongoStore.create({
-        mongoUrl: config.mongoUrl, 
+        mongoUrl: config.mongoUrl,
         collectionName: "sessions",
         Options: { userNewUrlParse: true, useUnifiedTopology: true },
         ttl: 24 * 60 * 60,
@@ -65,10 +68,9 @@ const sessionMiddleware = session({
     secret: config.mongoSecret,
     resave: false,
     saveUninitialized: false,
-})
+});
 app.use(sessionMiddleware);
 app.use(cookieParser(`${config.cookiePassword}`));
-
 
 //Middleware Passport
 initializePassport();
@@ -98,8 +100,7 @@ hbs.handlebars.registerHelper("select", function (value, options) {
     // Set the value
     select.value = value;
     // Find the selected node, if it exists, add the selected attribute to it
-    if (select.children[select.selectedIndex])
-        select.children[select.selectedIndex].setAttribute("selected", "selected");
+    if (select.children[select.selectedIndex]) select.children[select.selectedIndex].setAttribute("selected", "selected");
     return select.innerHTML;
 });
 
@@ -121,9 +122,12 @@ app.use("/users", usersViewRouter);
 app.use("/api/sessions", sessionsRouter);
 app.use("/api/jwt", jwtRouter); // new
 app.use("/", usersViewRouter);
-app.get("*",  (req, res) => {res.status(404).render('nopage',{messagedanger: "Cannot get that URL!!"})});
+app.get("*", (req, res) => {
+    res.status(404).render("nopage", { messagedanger: "Cannot get that URL!!" });
+});
 
 // Captura el evento SIGINT (Ctrl+C) y realiza alguna acción
+// eslint-disable-next-line no-unused-vars
 process.on("SIGINT", (res) => {
     console.log("We recive a SIGINT signal. We are closing the Server...");
     process.exit(0); // Salida exitosa
