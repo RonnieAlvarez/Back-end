@@ -18,47 +18,45 @@ token containing the user's name, email, age, and roll, and sets it as a cookie 
 If there is an error during this process, it returns a 500 error with a message indicating that
 there was an internal error. */
 router.post("/current", async (req, res) => {
-    const { email, password } = req.body;
-    try {
-        let user = await userModel.findOne({ email: email });
-        if (!user) {
-            if (email === config.adminName && password === config.adminPassword) {
-                user = {
-                    first_name: "Admin",
-                    last_name: "CoderHouse",
-                    email: email,
-                    age: 21,
-                    roll: "ADMIN",
-                };
-            } else {
-                console.warn("User doesn't exists with username: " + email);
-                return res.status(401).send({
-                    error: "Not found",
-                    message: "User not found: " + email,
-                });
-            }
-        }
-        if (user.loggedBy === "LocalStrategy") {
-            if (!isValidPassword(user, password)) {
-                console.warn("Invalid credentials for user: " + email);
-                return res
-                    .status(401)
-                    .send({ error: "Invalid password", message: "Invalid password for user: " + email });
-            }
-        }
-        const tokenUser = new UserDto(user);
-
-        const access_token = generateJWToken(tokenUser);
-        res.set("Authorization", `Bearer ${access_token}`);
-        res.cookie("jwtCookieToken", access_token, {
-            maxAge: 8 * 24 * 60 * 60,
-            // httpOnly: false // expone la cookie
-            httpOnly: true, // No expone la cookie debe ir en true
+  const { email, password } = req.body;
+  try {
+    let user = await userModel.findOne({ email: email });
+    if (!user) {
+      if (email === config.adminName && password === config.adminPassword) {
+        user = {
+          first_name: "Admin",
+          last_name: "CoderHouse",
+          email: email,
+          age: 21,
+          roll: "ADMIN",
+        };
+      } else {
+        console.warn("User doesn't exists with username: " + email);
+        return res.status(401).send({
+          error: "Not found",
+          message: "User not found: " + email,
         });
-        res.send({ message: "Login successful!" });
-    } catch (error) {
-        return res.status(500).send({ status: "error", error: "Internal Error!" });
+      }
     }
+    if (user.loggedBy === "LocalStrategy") {
+      if (!isValidPassword(user, password)) {
+        console.warn("Invalid credentials for user: " + email);
+        return res.status(401).send({ error: "Invalid password", message: "Invalid password for user: " + email });
+      }
+    }
+    const tokenUser = new UserDto(user);
+
+    const access_token = generateJWToken(tokenUser);
+    res.set("Authorization", `Bearer ${access_token}`);
+    res.cookie("jwtCookieToken", access_token, {
+      maxAge: 8 * 24 * 60 * 60,
+      // httpOnly: false // expone la cookie
+      httpOnly: true, // No expone la cookie debe ir en true
+    });
+    res.send({ message: "Login successful!" });
+  } catch (error) {
+    return res.status(500).send({ status: "error", error: "Internal Error!" });
+  }
 });
 
 export default router;

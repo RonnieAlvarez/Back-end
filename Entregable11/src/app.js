@@ -28,11 +28,11 @@ import EticketsExtendRouter from "./dao/db/routers/custom/eTicket.router.js";
 import EcommerceExtendRouter from "./dao/db/routers/custom/eCommerce.router.js";
 import ChatExtendRouter from "./dao/db/routers/custom/chat.router.js";
 import compression from "express-compression";
-
 import cors from "cors";
 import config from "../src/config/config.js";
 import MongoSingleton from "./config/MongoSingleton.js";
 import { authToken } from "./utils.js";
+import { addLogger } from "./config/logger.js";
 
 const app = express();
 const PORT = config.port || 8080;
@@ -42,16 +42,18 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // Middlewares
+app.use(addLogger);
+
 //app.use(compression()); este es el middleware de compression Gzip
 // y es otro es el de Brotli
 app.use(
-    compression({
-        level: 6,
-        threshold: 1024,
-        brotliEnabled: true,
-        brotliThreshold: 1024,
-        zlib: {},
-    })
+  compression({
+    level: 6,
+    threshold: 1024,
+    brotliEnabled: true,
+    brotliThreshold: 1024,
+    zlib: {},
+  })
 );
 const pathPublic = path.join(__dirname, "/public");
 app.use(express.static(pathPublic));
@@ -59,15 +61,15 @@ app.use(express.static(pathPublic));
 app.use(cookie());
 app.use(cors());
 const sessionMiddleware = session({
-    store: mongoStore.create({
-        mongoUrl: config.mongoUrl,
-        collectionName: "sessions",
-        Options: { userNewUrlParse: true, useUnifiedTopology: true },
-        ttl: 24 * 60 * 60,
-    }),
-    secret: config.mongoSecret,
-    resave: false,
-    saveUninitialized: false,
+  store: mongoStore.create({
+    mongoUrl: config.mongoUrl,
+    collectionName: "sessions",
+    Options: { userNewUrlParse: true, useUnifiedTopology: true },
+    ttl: 24 * 60 * 60,
+  }),
+  secret: config.mongoSecret,
+  resave: false,
+  saveUninitialized: false,
 });
 app.use(sessionMiddleware);
 app.use(cookieParser(`${config.cookiePassword}`));
@@ -81,27 +83,32 @@ app.use(passport.session()); //allow passport to use "express-session"
 /* This code is creating a middleware function that logs the HTTP method and URL of every incoming
 request to the server. It then calls the `next()` function to pass control to the next middleware
 function in the chain. */
-app.use(function (req, res, next) {
-    console.log("%s %s", req.method, req.url);
-    next();
-});
+//app.use(function (req, res, next) {
+//if (config.environment !== "production") {
+//    let messageinfo = `[${new Date().toLocaleDateString()}-${new Date().toLocaleTimeString()}] - Logger Info :  url:  ${url} `;
+//    req.logger.info(`${messageinfo}`);
+//    console.log("%s %s", req.method, req.url);
+
+//next();
+//}
+//});
 
 // View engine
 const hbs = exphbs.create({});
 hbs.handlebars.registerHelper("lookup", (obj, field) => obj[field]);
 hbs.handlebars.registerHelper("substring", function (str, start, len) {
-    return str.substr(start, len);
+  return str.substr(start, len);
 });
 hbs.handlebars.registerHelper("select", function (value, options) {
-    // Create a select element
-    var select = document.createElement("select");
-    // Populate it with the option HTML
-    select.innerHTML = options.fn(this);
-    // Set the value
-    select.value = value;
-    // Find the selected node, if it exists, add the selected attribute to it
-    if (select.children[select.selectedIndex]) select.children[select.selectedIndex].setAttribute("selected", "selected");
-    return select.innerHTML;
+  // Create a select element
+  var select = document.createElement("select");
+  // Populate it with the option HTML
+  select.innerHTML = options.fn(this);
+  // Set the value
+  select.value = value;
+  // Find the selected node, if it exists, add the selected attribute to it
+  if (select.children[select.selectedIndex]) select.children[select.selectedIndex].setAttribute("selected", "selected");
+  return select.innerHTML;
 });
 
 app.engine("handlebars", hbs.engine);
@@ -123,19 +130,15 @@ app.use("/api/sessions", sessionsRouter);
 app.use("/api/jwt", jwtRouter); // new
 app.use("/", usersViewRouter);
 app.get("*", (req, res) => {
-    res.status(404).render("nopage", { messagedanger: "Cannot get that URL!!" });
-});
-
-// Captura el evento SIGINT (Ctrl+C) y realiza alguna acción
-// eslint-disable-next-line no-unused-vars
-process.on("SIGINT", (res) => {
-    console.log("We recive a SIGINT signal. We are closing the Server...");
-    process.exit(0); // Salida exitosa
+  res.status(404).render("nopage", { messagedanger: "Cannot get that URL!!" });
 });
 
 // Server
 const server = app.listen(PORT, () => {
-    console.log(`Server up on PORT: ${PORT}`);
+  (req) => {
+    let messageinfo = `[${new Date().toLocaleDateString()}-${new Date().toLocaleTimeString()}] - Logger Info : Server up on PORT:  ${PORT} `;
+    req.logger.warning(`${messageinfo}`);
+  };
 });
 
 server.on("error", (err) => console.log(err));
@@ -143,10 +146,10 @@ server.on("error", (err) => console.log(err));
 createSocketServer(server);
 
 const mongoInstance = async () => {
-    try {
-        await MongoSingleton.getInstance();
-    } catch (error) {
-        console.error(error);
-    }
+  try {
+    await MongoSingleton.getInstance();
+  } catch (error) {
+    console.error(error);
+  }
 };
 mongoInstance();

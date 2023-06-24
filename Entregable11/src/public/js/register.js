@@ -8,28 +8,28 @@ string in a POST request to the "/api/sessions/register" endpoint. If the respon
 there is an error, it logs the error to the console. Finally, it logs whether the response was
 successful or not to the console. */
 form.addEventListener("submit", async (e) => {
-    e.preventDefault();
-    const data = new FormData(form);
-    const obj = {};
-    data.forEach((value, key) => (obj[key] = value));
-    console.log(data)
-    try {
-        const response = await fetch("/api/sessions/register", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify(obj),
-        });
-        if (response.ok) {
-            console.log("Registed: " + data);
+  e.preventDefault();
+  const data = new FormData(form);
+  const obj = {};
+  data.forEach((value, key) => (obj[key] = value));
+  console.log(data);
+  try {
+    const response = await fetch("/api/sessions/register", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(obj),
+    });
+    if (response.ok) {
+      console.log("Registed: " + data);
 
-            window.location.replace("/users/login");
-        } else {
-            throw new Error("Unable to log in");
-        }
-    } catch (error) {
-        console.error(error);
+      window.location.replace("/users/login");
+    } else {
+      throw new Error("Unable to log in");
     }
-    console.log(response.ok);
+  } catch (error) {
+    console.error(error);
+  }
+  (res) => console.log(res.ok);
 });

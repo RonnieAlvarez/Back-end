@@ -4,7 +4,7 @@ let ename = document.getElementById("ename");
 let submit = document.getElementById("submit");
 let message = document.getElementById("message");
 let messages = document.getElementById("messages");
-let userEmail = " "
+let userEmail = " ";
 /* This code is listening for a "Welcome" event emitted from the server using the `socket.on()` method.
 When the event is received, it logs the `arg` parameter to the console, which is an object
 containing a `messages` property. It then assigns the value of the `messages` property to the
@@ -18,11 +18,10 @@ socket.on("Welcome", (arg) => {
   printMessages(newMessages);
 });
 
-socket.on('userEmail', (userEmail) => {
-    ename.innerText = userEmail;
-    socket.emit("newUser", userEmail);
+socket.on("userEmail", (userEmail) => {
+  ename.innerText = userEmail;
+  socket.emit("newUser", userEmail);
 });
-
 
 /* This code is adding an event listener to the "submit" button. When the button is clicked, it
 prevents the default form submission behavior using `e.preventDefault()`. It then gets the value of
@@ -37,7 +36,7 @@ submit.addEventListener("click", (e) => {
   message.value = "";
   console.log("Client: ", messageText);
   socket.emit("message", { userEmail, message: messageText, date: new Date().toLocaleTimeString() });
-  socket.emit("user",{userEmail})
+  socket.emit("user", { userEmail });
 });
 
 /* This code is listening for a "message" event emitted from the server using the `socket.on()` method.
@@ -74,4 +73,3 @@ socket.on("newUser", (_name) => {
     position: "top-right",
   });
 });
-
