@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 /********************************************************************************* */
 //
 //  RONNIE ALVAREZ CASTRO  CODERHOUSE PROGRAMA FULLSTACK CURSO BACKEND
@@ -27,20 +28,22 @@ import EticketsExtendRouter from "./dao/db/routers/custom/eTicket.router.js";
 import EcommerceExtendRouter from "./dao/db/routers/custom/eCommerce.router.js";
 import ChatExtendRouter from "./dao/db/routers/custom/chat.router.js";
 import compression from "express-compression";
-
 import cors from "cors";
 import config from "../src/config/config.js";
 import MongoSingleton from "./config/MongoSingleton.js";
 import { authToken } from "./utils.js";
+import { addLogger } from "./config/logger.js";
 
 const app = express();
 const PORT = config.port || 8080;
-
+console.log(`Port ${PORT}`);
 //json settings postman
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // Middlewares
+app.use(addLogger);
+
 //app.use(compression()); este es el middleware de compression Gzip
 // y es otro es el de Brotli
 app.use(
@@ -77,13 +80,18 @@ initializePassport();
 app.use(passport.initialize()); // init passport on every route call
 app.use(passport.session()); //allow passport to use "express-session"
 
-/* This code is creating a middleware function that logs the HTTP method and URL of every incoming
+/*for personal use. This code is creating a middleware function that logs the HTTP method and URL of every incoming
 request to the server. It then calls the `next()` function to pass control to the next middleware
 function in the chain. */
-app.use(function (req, res, next) {
-  console.log("%s %s", req.method, req.url);
-  next();
-});
+// app.use(function (req, res, next) {
+//   if (config.environment !== "production") {
+//     let messageinfo = `[${new Date().toLocaleDateString()}-${new Date().toLocaleTimeString()}] - Logger Info :  url:  ${url} `;
+//     req.logger.info(`${messageinfo}`);
+//     console.log("%s %s", req.method, req.url);
+
+//     next();
+//   }
+// });
 
 // View engine
 const hbs = exphbs.create({});
@@ -125,15 +133,12 @@ app.get("*", (req, res) => {
   res.status(404).render("nopage", { messagedanger: "Cannot get that URL!!" });
 });
 
-// Captura el evento SIGINT (Ctrl+C) y realiza alguna acción
-process.on("SIGINT", (res) => {
-  console.log("We recive a SIGINT signal. We are closing the Server...");
-  process.exit(0); // Salida exitosa
-});
-
 // Server
 const server = app.listen(PORT, () => {
-  console.log(`Server up on PORT: ${PORT}`);
+  (req) => {
+    let messageinfo = `[${new Date().toLocaleDateString()}-${new Date().toLocaleTimeString()}] - Logger Info : Server up on PORT:  ${PORT} `;
+    req.logger.warning(`${messageinfo}`);
+  };
 });
 
 server.on("error", (err) => console.log(err));
