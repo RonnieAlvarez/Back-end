@@ -11,6 +11,7 @@ const ProductSchema = new mongoose.Schema(
     id: {
       type: Number,
       required: true,
+      min: 0,
     },
     Title: {
       type: String,
@@ -23,7 +24,6 @@ const ProductSchema = new mongoose.Schema(
     Code: {
       type: String,
       required: false,
-      min: 0,
     },
     Price: {
       type: Number,
@@ -37,15 +37,17 @@ const ProductSchema = new mongoose.Schema(
     Stock: {
       type: Number,
       required: false,
+      min: 0,
     },
     Category: {
       type: String,
       required: false,
+      default: "Ropa",
     },
     Owner: {
       type: String,
       required: false,
-      defaultValue: "ADMIN",
+      default: "ADMIN",
     },
     Thumbnail: {
       type: String,
@@ -80,10 +82,12 @@ const CartSchema = new mongoose.Schema({
         Quantity: {
           type: Number,
           default: 0,
+          min: 0,
         },
         pid: {
           type: Number,
           default: 0,
+          min: 0,
         },
         _pid: {
           type: mongoose.Schema.Types.ObjectId,
@@ -190,6 +194,7 @@ const TicketSchema = new mongoose.Schema(
           Quantity: {
             type: Number,
             default: 0,
+            min: 0,
           },
           _pid: {
             type: mongoose.Schema.Types.ObjectId,
@@ -201,6 +206,7 @@ const TicketSchema = new mongoose.Schema(
           Price: {
             type: Number,
             default: 0,
+            min: 0,
           },
           Title: {
             type: String,

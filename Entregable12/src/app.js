@@ -1,4 +1,3 @@
-/* eslint-disable no-undef */
 /********************************************************************************* */
 //
 //  RONNIE ALVAREZ CASTRO  CODERHOUSE PROGRAMA FULLSTACK CURSO BACKEND
@@ -44,8 +43,10 @@ app.use(express.urlencoded({ extended: true }));
 // Middlewares
 app.use(addLogger);
 
-//app.use(compression()); este es el middleware de compression Gzip
-// y es otro es el de Brotli
+/* The `app.use(compression())` middleware is used to enable compression of HTTP responses in the
+Express application. It compresses the response data using the gzip or brotli algorithm before
+sending it to the client, which reduces the size of the response and improves the performance of the
+application. */
 app.use(
   compression({
     level: 6,
@@ -85,8 +86,6 @@ request to the server. It then calls the `next()` function to pass control to th
 function in the chain. */
 app.use(function (req, res, next) {
   if (config.environment !== "production") {
-    //  let messageinfo = `[${new Date().toLocaleDateString()}-${new Date().toLocaleTimeString()}] - Logger Info :  url:  ${url} `;
-    //  req.logger.info(`${messageinfo}`);
     console.log("%s %s", req.method, req.url);
     next();
   }
@@ -98,14 +97,12 @@ hbs.handlebars.registerHelper("lookup", (obj, field) => obj[field]);
 hbs.handlebars.registerHelper("substring", function (str, start, len) {
   return str.substr(start, len);
 });
+/* The `hbs.handlebars.registerHelper("select", function (value, options) { ... })` code is registering
+a custom helper function called "select" in the Handlebars template engine. */
 hbs.handlebars.registerHelper("select", function (value, options) {
-  // Create a select element
   var select = document.createElement("select");
-  // Populate it with the option HTML
   select.innerHTML = options.fn(this);
-  // Set the value
   select.value = value;
-  // Find the selected node, if it exists, add the selected attribute to it
   if (select.children[select.selectedIndex]) select.children[select.selectedIndex].setAttribute("selected", "selected");
   return select.innerHTML;
 });
@@ -120,13 +117,13 @@ const ecommerceExtendRouter = new EcommerceExtendRouter();
 const emenuExtendRouter = new EmenuExtendRouter();
 const eticketsExtendRouter = new EticketsExtendRouter();
 
-app.use("/products/", auth, authToken, ecommerceExtendRouter.getRouter()); //auth
-app.use("/menu/", auth, authToken, emenuExtendRouter.getRouter()); //auth
+app.use("/products/", auth, authToken, ecommerceExtendRouter.getRouter());
+app.use("/menu/", auth, authToken, emenuExtendRouter.getRouter());
 app.use("/api/chat", auth, authToken, chatExtendRouter.getRouter());
 app.use("/api/tickets", auth, authToken, eticketsExtendRouter.getRouter());
 app.use("/users", usersViewRouter);
 app.use("/api/sessions", sessionsRouter);
-app.use("/api/jwt", jwtRouter); // new
+app.use("/api/jwt", jwtRouter);
 app.use("/", usersViewRouter);
 app.get("*", (req, res) => {
   res.status(404).render("nopage", { messagedanger: "Cannot get that URL!!" });
@@ -144,6 +141,10 @@ server.on("error", (err) => console.log(err));
 // Socket server
 createSocketServer(server);
 
+/**
+ * The function `mongoInstance` attempts to get an instance of a MongoDB connection using a singleton
+ * pattern and logs any errors that occur.
+ */
 const mongoInstance = async () => {
   try {
     await MongoSingleton.getInstance();

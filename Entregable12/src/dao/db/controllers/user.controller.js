@@ -1,4 +1,3 @@
-import * as UserService from "../services/users.service.js";
 import { UserModel } from "../models/ecommerce.model.js";
 import config from "../../../config/config.js";
 import nodemailer from "nodemailer";
@@ -6,6 +5,17 @@ import { isValidPassword } from "../../../utils.js";
 
 import bcrypt from "bcrypt";
 
+/**
+ * This JavaScript function handles the forgot password functionality by sending a reset password email
+ * to the user.
+ * @param req - The `req` parameter is the request object that contains information about the HTTP
+ * request made to the server. It includes details such as the request headers, request body, request
+ * method, and request URL. In this code snippet, `req` is used to access the request body (`req.body`)
+ * which
+ * @param res - The `res` parameter is the response object that is used to send the response back to
+ * the client. It is an instance of the Express `Response` object and has methods like `status`,
+ * `render`, and `send` that can be used to send the response.
+ */
 export async function forgot_password(req, res) {
   process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
 
@@ -23,11 +33,7 @@ export async function forgot_password(req, res) {
     if (error) {
       res.status(400).render("nopage", { messagedanger: `${error.message}` });
     }
-    // else {
-    //   console.log("Server is ready to send emails");
-    // }
   });
-
   const { email } = req.body;
   const user = await UserModel.findOne({ email });
   if (!user) {
@@ -59,7 +65,16 @@ export async function forgot_password(req, res) {
   sendMail();
   res.status(200).render("nopage", { messageSuccess: "We send you an email with the link to Reset the Password !!" });
 }
-
+/**
+ * The `reset_password` function is an asynchronous function that handles the reset password
+ * functionality by rendering a form for the user to enter a new password.
+ * @param req - The `req` parameter is the request object that contains information about the HTTP
+ * request made to the server. It includes details such as the request method, headers, URL parameters,
+ * query parameters, and body data.
+ * @param res - The `res` parameter is the response object that is used to send a response back to the
+ * client. It contains methods and properties that allow you to control the response, such as setting
+ * the status code, headers, and sending the response body. In this code, the `res` object is used
+ */
 export async function reset_password(req, res) {
   const { token } = req.params;
   const user = await UserModel.findOne({ resetPasswordToken: token, resetPasswordExpires: { $gt: Date.now() } });
@@ -113,14 +128,24 @@ export async function reset_password(req, res) {
   `);
 }
 
-// Ruta para guardar la nueva contraseña
+/**
+ * This function handles the reset password functionality by validating the token, checking the
+ * password requirements, hashing the new password, and updating the user's password in the database.
+ * @param req - The `req` parameter is the request object that contains information about the HTTP
+ * request made by the client. It includes details such as the request headers, request parameters,
+ * request body, etc. In this code snippet, `req` is used to access the `params` and `body` properties.
+ * @param res - The `res` parameter is the response object that is used to send a response back to the
+ * client. It contains methods and properties that allow you to control the response, such as setting
+ * the status code, headers, and sending data back to the client. In this code snippet, the `res`
+ * @returns a response with the appropriate status code and rendering a view with a message indicating
+ * the result of the password reset process.
+ */
 export async function postResetPassword(req, res) {
   const { token } = req.params;
   const { password } = req.body;
   const user = await UserModel.findOne({ resetPasswordToken: token, resetPasswordExpires: { $gt: Date.now() } });
   if (!user) {
     return res.status(400).render("nopage", { messagedanger: `Link to Reset the Password invalid or expired !! ` });
-    //    res.redirect("/users/forgot");
   }
   if (isValidPassword(user, password)) {
     return res.status(400).render("nopage", { messagedanger: "The Password could'nt be the same !!" });
@@ -130,9 +155,7 @@ export async function postResetPassword(req, res) {
       .status(400)
       .render("nopage", { messagedanger: "The password does not meet the requirements !! \n 8+ alphanum chars, 1+ num, and non-alphanum chars" });
   }
-
   const hashedPassword = await bcrypt.hash(password, 10);
-  // Actualizar la contraseña del usuario en la base de datos
   user.password = hashedPassword;
   user.resetPasswordToken = undefined;
   user.resetPasswordExpires = undefined;
@@ -140,11 +163,32 @@ export async function postResetPassword(req, res) {
   res.status(401).redirect("/users/login");
 }
 
+/**
+ * The function `validarPassword` checks if a password meets certain criteria.
+ * @param password - The `password` parameter is a string that represents the password that needs to be
+ * validated.
+ * @returns a boolean value indicating whether the password passed as an argument matches the specified
+ * regular expression pattern.
+ */
 function validarPassword(password) {
   const regex = /^(?=.*[a-zA-Z]{4,})[a-zA-Z\d]{8,}$/;
   return regex.test(password);
 }
 
+/**
+ * The function `toggleRoll` is an asynchronous function that toggles the roll (role) of a user between
+ * "PREMIUM" and "USER" based on their email.
+ * @param req - The `req` parameter is the req.params object that contains information about the HTTP
+ * request made by the client. It includes properties such as the request method, request headers,
+ * request parameters, and request body.
+ * @param res - The `res` parameter is the response object that is used to send the response back to
+ * the client. It contains methods and properties that allow you to control the response, such as
+ * setting the status code, headers, and sending the response body.
+ * @returns a response to the client. If the user is found and their role is successfully updated, it
+ * will return a 400 status with a success message and redirect the user to the "/users/logout" page.
+ * If the user is not found or the role update fails, it will return a 400 status with an error
+ * message.
+ */
 export async function toggleRoll(req, res) {
   try {
     let { email } = req.params;

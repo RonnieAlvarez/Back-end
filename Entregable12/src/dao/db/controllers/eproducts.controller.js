@@ -77,16 +77,12 @@ export async function getRealProducts(req, res) {
 export async function createRealProduct(req, res) {
   try {
     const { body } = req;
-    const id = Number(body.id);
+    let id = Number(body.id);
     const Title = body.Title;
     const Price = Number(body.Price);
-
     let user = new UserDto(req.user);
 
-    /* This code block checks if the `id`, `Title`, and `Price` variables are empty (i.e. null, undefined,
-0, false, etc.). If any of them are falsy, it creates a custom error using the `CustomError.createError()` 
-*/
-    if (!Title || !Price) {
+    if (!Title || !Price || Price < 0) {
       CustomError.createError({
         name: "Product Creation Error",
         cause: generateProductErrorInfo({ id: id, Title: Title, Price: Price }),
@@ -94,8 +90,18 @@ export async function createRealProduct(req, res) {
         code: EErrors.INVALID_TYPES_ERROR,
       });
     }
-    body.id = id ? id : 0;
-    let products = await ProductService.createProduct(id, body);
+    let products = await ProductService.getProducts();
+    let maxId = 0;
+    products.forEach((product) => {
+      if (product.id > maxId) {
+        maxId = product.id;
+      }
+    });
+    id = maxId + 1;
+    body.id = id;
+
+    body.Owner = user.email;
+    products = await ProductService.createProduct(body);
     products = await ProductService.getProducts();
     let canaddproducts = null;
     if (user.roll === "ADMIN" || user.roll === "PREMIUM") canaddproducts = true;
@@ -132,7 +138,6 @@ export async function deleteRealProduct(req, res) {
 export async function createProduct(req, res) {
   try {
     const { body } = req;
-    //  const { pid } = req.params;
     const response = await ProductService.createProduct(body);
     res.status(201).json({
       product: response,

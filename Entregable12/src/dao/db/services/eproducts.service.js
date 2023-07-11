@@ -1,6 +1,10 @@
 import { ProductModel } from "../models/ecommerce.model.js";
 import { faker } from "@faker-js/faker";
 
+/**
+ * The function `getMockProducts` generates an array of mock products.
+ * @returns an array of mock products.
+ */
 export async function getMockProducts() {
   try {
     let numOfProducts = 100;
@@ -13,6 +17,10 @@ export async function getMockProducts() {
     throw new Error(error.message);
   }
 }
+/**
+ * The function generates a random product object with various properties using the faker library.
+ * @returns The function `generateProduct` returns an object with the following properties:
+ */
 export const generateProduct = () => {
   return {
     id: faker.number.int(100),
@@ -27,6 +35,11 @@ export const generateProduct = () => {
   };
 };
 
+/**
+ * The function generates a random product code consisting of three letters followed by three numbers.
+ * @returns a randomly generated product code consisting of three uppercase letters followed by three
+ * numbers.
+ */
 function generateproductCode() {
   let code = "";
   const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
@@ -39,7 +52,6 @@ function generateproductCode() {
   }
   return code;
 }
-//**************************************** */
 /**
  * This is an asynchronous function that retrieves a product from a database based on its ID and
  * returns it, or returns an error message if the product doesn't exist.
@@ -72,7 +84,6 @@ export async function getmenuProducts(page, limit) {
     };
   }
 }
-//**************************************** */
 /**
  * This function retrieves all products that have not been deleted from a database using the
  * ProductModel.
@@ -85,8 +96,6 @@ export async function getProducts() {
     throw new Error(error.message);
   }
 }
-
-//**************************************** */
 /**
  * This function retrieves all products that have not been deleted from a database using the
  * ProductModel.
@@ -99,49 +108,37 @@ export async function getAllProducts() {
     throw new Error(error.message);
   }
 }
-//**************************************** */
 /**
  * This function creates a new product with a unique ID and sets its status to true.
  */
-export async function createProduct(id, data) {
+export async function createProduct(data) {
   try {
     const Products = await getAllProducts();
-    const result = Products.find((evento) => evento.id === id);
-    if (!result) {
-      let maxId = 0;
-      Products.forEach((product) => {
-        if (product.id > maxId) {
-          maxId = product.id;
-        }
-      });
-      id = maxId + 1;
-    } else {
+    const result = Products.find((evento) => evento.id === data.id);
+    if (result) {
       if (data.Title === "") {
         data.Title = result.Title;
       }
-      if (data.Owner === "") {
-        data.Owner = data.email;
-      }
-
       if (data.Description === "") {
         data.Description = result.Description;
       }
       if (data.Code === "") {
         data.Code = result.Code;
       }
-      if (Number(data.Price) === 0) {
-        data.Price = Number(result.Price) || 0;
-      }
-      if (Number(data.Stock === 0)) {
-        data.Stock = Number(result.Stock) || 0;
-      }
       if (data.Category === "") {
         data.Category = result.Category;
       }
     }
 
+    if (data.Owner === "") {
+      data.Owner = "ADMIN";
+    }
+    data.Category = data.Category ? data.Category : "Ropa";
+    data.Code = await generarCodigoUnico(data.Title);
+    data.Price = Number(data.Price);
+    data.Stock = Number(data.Stock);
     data = { ...data, Status: true };
-    const product = await ProductModel.findOneAndUpdate({ id: id }, data, {
+    const product = await ProductModel.findOneAndUpdate({ id: data.id }, data, {
       new: true,
       upsert: true,
     });
@@ -198,4 +195,31 @@ export async function deleteRealProduct(id, user) {
   } catch (error) {
     throw new Error(error.message);
   }
+}
+
+/**
+ * The function generates a unique code based on a given title, consisting of two uppercase letters and
+ * three numbers.
+ * @param title - The title is a string that represents the title of a product.
+ * @returns a unique code generated based on the given title.
+ */
+async function generarCodigoUnico(Title) {
+  let codigo = "";
+  const letras = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+  const numeros = "0123456789";
+  if (typeof Title === "string" && Title.length >= 3) {
+    codigo += Title.slice(0, 3).toUpperCase();
+  } else {
+    for (let i = 0; i < 3; i++) {
+      codigo += letras.charAt(Math.floor(Math.random() * letras.length));
+    }
+  }
+  for (let i = 0; i < 3; i++) {
+    codigo += numeros.charAt(Math.floor(Math.random() * numeros.length));
+  }
+  const existeCodigo = await ProductModel.findOne({ Code: codigo });
+  if (existeCodigo) {
+    return generarCodigoUnico();
+  }
+  return codigo;
 }
