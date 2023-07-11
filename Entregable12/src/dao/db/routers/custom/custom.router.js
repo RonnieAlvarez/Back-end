@@ -39,7 +39,7 @@ export default class CustomRouter {
       try {
         await callback.apply(this, [req, res, next]);
       } catch (error) {
-        res.status(500).send(error);
+        res.status(500).render("nopage", { messagedanger: `${error.message}` });
       }
     });
   }

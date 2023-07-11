@@ -1,7 +1,8 @@
 import { Router } from "express";
 import { passportCall, authorization } from "../../../utils.js";
 import bcrypt from "bcrypt";
-import { forgot_password, reset_password, postResetPassword } from "../controllers/user.controller.js";
+import { forgot_password, reset_password, postResetPassword, toggleRoll } from "../controllers/user.controller.js";
+import UserModel from "../models/ecommerce.model.js";
 
 const router = Router();
 
@@ -9,7 +10,7 @@ router.get("/favicon.ico", (req, res) => {
   res.sendFile("favicon.ico");
 });
 
-router.get("/", passportCall("jwt"), authorization(["USER", "ADMIN"]), async (req, res) => {
+router.get("/", passportCall("jwt"), authorization(["USER", "ADMIN", "PREMIUM"]), async (req, res) => {
   res.render("menuprincipal", { user: req.user });
 });
 
@@ -29,9 +30,11 @@ router.get("/gitregister", (req, res) => {
   res.render("gitRegister");
 });
 
-router.get("/profile", passportCall("jwt"), authorization(["USER", "ADMIN"]), (req, res) => {
+router.get("/profile", passportCall("jwt"), authorization(["USER", "ADMIN", "PREMIUN"]), (req, res) => {
   res.render("profile", { user: req.user });
 });
+
+router.get("/premium/:email", toggleRoll);
 
 /* This code defines a route for logging out a user. When the user accesses this route, the
 `req.session` object is destroyed, which effectively logs the user out. If there is an error
@@ -46,15 +49,15 @@ router.get("/logout", async (req, res) => {
     req.token = req.token + hashedRandomNumberToAppend;
     req.session.user = " ";
     res.clearCookie("jwtCookieToken");
-    req.session.destroy((err) => {
-      if (err) {
-        return res.status(500).json({ error: "Failed to destroy session" });
+    req.session.destroy((error) => {
+      if (error) {
+        return res.status(500).render("nopage", { messagedanger: `${error.message}` });
       }
       res.clearCookie("session-id");
       return res.redirect("/users/login");
     });
-  } catch (err) {
-    return res.status(500).json({ error: "Internal server error" });
+  } catch (error) {
+    return res.status(500).render("nopage", { messagedanger: `${error.message}` });
   }
 });
 

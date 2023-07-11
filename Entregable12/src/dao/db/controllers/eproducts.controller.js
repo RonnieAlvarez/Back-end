@@ -18,10 +18,7 @@ export async function getMockingProducts(req, res) {
     const products = await ProductService.getMockProducts();
     return res.render("realTimeProducts", { productsa: products, user: user, canaddproducts });
   } catch (error) {
-    res.status(400).json({
-      error: error.message,
-      status: STATUS.FAIL,
-    });
+    res.status(400).render("nopage", { messagedanger: `${error.message}` });
   }
 }
 /**
@@ -38,10 +35,7 @@ export async function getProduct(req, res) {
       status: STATUS.SUCCESS,
     });
   } catch (error) {
-    res.status(400).json({
-      error: error.message,
-      status: STATUS.FAIL,
-    });
+    res.status(400).render("nopage", { messagedanger: `${error.message}` });
   }
 }
 
@@ -52,10 +46,7 @@ export async function getProducts(req, res) {
     const products = await ProductService.getProducts();
     return res.render("home", { productsa: products, user });
   } catch (error) {
-    res.status(400).json({
-      error: error.message,
-      status: STATUS.FAIL,
-    });
+    res.status(400).render("nopage", { messagedanger: `${error.message}` });
   }
 }
 //**************************************** */
@@ -71,15 +62,12 @@ export async function getRealProducts(req, res) {
   try {
     let user = new UserDto(req.user);
     let canaddproducts = null;
-    if (user.roll === "ADMIN") canaddproducts = true;
+    if (user.roll === "ADMIN" || user.roll === "PREMIUM") canaddproducts = true;
 
     const products = await ProductService.getAllProducts();
     return res.render("realTimeProducts", { productsa: products, user: user, canaddproducts });
   } catch (error) {
-    res.status(400).json({
-      error: error.message,
-      status: STATUS.FAIL,
-    });
+    res.status(400).render("nopage", { messagedanger: `${error.message}` });
   }
 }
 
@@ -98,7 +86,7 @@ export async function createRealProduct(req, res) {
     /* This code block checks if the `id`, `Title`, and `Price` variables are empty (i.e. null, undefined,
 0, false, etc.). If any of them are falsy, it creates a custom error using the `CustomError.createError()` 
 */
-    if (!id || !Title || !Price) {
+    if (!Title || !Price) {
       CustomError.createError({
         name: "Product Creation Error",
         cause: generateProductErrorInfo({ id: id, Title: Title, Price: Price }),
@@ -106,17 +94,14 @@ export async function createRealProduct(req, res) {
         code: EErrors.INVALID_TYPES_ERROR,
       });
     }
+    body.id = id ? id : 0;
     let products = await ProductService.createProduct(id, body);
     products = await ProductService.getProducts();
     let canaddproducts = null;
-    if (user.roll === "ADMIN") canaddproducts = true;
+    if (user.roll === "ADMIN" || user.roll === "PREMIUM") canaddproducts = true;
     return res.render("realTimeProducts", { productsa: products, user: user, canaddproducts });
   } catch (error) {
-    res.status(400).json({
-      error: error.message,
-      cause: error,
-      status: STATUS.FAIL,
-    });
+    res.status(400).render("nopage", { messagedanger: `${error.message}` });
   }
 }
 
@@ -134,10 +119,7 @@ export async function deleteRealProduct(req, res) {
     if (user.roll === "ADMIN") canaddproducts = true;
     res.status(201).render("realTimeProducts", { productsa: products, user: user, canaddproducts });
   } catch (error) {
-    res.status(400).json({
-      error: error.message,
-      status: STATUS.FAIL,
-    });
+    res.status(400).render("nopage", { messagedanger: `${error.message}` });
   }
 }
 

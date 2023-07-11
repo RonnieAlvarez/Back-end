@@ -112,9 +112,13 @@ export function saveTicket(ticket) {
   ticket
     .save()
     .then((savedTicket) => {
-      console.log({ ticket: "Saved ticket ok " + savedTicket });
+      //console.log({ ticket: "Saved ticket ok " + savedTicket });
+      let message = "Saved ticket ok " + savedTicket;
+      (res) => res.status(200).render("nopage", { messageSuccess: `${message}` });
     })
     .catch((error) => {
-      console.log({ error: "Error saving the ticket. Error: " + error });
+      //console.log({ error: "Error saving the ticket. Error: " + error });
+      let message = "Error saving the ticket. Error: " + error;
+      (res) => res.status(400).render("nopage", { messagedanger: `${error.message}` });
     });
 }

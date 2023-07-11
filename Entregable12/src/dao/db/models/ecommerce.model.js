@@ -42,6 +42,11 @@ const ProductSchema = new mongoose.Schema(
       type: String,
       required: false,
     },
+    Owner: {
+      type: String,
+      required: false,
+      defaultValue: "ADMIN",
+    },
     Thumbnail: {
       type: String,
       required: false,
@@ -154,7 +159,7 @@ const UserSchema = new mongoose.Schema(
     roll: {
       type: String,
       default: "USER",
-      enum: ["USER", "ADMIN"],
+      enum: ["USER", "ADMIN", "PREMIUM"],
     },
     date: {
       type: String,

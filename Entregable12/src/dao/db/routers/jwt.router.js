@@ -31,17 +31,14 @@ router.post("/current", async (req, res) => {
           roll: "ADMIN",
         };
       } else {
-        //    console.warn("User doesn't exists with username: " + email);
-        return res.status(401).send({
-          error: "Not found",
-          message: "User not found: " + email,
-        });
+        let message = "User not found: " + email;
+        return res.status(401).render("nopage", { messagedanger: `${message}` });
       }
     }
     if (user.loggedBy === "LocalStrategy") {
       if (!isValidPassword(user, password)) {
-        //  console.warn("Invalid credentials for user: " + email);
-        return res.status(401).send({ error: "Invalid password", message: "Invalid password for user: " + email });
+        let message = "Invalid password for user: " + email;
+        return res.status(401).render("nopage", { messagedanger: `${message}` });
       }
     }
     const tokenUser = new UserDto(user);
@@ -55,7 +52,7 @@ router.post("/current", async (req, res) => {
     });
     res.send({ message: "Login successful!" });
   } catch (error) {
-    return res.status(500).send({ status: "error", error: "Internal Error!" });
+    return res.status(500).render("nopage", { messagedanger: `${error.message}` });
   }
 });
 

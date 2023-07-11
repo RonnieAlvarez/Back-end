@@ -1,5 +1,4 @@
 import * as CartService from "../services/ecarts.service.js";
-import { STATUS } from "../../../config/constants.js";
 import { CartModel, ProductModel, TicketModel } from "../models/ecommerce.model.js";
 import UserDto from "../../DTOs/user.Dto.js";
 import nodemailer from "nodemailer";
@@ -51,7 +50,7 @@ export async function getRealCarts(req, res) {
     );
     //----------------------------------------------------------------
     let canAddToCart = null;
-    if (user.roll === "USER") {
+    if (user.roll === "USER" || user.roll === "PREMIUM") {
       canAddToCart = true;
     } else {
       canAddToCart = false;
@@ -61,10 +60,7 @@ export async function getRealCarts(req, res) {
     }
     return res.status(201).render("realTimeCarts", { carts: carlinea, user, products: products, lTotal: total, canAddToCart });
   } catch (error) {
-    res.status(400).json({
-      error: error.message,
-      status: STATUS.FAIL,
-    });
+    res.status(400).render("nopage", { messagedanger: `${error.message}` });
   }
 }
 /**
@@ -77,13 +73,10 @@ export async function createRealCart(req, res) {
     let user = new UserDto(req.user);
     const carts = await CartService.createCart({ uid: user._id });
     let canAddToCart = null;
-    if (user.roll === "USER") canAddToCart = true;
+    if (user.roll === "USER" || user.roll === "PREMIUM") canAddToCart = true;
     return res.status(201).render("realTimeCarts", { carts: carts, user, canAddToCart });
   } catch (error) {
-    res.status(400).json({
-      error: error.message,
-      status: STATUS.FAIL,
-    });
+    res.status(400).render("nopage", { messagedanger: `${error.message}` });
   }
 }
 /**
@@ -95,10 +88,7 @@ export async function deleteRealCart(req, res) {
     await CartService.deleteRealCart(user._id);
     return res.status(200).redirect("/products/realTimeCarts/");
   } catch (error) {
-    res.status(400).json({
-      error: error.message,
-      status: STATUS.FAIL,
-    });
+    res.status(400).render("nopage", { messagedanger: `${error.message}` });
   }
 }
 /**
@@ -112,6 +102,9 @@ export async function saveProductToCart(req, res) {
     let pid = parseInt(body.product);
     let Quantity = parseInt(body.Quantity);
     const product = await ProductModel.findOne({ id: pid });
+    if (product.Owner == user.email) {
+      return res.status(201).render("nopage", { messagedanger: "The user Premiun can't add his own Product." });
+    }
     if (!product) {
       return res.status(201).render("nopage", { messagedanger: "Product doesn't Exist." });
     }
@@ -142,10 +135,7 @@ export async function saveProductToCart(req, res) {
     }
     return res.status(200).redirect("/products/realTimeCarts/");
   } catch (error) {
-    res.status(400).json({
-      error: error.message,
-      status: STATUS.FAIL,
-    });
+    res.status(400).render("nopage", { messagedanger: `${error.message}` });
   }
 }
 
@@ -170,9 +160,9 @@ export async function purchaseProducts(req, res) {
     });
     transport.verify(function (error) {
       if (error) {
-        console.log(error);
+        res.status(400).render("nopage", { messagedanger: `${error.message}` });
       } else {
-        console.log("Server is ready to send emails");
+        //console.log("Server is ready to send emails");
       }
     });
     let cart = await CartModel.findOne({ uid: user._id }).populate("products").lean();
@@ -197,8 +187,8 @@ export async function purchaseProducts(req, res) {
           await ProductModel.findOneAndUpdate({ _id: productto._id }, { $set: { Stock: productto.Stock } }, { new: true }).exec();
           cartProducts.splice(cartProducts.indexOf(element), 1);
           await CartModel.updateOne({ uid: user._id }, { $pull: { products: { pid: productto.id } } }).exec();
-        } catch (err) {
-          console.log(err);
+        } catch (error) {
+          res.status(400).render("nopage", { messagedanger: `${error.message}` });
         }
       }
     });
@@ -237,9 +227,6 @@ export async function purchaseProducts(req, res) {
 
     return res.status(200).redirect("/products/realTimeCarts/");
   } catch (error) {
-    res.status(400).json({
-      error: error.message,
-      status: STATUS.FAIL,
-    });
+    res.status(400).render("nopage", { messagedanger: `${error.message}` });
   }
 }

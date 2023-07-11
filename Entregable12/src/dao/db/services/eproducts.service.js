@@ -109,14 +109,20 @@ export async function createProduct(id, data) {
     const result = Products.find((evento) => evento.id === id);
     if (!result) {
       let maxId = 0;
-      maxId = Products.map((evento) => {
-        if (evento.id > maxId) maxId = evento.id;
+      Products.forEach((product) => {
+        if (product.id > maxId) {
+          maxId = product.id;
+        }
       });
       id = maxId + 1;
     } else {
       if (data.Title === "") {
         data.Title = result.Title;
       }
+      if (data.Owner === "") {
+        data.Owner = data.email;
+      }
+
       if (data.Description === "") {
         data.Description = result.Description;
       }
@@ -134,7 +140,7 @@ export async function createProduct(id, data) {
       }
     }
 
-    data = { ...data, id: id, Status: true };
+    data = { ...data, Status: true };
     const product = await ProductModel.findOneAndUpdate({ id: id }, data, {
       new: true,
       upsert: true,
@@ -169,7 +175,11 @@ export async function updateProduct(pid, data) {
  */
 export async function deleteProduct(pid) {
   try {
-    await ProductModel.delete({ id: pid });
+    if (user.roll == "ADMIN") {
+      await ProductModel.delete({ id: pid });
+    } else if (user.roll == "PREMIUM") {
+      await ProductModel.delete({ id: pid, Owner: user.email });
+    }
   } catch (error) {
     throw new Error(error.message);
   }
@@ -178,9 +188,13 @@ export async function deleteProduct(pid) {
 /**
  * This function deletes a real product from the database using its ID.
  */
-export async function deleteRealProduct(id) {
+export async function deleteRealProduct(id, user) {
   try {
-    await ProductModel.findOneAndDelete({ id: id });
+    if (user.roll == "ADMIN") {
+      await ProductModel.findOneAndDelete({ id: id });
+    } else if (user.roll == "PREMIUM") {
+      await ProductModel.findOneAndDelete({ id: id, Owner: user.email });
+    }
   } catch (error) {
     throw new Error(error.message);
   }

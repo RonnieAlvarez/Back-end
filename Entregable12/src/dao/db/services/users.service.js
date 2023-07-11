@@ -12,7 +12,7 @@ export default class UserService {
     let result = await userModel.create(user);
     return result;
   };
-  save1 = async (user) => {
+  saveUser = async (user) => {
     let result = await userModel.save(user);
     return result;
   };
