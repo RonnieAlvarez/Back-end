@@ -1,9 +1,0 @@
-{
-  "dependencies": {
-    "cors": "^2.8.5",
-    "winston": "^3.9.0"
-  },
-  "devDependencies": {
-    "eslint": "^8.43.0"
-  }
-}
