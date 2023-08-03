@@ -2,10 +2,10 @@
   "configurations": [
     {
       "type": "node-terminal",
-      "name": "Run 13Entregable",
+      "name": "Run 15Entregable",
       "request": "launch",
       "command": "npm run start",
-      "cwd": "${workspaceFolder}\\Entregable13"
+      "cwd": "${workspaceFolder}\\Entregable15"
     }
   ]
 }
