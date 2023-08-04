@@ -1,19 +1,10 @@
-<div class="container">
-
+<div class="container mt-4">
   <div>
     <div class="mt-1 container h-100 d-flex flex-column justify-content-center align-items-center">
       <form action="/users/premium/:{{user.email}}/documents" method="post" enctype="multipart/form-data">
-        <input type="file" name="files" multiple />
+        <input type="file" name="files" multiple accept=".txt,.doc" />
         <button class="btn btn-secondary btn-sm rounded  " type="submit">Upload Documents</button>
       </form>
-
-
-      {{!-- <span class="btn btn-secondary btn-sm rounded  " id="ename">User email:</span>
-      <input type="text" placeholder="Write a message..." id="message" class="px-2 border-black border-2 rounded" />
-      <button id="submit" type="button" class="btn btn-primary btn-sm ">Send</button> --}}
     </div>
-
   </div>
-
-
 </div>

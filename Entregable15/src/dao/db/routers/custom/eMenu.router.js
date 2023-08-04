@@ -15,5 +15,11 @@ export default class eMenuRouter extends CustomRouter {
     this.get("/docUplouder", { policies: ["USER", "ADMIN"] }, (req, res) => {
       res.status(201).render("upDocs", { user: req.user });
     });
+    this.get("/imgUplouder", { policies: ["USER", "ADMIN"] }, (req, res) => {
+      res.status(201).render("upImgs", { user: req.user });
+    });
+    this.get("/proUplouder", { policies: ["USER", "ADMIN"] }, (req, res) => {
+      res.status(201).render("upProds", { user: req.user });
+    });
   }
 }

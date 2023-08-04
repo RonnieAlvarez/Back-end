@@ -29,13 +29,13 @@ export async function forgot_password(req, res) {
   });
   transport.verify(function (error) {
     if (error) {
-      res.status(400).render("nopage", { messagedanger: `${error.message}` });
+      res.status(400).render("nopage", { messagedanger: `${error.message}`, user: req.user });
     }
   });
   const { email } = req.body;
   const user = await UserModel.findOne({ email });
   if (!user) {
-    res.status(400).render("nopage", { messagedanger: `User not found !!` });
+    res.status(400).render("nopage", { messagedanger: `User not found !!`, user: req.user });
   }
   const token = Math.random().toString(36).substring(2) + Date.now();
   user.resetPasswordToken = token;
@@ -61,7 +61,7 @@ export async function forgot_password(req, res) {
     await transport.sendMail(mailOptions);
   };
   sendMail();
-  res.status(200).render("nopage", { messageSuccess: "We send you an email with the link to Reset the Password !!" });
+  res.status(200).render("nopage", { messageSuccess: "We send you an email with the link to Reset the Password !!", user: req.user });
 }
 /**
  * The `reset_password` function is an asynchronous function that handles the reset password
@@ -77,12 +77,12 @@ export async function reset_password(req, res) {
   const { token } = req.params;
   const user = await UserModel.findOne({ resetPasswordToken: token, resetPasswordExpires: { $gt: Date.now() } });
   if (!user) {
-    res.status(400).render("nopage", { messagedanger: "Link to Reset the Password invalid or expired !!" });
+    res.status(400).render("nopage", { messagedanger: "Link to Reset the Password invalid or expired !!", user: req.user });
     setTimeout(() => {
       try {
         res.status(401).redirect("/users/login");
       } catch (error) {
-        res.status(400).render("nopage", { messagedanger: `${error.message}` });
+        res.status(400).render("nopage", { messagedanger: `${error.message}`, user: req.user });
       }
     }, 2000);
   }
@@ -192,6 +192,9 @@ export async function toggleRoll(req, res) {
     let { email } = req.params;
     email = email.slice(1, email.length);
     let user = await UserModel.findOne({ email: email });
+    if (user.status === false) {
+      return res.status(400).render("nopage", { messagedanger: `User not UpLoaded Documents and can not change the roll !! `, user: req.user });
+    }
     if (user) {
       let modificated = false;
       if (user.roll === "PREMIUM" && modificated === false) {
@@ -203,14 +206,13 @@ export async function toggleRoll(req, res) {
       }
       const actualizado = await user.save(user);
       if (actualizado) {
-        //return res.status(400).render("nopage", { messageSuccess: `User was Updated !! ` }).redirect("/users/logout");
         return res.status(200).redirect("/users/logout");
       } else {
-        return res.status(400).render("nopage", { messagedanger: `User not Updated !! ` });
+        return res.status(400).render("nopage", { messagedanger: `User not Updated !! `, user: req.user });
       }
     }
   } catch (error) {
-    res.status(400).render("nopage", { messagedanger: `${error.message}` });
+    res.status(400).render("nopage", { messagedanger: `${error.message}`, user: req.user });
   }
 }
 

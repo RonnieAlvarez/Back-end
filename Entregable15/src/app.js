@@ -74,10 +74,18 @@ const sessionMiddleware = session({
   secret: config.mongoSecret,
   resave: false,
   saveUninitialized: false,
+  isLogged: true,
 });
 app.use(sessionMiddleware);
 app.use(cookieParser(`${config.cookiePassword}`));
 
+const isAuthenticated = (req, res, next) => {
+  if (req.session.isLogged) {
+    next(); // El usuario está autenticado, continuar con la siguiente función de middleware
+  } else {
+    res.status(401).send("User not ahthenticated !!"); // El usuario no está autenticado, enviar respuesta de error 401
+  }
+};
 //Middleware Passport
 initializePassport();
 
@@ -91,6 +99,16 @@ app.use(function (req, res, next) {
   if (config.environment !== "production") {
     console.log("%s %s", req.method, req.url);
     next();
+  }
+});
+
+/* The code `app.use(function (req, res, next) { ... })` is creating a middleware function that checks
+if the user is authenticated. */
+app.use(function (req, res, next) {
+  if (isAuthenticated) {
+    next();
+  } else {
+    return res.status(200).redirect("/users/logout");
   }
 });
 

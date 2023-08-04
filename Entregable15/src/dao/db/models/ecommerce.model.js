@@ -175,12 +175,15 @@ const UserSchema = new mongoose.Schema(
         message: "Invalid date",
       },
     },
+    status: { type: Boolean, default: false },
     documents: [
       {
         name: String,
         reference: String,
+        doctype: String,
       },
     ],
+    imageProfile: String,
     last_connection: Date,
   },
   {
